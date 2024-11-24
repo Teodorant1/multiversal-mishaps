@@ -1,24 +1,23 @@
-"use client"
+"use client";
 
-import { motion } from 'framer-motion'
-import AnimatedHeader from './AnimatedHeader'
-import ColorChangingTitle from './ColorChangingTitle'
-import CardGame from './CardGame'
+import { motion } from "framer-motion";
+import AnimatedHeader from "./AnimatedHeader";
+import ColorChangingTitle from "./ColorChangingTitle";
+import CardGame from "./CardGame";
 
 export default function MultiversalMishaps() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative">
+    <div className="flex min-h-screen flex-col items-center justify-center overflow-hidden p-4">
       <AnimatedHeader />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="z-20 relative"
+        className="relative z-20"
       >
         <ColorChangingTitle />
         <CardGame />
       </motion.div>
     </div>
-  )
+  );
 }
-

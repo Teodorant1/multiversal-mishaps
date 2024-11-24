@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import seedrandom from "seedrandom";
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 const rng = seedrandom("fixed-seed");
 
 interface RandomProps {
@@ -22,7 +23,7 @@ const CelestialBody = ({
   direction,
 }: {
   type: "planet" | "sun" | "star";
-  subType?: string;
+  subType?: string; // Optional subtypes for more variety
   direction: "left" | "right";
 }) => {
   const getGradientColor = (
@@ -30,10 +31,7 @@ const CelestialBody = ({
     subType?: string,
   ): string => {
     if (type === "sun") {
-      const isDeepRed = rng() < 0.5;
-      return isDeepRed
-        ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500"
-        : "bg-gradient-to-r from-white via-gray-300 to-gray-100";
+      return "bg-gradient-to-r from-yellow-300 via-orange-500 to-yellow-700";
     }
     if (type === "star") {
       return subType === "red giant"
@@ -63,13 +61,13 @@ const CelestialBody = ({
     setRandomProps({
       size: isStar ? rng() * 2 + 1 : rng() * 60 + 20,
       duration: isSun
-        ? rng() * 700 + 300 // Range for suns: 300-1000
+        ? rng() * 500 + 500
         : isStar
-          ? rng() * 30 + 50 // Range for stars: 50-80
-          : rng() * 60 + 60, // Range for planets: 60-120
+          ? rng() * 20 + 60
+          : rng() * 40 + 80,
       delay: rng() * -40,
       yOffset: rng() * 80,
-      color: getGradientColor(type, subType),
+      color: getGradientColor(type, subType), // Include the color property
     });
   }, [type, subType]);
 
@@ -126,84 +124,18 @@ export default function AnimatedCelestialBodies() {
       <CelestialBody
         key={`${type}-${i}`}
         type={type}
-        subType={subTypes[Math.floor(rng() * subTypes.length)] ?? undefined}
+        subType={
+          subTypes[Math.floor(Math.random() * subTypes.length)] ?? undefined
+        }
         direction={i % 2 === 0 ? "left" : "right"}
       />
     ));
 
-  const Spaceship = ({ direction }: { direction: "left" | "right" }) => {
-    const [randomProps, setRandomProps] = useState<RandomProps | null>(null);
-
-    useEffect(() => {
-      setRandomProps({
-        size: rng() * 20 + 30, // Range: 30-50
-        duration: rng() * 20 + 10, // Range: 10-30
-        delay: rng() * -10,
-        yOffset: rng() * 80,
-        color: "bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500",
-      });
-    }, []);
-
-    if (!randomProps) return null; // Avoid rendering until hydrated
-
-    return (
-      <motion.div
-        className={`absolute ${randomProps.color}`}
-        style={{
-          width: randomProps.size,
-          height: randomProps.size / 2,
-          clipPath:
-            direction === "left"
-              ? "polygon(0% 50%, 100% 0%, 100% 100%)"
-              : "polygon(0% 0%, 100% 50%, 0% 100%)",
-          opacity: 0.8,
-          zIndex: 20,
-          willChange: "transform",
-        }}
-        initial={{
-          x: direction === "left" ? "100vw" : "-100vw",
-          y: randomProps.yOffset,
-        }}
-        animate={{
-          x: direction === "left" ? "-100vw" : "100vw",
-        }}
-        transition={{
-          x: {
-            repeat: Infinity,
-            duration: randomProps.duration,
-            ease: "linear",
-            delay: randomProps.delay,
-          },
-        }}
-        aria-hidden="true"
-      >
-        <motion.div
-          className="absolute inset-0 bg-blue-500 opacity-50"
-          animate={{
-            opacity: [0.3, 0.7, 0.3],
-          }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </motion.div>
-    );
-  };
-  const generateSpaceships = (count: number) =>
-    [...Array(count)].map((_, i) => (
-      <Spaceship
-        key={`spaceship-${i}`}
-        direction={i % 2 === 0 ? "left" : "right"}
-      />
-    ));
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
       {generateBodies("planet", 10, celestialConfig.planet)}
       {generateBodies("sun", 5, celestialConfig.sun)}
       {generateBodies("star", 50, celestialConfig.star)}
-      {generateSpaceships(8)}
     </div>
   );
 }
