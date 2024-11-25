@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import AnimatedCelestialBodies from "~/components/AnimatedCelestialBodies";
+import CosmicButton from "~/components/CosmicButton";
 
 export const metadata: Metadata = {
   title: "Multiversal-Mishaps",
@@ -22,6 +23,15 @@ export default function RootLayout({
           <AnimatedCelestialBodies />
           <div className="absolute inset-0 flex items-center justify-between px-8">
             {/* Add your buttons here */}
+
+            <CosmicButton
+              text="Start Adventure"
+              color="bg-gradient-to-r from-pink-600 to-purple-600"
+            />
+            <CosmicButton
+              text="Learn More"
+              color="bg-gradient-to-r from-blue-600 to-green-600"
+            />
             <button className="rounded bg-black px-4 py-2 text-lg font-medium text-white hover:bg-slate-900">
               Home
             </button>
