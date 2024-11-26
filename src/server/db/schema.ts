@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
   pgEnum,
@@ -20,7 +21,7 @@ import { type AdapterAccount } from "next-auth/adapters";
 export const createTable = pgTableCreator(
   (name) => `multiversal-mishaps_${name}`,
 );
-export const type = pgEnum("type", ["question", "situation"]);
+export const question_type = pgEnum("question_type", ["question", "situation"]);
 
 export const deck = createTable("deck", {
   id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
@@ -35,12 +36,13 @@ export const deck = createTable("deck", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
     () => new Date(),
   ),
+  isPublic: boolean("isPublic").default(false),
 });
 
 export const question = createTable("question", {
   id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   text: varchar("text", { length: 2000 }),
-  type: type("type").notNull(),
+  question_type: question_type("question_type").notNull(),
   createdById: varchar("created_by", { length: 255 })
     .notNull()
     .references(() => users.username),
@@ -82,7 +84,10 @@ export const users = createTable("user", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   username: varchar("username", { length: 255 }),
+  name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
+  password: varchar("password").notNull(), // New password field
+
   emailVerified: timestamp("email_verified", {
     mode: "date",
     withTimezone: true,

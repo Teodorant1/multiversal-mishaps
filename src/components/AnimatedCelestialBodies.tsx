@@ -29,27 +29,30 @@ const CelestialBody = ({
     subType?: string,
   ): string => {
     if (type === "sun") {
-      const isDeepRed = rng() < 0.5;
-      return isDeepRed
-        ? "bg-gradient-to-r from-red-900 via-red-700 to-red-500"
-        : "bg-gradient-to-r from-white via-gray-300 to-gray-100";
+      const colors = [
+        "from-yellow-500 via-orange-500 to-red-500",
+        "from-white via-yellow-200 to-orange-300",
+        "from-blue-400 via-cyan-300 to-teal-400",
+      ];
+      return `bg-gradient-to-r ${colors[Math.floor(rng() * colors.length)]}`;
     }
     if (type === "star") {
-      return subType === "red giant"
-        ? "bg-gradient-to-r from-red-500 via-pink-600 to-red-800"
-        : "bg-gradient-to-r from-white via-gray-300 to-blue-400";
+      const colors = [
+        "from-white via-blue-200 to-blue-400",
+        "from-yellow-200 via-yellow-400 to-yellow-600",
+        "from-red-400 via-red-500 to-red-700",
+      ];
+      return `bg-gradient-to-r ${colors[Math.floor(rng() * colors.length)]}`;
     }
     if (type === "planet") {
-      switch (subType) {
-        case "gas giant":
-          return "bg-gradient-to-r from-green-400 via-blue-600 to-purple-700";
-        case "icy world":
-          return "bg-gradient-to-r from-blue-200 via-cyan-400 to-blue-600";
-        case "rocky world":
-          return "bg-gradient-to-r from-gray-400 via-brown-500 to-gray-600";
-        default:
-          return "bg-gradient-to-r from-purple-500 via-red-500 to-orange-600";
-      }
+      const colors = [
+        "from-green-400 via-blue-600 to-purple-700",
+        "from-blue-200 via-cyan-400 to-blue-600",
+        "from-gray-400 via-brown-500 to-gray-600",
+        "from-red-500 via-orange-500 to-yellow-500",
+        "from-indigo-500 via-purple-500 to-pink-500",
+      ];
+      return `bg-gradient-to-r ${colors[Math.floor(rng() * colors.length)]}`;
     }
     if (type === "mysterious") {
       return "bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900";
@@ -74,7 +77,7 @@ const CelestialBody = ({
         : isStar
           ? rng() * 30 + 50
           : isMysterious || isPyramid
-            ? rng() * 20 + 40
+            ? rng() * 100 + 500 // Super slow movement for mysterious planets and pyramids
             : rng() * 60 + 60,
       delay: rng() * -40,
       yOffset: rng() * 80,
@@ -84,12 +87,21 @@ const CelestialBody = ({
 
   if (!randomProps) return null;
 
-  const mysteriousPath = {
-    x: [0, 50, -50, 0],
-    y: [0, -50, 50, 0],
-    scale: [1, 1.2, 0.8, 1],
-    rotate: [0, 45, -45, 0],
+  // const mysteriousOrPyramidPath = {
+  //   x: [0, 100, 0, -100, 0],
+  //   y: [0, 100, 0, -100, 0],
+  // };
+  const mysteriousOrPyramidPath = {
+    x: direction === "left" ? [0, "-100vw"] : [0, "100vw"],
   };
+  const regularPath = {
+    x: direction === "left" ? [0, "-100vw"] : [0, "100vw"],
+  };
+
+  const animationPath =
+    type === "mysterious" || type === "pyramid"
+      ? mysteriousOrPyramidPath
+      : regularPath;
 
   return (
     <motion.div
@@ -104,33 +116,31 @@ const CelestialBody = ({
         willChange: "transform",
       }}
       initial={{
-        x: direction === "left" ? "100vw" : "-100vw",
-        y: randomProps.yOffset,
+        x:
+          type === "mysterious" || type === "pyramid"
+            ? 0
+            : direction === "left"
+              ? "100vw"
+              : "-100vw",
+        y:
+          type === "mysterious" || type === "pyramid" ? 0 : randomProps.yOffset,
       }}
-      animate={
-        type === "mysterious" || type === "pyramid"
-          ? mysteriousPath
-          : {
-              x: direction === "left" ? "-100vw" : "100vw",
-            }
-      }
+      animate={animationPath}
       transition={{
-        x: {
-          repeat: Infinity,
-          duration: randomProps.duration,
-          ease: "linear",
-          delay: randomProps.delay,
-        },
-        ...((type === "mysterious" || type === "pyramid") && {
-          duration: randomProps.duration,
-          repeat: Infinity,
-          repeatType: "loop",
-        }),
+        duration: randomProps.duration,
+        repeat: Infinity,
+        ease: "linear",
+        delay: randomProps.delay,
       }}
     >
-      {(type === "mysterious" || type === "pyramid") && (
-        <div className="flex h-full w-full items-center justify-center font-bold text-white">
-          {type === "mysterious" ? "?" : "Δ"}
+      {type === "pyramid" && (
+        <div className="flex h-full w-full items-center justify-center text-2xl font-bold text-yellow-900">
+          Δ
+        </div>
+      )}
+      {type === "mysterious" && (
+        <div className="flex h-full w-full items-center justify-center text-4xl font-bold text-red-500">
+          ?
         </div>
       )}
     </motion.div>
@@ -174,12 +184,10 @@ const Spaceship = ({ direction }: { direction: "left" | "right" }) => {
         x: direction === "left" ? "-100vw" : "100vw",
       }}
       transition={{
-        x: {
-          repeat: Infinity,
-          duration: randomProps.duration,
-          ease: "linear",
-          delay: randomProps.delay,
-        },
+        duration: randomProps.duration,
+        repeat: Infinity,
+        ease: "linear",
+        delay: randomProps.delay,
       }}
     >
       <motion.div
@@ -197,7 +205,7 @@ const Spaceship = ({ direction }: { direction: "left" | "right" }) => {
   );
 };
 
-export default function AnimatedCelestialBodies() {
+export const AnimatedCelestialBodies = () => {
   const celestialConfig = {
     planet: ["gas giant", "icy world", "rocky world", "unknown planet"],
     sun: [null],
@@ -207,7 +215,7 @@ export default function AnimatedCelestialBodies() {
   };
 
   const generateBodies = (
-    type: "planet" | "sun" | "star" | "mysterious" | "pyramid",
+    type: "planet" | "sun" | "star" | "pyramid" | "mysterious",
     count: number,
     subTypes: (string | null)[],
   ) =>
@@ -230,12 +238,12 @@ export default function AnimatedCelestialBodies() {
 
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
-      {generateBodies("planet", 20, celestialConfig.planet)}
+      {generateBodies("mysterious", 2, celestialConfig.mysterious)}
+      {generateBodies("pyramid", 2, celestialConfig.pyramid)}
+      {generateBodies("planet", 30, celestialConfig.planet)}
       {generateBodies("sun", 10, celestialConfig.sun)}
-      {generateBodies("star", 40, celestialConfig.star)}
-      {generateBodies("mysterious", 6, celestialConfig.mysterious)}
-      {generateBodies("pyramid", 3, celestialConfig.pyramid)}
+      {generateBodies("star", 200, celestialConfig.star)}
       {generateSpaceships(10)}
     </div>
   );
-}
+};

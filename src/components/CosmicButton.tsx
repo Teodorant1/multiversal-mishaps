@@ -1,39 +1,39 @@
-"use client";
-
-import { motion } from "framer-motion";
+import Link from "next/link";
 import { type CosmicButtonProps } from "~/types/projecttypes";
 
-export default function CosmicButton({
+export const CosmicButton = ({
+  href,
   text,
-  color,
   onClick,
-}: CosmicButtonProps) {
-  return (
-    <motion.button
-      onClick={onClick} // Adding the onClick handler
-      className={`relative overflow-hidden ${color} rounded-full px-8 py-4 text-lg font-bold text-white`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 opacity-0"
-        initial={{ x: "-100%" }}
-        whileHover={{ x: "100%", opacity: 0.3 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      />
-      <motion.span
-        initial={{ opacity: 0.8 }}
-        whileHover={{ opacity: 1 }}
-        className="relative z-10"
-      >
-        {text}
-      </motion.span>
-      <motion.div
-        className="absolute inset-0 bg-white opacity-0"
-        whileHover={{ opacity: 0.2, scale: 1.5 }}
-        transition={{ duration: 0.3 }}
-        style={{ filter: "blur(20px)" }}
-      />
-    </motion.button>
+  ...props
+}: CosmicButtonProps) => {
+  // const buttonClass =
+  //   "relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-2 px-4 rounded-full text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg";
+  const innerContent = (
+    <>
+      <span className="relative z-10">{text}</span>
+      <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 opacity-0 transition-opacity duration-300 hover:opacity-30" />
+    </>
   );
-}
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2 text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+      >
+        {innerContent}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      className="relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2 text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+      onClick={onClick}
+      {...props}
+    >
+      {innerContent}
+    </button>
+  );
+};

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
 
 import { db } from "~/server/db";
 import {
@@ -37,8 +39,14 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authConfig = {
+  session: {
+    strategy: "jwt",
+    maxAge: 2592000,
+    updateAge: 86400,
+    generateSessionToken: () => "string",
+  },
   providers: [
-    DiscordProvider,
+    // DiscordProvider,
     /**
      * ...add more providers here.
      *
@@ -48,6 +56,38 @@ export const authConfig = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        console.log("credentials", credentials);
+        // Check if the credentials exist and are in the correct format
+        if (!credentials?.username || !credentials?.password) {
+          return null;
+        }
+
+        // Cast the username and password to JSON
+        const username = credentials.username;
+        const password = credentials.password;
+
+        // Check if both username and password are exactly "username" and "password"
+        if (username === "username" && password === "password") {
+          // Return session details if they match
+          return {
+            id: "sample-id", // Replace with actual ID from your database or authentication logic
+            username,
+            password, // Optionally, you could exclude password from the session data
+            role: "user", // Optional: add any additional session properties
+          };
+        }
+
+        // Return null if credentials do not match
+        return null;
+      },
+    }),
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -60,7 +100,7 @@ export const authConfig = {
       ...session,
       user: {
         ...session.user,
-        id: user.id,
+        // id: user.id,
       },
     }),
   },

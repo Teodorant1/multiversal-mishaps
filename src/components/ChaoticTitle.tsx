@@ -1,63 +1,27 @@
-"use client"
+"use client";
+import { motion } from "framer-motion";
+import { type ChaoticTitleProps } from "~/types/projecttypes";
 
-import { motion } from 'framer-motion'
-
-interface ChaoticTitleProps {
-  text: string
-  animationType: 'portal' | 'explosion' | 'glitch'
-}
-
-export default function ChaoticTitle({ text, animationType }: ChaoticTitleProps) {
-  const words = text.split(' ')
-
-  const portalAnimation = {
-    initial: { scale: 0, rotate: -180 },
-    animate: { scale: 1, rotate: 0 },
-    transition: { type: 'spring', stiffness: 260, damping: 20 }
-  }
-
-  const explosionAnimation = {
-    initial: { opacity: 0, scale: 0.5 },
-    animate: { opacity: 1, scale: 1 },
-    transition: { type: 'spring', stiffness: 500, damping: 10 }
-  }
-
-  const glitchAnimation = {
-    initial: { x: -20, y: -20, opacity: 0 },
-    animate: { x: 0, y: 0, opacity: 1 },
-    transition: { type: 'spring', stiffness: 100, damping: 10 }
-  }
-
-  const getAnimation = (type: string) => {
-    switch (type) {
-      case 'portal':
-        return portalAnimation
-      case 'explosion':
-        return explosionAnimation
-      case 'glitch':
-        return glitchAnimation
-      default:
-        return portalAnimation
-    }
-  }
-
+export function ChaoticTitle({ title }: ChaoticTitleProps) {
   return (
-    <h1 className="text-6xl font-bold mb-12 text-center">
-      {words.map((word, wordIndex) => (
-        <span key={wordIndex} className="inline-block mr-4">
-          {word.split('').map((char, charIndex) => (
-            <motion.span
-              key={charIndex}
-              className="inline-block"
-              {...getAnimation(animationType)}
-              style={{ textShadow: '0 0 10px rgba(255,255,255,0.7)' }}
-            >
-              {char}
-            </motion.span>
-          ))}
-        </span>
+    <h1 className="text-center text-6xl font-bold">
+      {title.split("").map((char, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: index * 0.1,
+            repeat: Infinity,
+            repeatType: "reverse",
+            repeatDelay: 5,
+          }}
+          className="inline-block"
+        >
+          {char}
+        </motion.span>
       ))}
     </h1>
-  )
+  );
 }
-
