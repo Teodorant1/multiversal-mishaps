@@ -1,39 +1,39 @@
-import Link from "next/link";
-import { type CosmicButtonProps } from "~/types/projecttypes";
+"use client"
 
-export const CosmicButton = ({
+import Link from "next/link"
+import { type CosmicButtonProps } from "~/types/projecttypes"
+
+export function CosmicButton({
   href,
   text,
   onClick,
   ...props
-}: CosmicButtonProps) => {
-  // const buttonClass =
-  //   "relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-2 px-4 rounded-full text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg";
+}: CosmicButtonProps) {
+  const buttonClass = "relative overflow-hidden rounded-full bg-gradient-to-r from-violet-700 to-blue-700 px-4 py-2 text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20"
+  
   const innerContent = (
     <>
       <span className="relative z-10">{text}</span>
-      <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 opacity-0 transition-opacity duration-300 hover:opacity-30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 opacity-0 transition-opacity duration-300 hover:opacity-30" />
     </>
-  );
+  )
 
   if (href) {
     return (
-      <Link
-        href={href}
-        className="relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2 text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
-      >
+      <Link href={href} className={buttonClass}>
         {innerContent}
       </Link>
-    );
+    )
   }
 
   return (
     <button
-      className="relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-4 py-2 text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+      className={buttonClass}
       onClick={onClick}
       {...props}
     >
       {innerContent}
     </button>
-  );
-};
+  )
+}
+

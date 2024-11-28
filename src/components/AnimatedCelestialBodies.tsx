@@ -3,9 +3,16 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import seedrandom from "seedrandom";
 
-const rng = seedrandom("fixed-seed");
+function createRng() {
+  let seed = 1234;
+  return () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+}
+
+const rng = createRng();
 
 interface RandomProps {
   size: number;
@@ -15,7 +22,7 @@ interface RandomProps {
   color: string;
 }
 
-const CelestialBody = ({
+function CelestialBody({
   type,
   subType,
   direction,
@@ -23,7 +30,7 @@ const CelestialBody = ({
   type: "planet" | "sun" | "star" | "mysterious" | "pyramid";
   subType?: string;
   direction: "left" | "right";
-}) => {
+}) {
   const getGradientColor = (
     type: "planet" | "sun" | "star" | "mysterious" | "pyramid",
     subType?: string,
@@ -77,7 +84,7 @@ const CelestialBody = ({
         : isStar
           ? rng() * 30 + 50
           : isMysterious || isPyramid
-            ? rng() * 100 + 500 // Super slow movement for mysterious planets and pyramids
+            ? rng() * 1000 + 2000 // Super slow movement for mysterious planets and pyramids
             : rng() * 60 + 60,
       delay: rng() * -40,
       yOffset: rng() * 80,
@@ -87,13 +94,11 @@ const CelestialBody = ({
 
   if (!randomProps) return null;
 
-  // const mysteriousOrPyramidPath = {
-  //   x: [0, 100, 0, -100, 0],
-  //   y: [0, 100, 0, -100, 0],
-  // };
   const mysteriousOrPyramidPath = {
-    x: direction === "left" ? [0, "-100vw"] : [0, "100vw"],
+    x: [0, 100, 0, -100, 0],
+    y: [0, 100, 0, -100, 0],
   };
+
   const regularPath = {
     x: direction === "left" ? [0, "-100vw"] : [0, "100vw"],
   };
@@ -145,9 +150,9 @@ const CelestialBody = ({
       )}
     </motion.div>
   );
-};
+}
 
-const Spaceship = ({ direction }: { direction: "left" | "right" }) => {
+function Spaceship({ direction }: { direction: "left" | "right" }) {
   const [randomProps, setRandomProps] = useState<RandomProps | null>(null);
 
   useEffect(() => {
@@ -203,9 +208,9 @@ const Spaceship = ({ direction }: { direction: "left" | "right" }) => {
       />
     </motion.div>
   );
-};
+}
 
-export const AnimatedCelestialBodies = () => {
+export function AnimatedCelestialBodies() {
   const celestialConfig = {
     planet: ["gas giant", "icy world", "rocky world", "unknown planet"],
     sun: [null],
@@ -238,12 +243,12 @@ export const AnimatedCelestialBodies = () => {
 
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
-      {generateBodies("mysterious", 2, celestialConfig.mysterious)}
-      {generateBodies("pyramid", 2, celestialConfig.pyramid)}
-      {generateBodies("planet", 30, celestialConfig.planet)}
-      {generateBodies("sun", 10, celestialConfig.sun)}
-      {generateBodies("star", 200, celestialConfig.star)}
+      {generateBodies("mysterious", 3, celestialConfig.mysterious)}
+      {generateBodies("pyramid", 3, celestialConfig.pyramid)}
+      {generateBodies("planet", 15, celestialConfig.planet)}
+      {generateBodies("sun", 5, celestialConfig.sun)}
+      {generateBodies("star", 100, celestialConfig.star)}
       {generateSpaceships(10)}
     </div>
   );
-};
+}

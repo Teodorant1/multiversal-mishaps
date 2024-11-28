@@ -1,65 +1,47 @@
 "use client"
 
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion"
 
-export default function SpinningMolecule() {
-  const atoms = [
-    { x: 0, y: -40 },
-    { x: 35, y: 20 },
-    { x: -35, y: 20 },
-  ]
-
+export function SpinningMolecule() {
   return (
-    <div className="relative w-64 h-64">
+    <div className="relative h-24 w-24">
       <motion.div
-        className="absolute inset-0"
-        animate={{
-          rotate: [0, 360],
+        className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-700 to-blue-700"
+        animate={{ 
+          rotate: 360,
+          scale: [1, 1.2, 1],
+          background: [
+            "linear-gradient(to right, rgb(109, 40, 217), rgb(29, 78, 216))",
+            "linear-gradient(to right, rgb(29, 78, 216), rgb(109, 40, 217))",
+            "linear-gradient(to right, rgb(109, 40, 217), rgb(29, 78, 216))"
+          ]
         }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
+        transition={{ 
+          rotate: { duration: 10, repeat: Infinity, ease: "linear" },
+          scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+          background: { duration: 3, repeat: Infinity, ease: "linear" }
         }}
+      />
+      <motion.div
+        className="absolute inset-0 z-10 flex items-center justify-center"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       >
-        {atoms.map((atom, index) => (
+        {[...Array(3)].map((_, i) => (
           <motion.div
-            key={index}
-            className="absolute w-8 h-8 bg-blue-400 rounded-full"
-            style={{ left: "calc(50% - 16px)", top: "calc(50% - 16px)" }}
-            animate={{
-              x: atom.x,
-              y: atom.y,
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatType: "reverse",
-              delay: index * 0.2,
-            }}
-          />
-        ))}
-        {atoms.map((atom, index) => (
-          <motion.div
-            key={`line-${index}`}
-            className="absolute w-1 bg-blue-200 origin-bottom"
-            style={{
-              height: "40px",
-              left: "calc(50% - 2px)",
-              top: "calc(50% - 20px)",
-              transformOrigin: "bottom",
-            }}
-            animate={{
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "linear",
-              delay: index * 0.5,
-            }}
-          />
+            key={i}
+            className="absolute h-4 w-4"
+            style={{ rotate: i * 120 }}
+          >
+            <motion.div
+              className="absolute h-full w-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            >
+              <div className="h-4 w-4 rounded-full bg-cyan-500 shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+              <div className="absolute left-1/2 top-1/2 h-16 w-0.5 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-b from-cyan-500 to-transparent opacity-50" />
+            </motion.div>
+          </motion.div>
         ))}
       </motion.div>
     </div>

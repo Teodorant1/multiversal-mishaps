@@ -1,0 +1,84 @@
+import { eq } from "drizzle-orm";
+import { hashPassword } from "random-functions/backend/backend1";
+import { z } from "zod";
+
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
+import { actual_users, posts } from "~/server/db/schema";
+
+export const authRouter = createTRPCRouter({
+  register: publicProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        email: z.string(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existing_user = await ctx.db.query.actual_users.findFirst({
+        where: eq(actual_users.email, input.email),
+      });
+
+      if (existing_user) {
+        return {
+          error: true,
+          error_description:
+            "email or username is taken, please pick something else",
+          user: null,
+        };
+      }
+
+      const password = "my_secure_password";
+      const hashedPassword = await hashPassword(password);
+
+      const user = ctx.db
+        .insert(actual_users)
+        .values({
+          username: input.username,
+          email: input.email,
+          password: hashedPassword,
+        })
+        .returning();
+
+      const stuff_to_return = {
+        user: user,
+        error: false,
+        error_description: null,
+      };
+
+      return stuff_to_return;
+    }),
+
+  hello: publicProcedure
+    .input(z.object({ text: z.string() }))
+    .query(({ input }) => {
+      return {
+        greeting: `Hello ${input.text}`,
+      };
+    }),
+
+  create: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(posts).values({
+        name: input.name,
+        createdById: ctx.session.user.id,
+      });
+    }),
+
+  getLatest: protectedProcedure.query(async ({ ctx }) => {
+    const post = await ctx.db.query.posts.findFirst({
+      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+    });
+
+    return post ?? null;
+  }),
+
+  getSecretMessage: protectedProcedure.query(() => {
+    return "you can now see this secret message!";
+  }),
+});

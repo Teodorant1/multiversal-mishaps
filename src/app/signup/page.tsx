@@ -1,10 +1,12 @@
-import SignupForm from '~/components/SignupForm'
+import { SignupForm } from "~/components/SignupForm";
 
-export default function SignupPage() {
+export function SignupPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-purple-900 to-red-900 p-4">
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="absolute inset-0" />
       <SignupForm />
     </div>
-  )
+  );
 }
 
+export default SignupPage;

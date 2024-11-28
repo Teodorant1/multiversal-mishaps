@@ -78,6 +78,18 @@ export const posts = createTable(
   }),
 );
 
+export const actual_users = createTable("user", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  username: varchar("username", { length: 255 }),
+  email: varchar("email", { length: 255 }).notNull(),
+  password: varchar("password", { length: 255 }).notNull(), // New password field
+
+  image: varchar("image", { length: 255 }),
+});
+
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -86,7 +98,7 @@ export const users = createTable("user", {
   username: varchar("username", { length: 255 }),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
-  password: varchar("password").notNull(), // New password field
+  password: varchar("password", { length: 255 }).notNull(), // New password field
 
   emailVerified: timestamp("email_verified", {
     mode: "date",

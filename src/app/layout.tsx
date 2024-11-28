@@ -3,9 +3,9 @@ import { Inter } from "next/font/google";
 import "~/styles/globals.css";
 import { AnimatedCelestialBodies } from "~/components/AnimatedCelestialBodies";
 import { CosmicButton } from "~/components/CosmicButton";
-// import { CosmicLink } from "~/components/CosmicLink";
 import { TRPCReactProvider } from "~/trpc/react";
 import AuthProvider from "./_components/auth/Provider";
+import { auth } from "~/server/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,27 +19,45 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
   return (
     <html lang="en">
       <AuthProvider>
-        {" "}
         <body className={inter.className}>
           <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             <AnimatedCelestialBodies />
-            <nav className="relative z-50 flex justify-center space-x-4 p-4">
-              <CosmicButton href="/" text="Home" />
-              <CosmicButton href="/game" text="Play Game" />
-              <CosmicButton href="/decks" text="Manage Decks" />
-              <CosmicButton href="/about" text="About" />
+            <nav className="relative z-50 flex items-center justify-between px-4 py-4">
+              {/* Left-aligned navigation links */}
+              <div className="flex space-x-4">
+                <CosmicButton href="/" text="Home" />
+                <CosmicButton href="/game" text="Play Game" />
+                <CosmicButton href="/decks" text="Manage Decks" />
+                <CosmicButton href="/about" text="About" />
+              </div>
+
+              {/* Right-aligned authentication buttons */}
+              <div className="flex space-x-4">
+                {session ? (
+                  <>
+                    <CosmicButton href="/profile" text="Profile" />
+                    <CosmicButton href="/signout" text="Sign Out" />
+                  </>
+                ) : (
+                  <>
+                    <CosmicButton href="/signin" text="Sign In" />
+                    <CosmicButton href="/signup" text="Sign Up" />
+                  </>
+                )}
+              </div>
             </nav>
 
             <main className="relative z-40">
-              {" "}
               <TRPCReactProvider>{children}</TRPCReactProvider>
             </main>
           </div>
-        </body>{" "}
-      </AuthProvider>{" "}
+        </body>
+      </AuthProvider>
     </html>
   );
 }

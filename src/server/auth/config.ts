@@ -1,61 +1,43 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
+// import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-
-import { db } from "~/server/db";
+import { db } from "../db";
+import { eq } from "drizzle-orm";
 import {
-  accounts,
-  sessions,
-  users,
-  verificationTokens,
+  actual_users,
+  // accounts,
+  // sessions,
+  // users,
+  // verificationTokens,
 } from "~/server/db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      username: string;
+      email: string;
+      paloki?: string;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    paloki?: string;
+  }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
 export const authConfig = {
   session: {
     strategy: "jwt",
-    maxAge: 2592000,
-    updateAge: 86400,
-    generateSessionToken: () => "string",
+    maxAge: 2592000, // 30 days
+    updateAge: 86400, // 24 hours
   },
   providers: [
-    // DiscordProvider,
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -63,45 +45,67 @@ export const authConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("credentials", credentials);
-        // Check if the credentials exist and are in the correct format
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
 
-        // Cast the username and password to JSON
-        const username = credentials.username;
-        const password = credentials.password;
+        const username = credentials.username as string;
+        const password = credentials.password as string;
+        // Fetch user data from Drizzle schema
 
-        // Check if both username and password are exactly "username" and "password"
-        if (username === "username" && password === "password") {
-          // Return session details if they match
+        const the_user = await db.query.actual_users.findFirst({
+          where: eq(actual_users.username, username),
+        });
+        if (the_user) {
+          const comparison = await bcrypt.compare(password, the_user.password);
+
+          if (!the_user || !comparison) {
+            return null;
+          }
+
+          // Return user session data with email
           return {
-            id: "sample-id", // Replace with actual ID from your database or authentication logic
-            username,
-            password, // Optionally, you could exclude password from the session data
-            role: "user", // Optional: add any additional session properties
+            id: the_user.id,
+            username: the_user.username,
+            email: the_user.email, // Include email in the session
+            paloki: "the_user.paloki", // Optional additional field
           };
         }
 
-        // Return null if credentials do not match
         return null;
       },
     }),
   ],
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }),
+  // adapter: DrizzleAdapter(db, {
+  //   usersTable: users,
+  //   accountsTable: accounts,
+  //   sessionsTable: sessions,
+  //   verificationTokensTable: verificationTokens,
+  // }),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        // id: user.id,
-      },
-    }),
+    async jwt({ token, user }) {
+      if (user) {
+        // Store user data in the token
+        token.id = user.id;
+        if ("username" in user) {
+          token.username = user.username;
+        } else {
+          // Handle the case where `user` doesn't have a `username` property
+        }
+        token.email = user.email; // Add email to the token
+        token.paloki = user.paloki;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        // Attach user data from token to session
+        session.user.id = token.id as string;
+        session.user.username = token.username as string;
+        session.user.email = token.email!; // Attach email to session
+        session.user.paloki = token.paloki as string;
+      }
+      return session;
+    },
   },
 } satisfies NextAuthConfig;
