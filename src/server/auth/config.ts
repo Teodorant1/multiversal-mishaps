@@ -48,31 +48,41 @@ export const authConfig = {
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
-
+        console.log("credentials", credentials);
         const username = credentials.username as string;
         const password = credentials.password as string;
         // Fetch user data from Drizzle schema
+        console.log("username + password", username + password);
+        try {
+          console.log("1");
+          const the_user = await db.query.actual_users.findFirst({
+            where: eq(actual_users.username, username),
+          });
+          console.log("2");
 
-        const the_user = await db.query.actual_users.findFirst({
-          where: eq(actual_users.username, username),
-        });
-        if (the_user) {
-          const comparison = await bcrypt.compare(password, the_user.password);
+          if (!the_user) {
+            console.log("3");
 
-          if (!the_user || !comparison) {
             return null;
           }
+          const comparison = await bcrypt.compare(password, the_user.password);
+          console.log("4");
 
-          // Return user session data with email
+          if (!comparison) {
+            console.log("5");
+
+            return null;
+          }
           return {
             id: the_user.id,
             username: the_user.username,
-            email: the_user.email, // Include email in the session
+            email: the_user.email,
             paloki: "the_user.paloki", // Optional additional field
           };
+        } catch (error) {
+          console.error("Error in TEOS authorize:", error);
+          return null;
         }
-
-        return null;
       },
     }),
   ],
@@ -84,28 +94,47 @@ export const authConfig = {
   // }),
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        // Store user data in the token
-        token.id = user.id;
-        if ("username" in user) {
-          token.username = user.username;
-        } else {
-          // Handle the case where `user` doesn't have a `username` property
+      try {
+        console.log("jwt", token, user);
+
+        if (user) {
+          // Store user data in the token
+          token.id = user.id;
+          if ("username" in user) {
+            token.username = user.username;
+          } else {
+            // Handle the case where `user` doesn't have a `username` property
+            console.warn("User object does not have a `username` property.");
+          }
+          token.email = user.email; // Add email to the token
+          token.paloki = user.paloki;
         }
-        token.email = user.email; // Add email to the token
-        token.paloki = user.paloki;
+
+        return token;
+      } catch (error) {
+        console.error("Error in JWT callback:", error);
+        // Optionally return the token as-is in case of an error
+        return token;
       }
-      return token;
     },
     async session({ session, token }) {
-      if (token) {
-        // Attach user data from token to session
-        session.user.id = token.id as string;
-        session.user.username = token.username as string;
-        session.user.email = token.email!; // Attach email to session
-        session.user.paloki = token.paloki as string;
+      try {
+        console.log("session", session, token);
+
+        if (token) {
+          // Attach user data from token to session
+          session.user.id = token.id as string;
+          session.user.username = token.username as string;
+          session.user.email = token.email!; // Attach email to session
+          session.user.paloki = token.paloki as string;
+        }
+
+        return session;
+      } catch (error) {
+        console.error("Error in session callback:", error);
+        // Return the session object as-is in case of an error
+        return session;
       }
-      return session;
     },
   },
 } satisfies NextAuthConfig;

@@ -41,11 +41,11 @@ export default async function RootLayout({
                 {session ? (
                   <>
                     <CosmicButton href="/profile" text="Profile" />
-                    <CosmicButton href="/signout" text="Sign Out" />
+                    <CosmicButton href="/api/auth/signout" text="Sign Out" />
                   </>
                 ) : (
                   <>
-                    <CosmicButton href="/signin" text="Sign In" />
+                    <CosmicButton href="/api/auth/signin" text="Sign In" />
                     <CosmicButton href="/signup" text="Sign Up" />
                   </>
                 )}

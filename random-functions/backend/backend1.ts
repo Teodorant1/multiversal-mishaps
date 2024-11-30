@@ -11,3 +11,9 @@ export async function hashPassword(password: string): Promise<string> {
 
   return hashedPassword;
 }
+
+export async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}

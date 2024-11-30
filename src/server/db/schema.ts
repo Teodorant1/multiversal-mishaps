@@ -24,12 +24,15 @@ export const createTable = pgTableCreator(
 export const question_type = pgEnum("question_type", ["question", "situation"]);
 
 export const deck = createTable("deck", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 2000 }).notNull(),
   description: varchar("description", { length: 2000 }).notNull(),
   createdById: varchar("created_by", { length: 255 })
     .notNull()
-    .references(() => users.username),
+    .references(() => actual_users.email),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -40,12 +43,15 @@ export const deck = createTable("deck", {
 });
 
 export const question = createTable("question", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   text: varchar("text", { length: 2000 }),
   question_type: question_type("question_type").notNull(),
   createdById: varchar("created_by", { length: 255 })
     .notNull()
-    .references(() => users.username),
+    .references(() => actual_users.email),
   deck: varchar("deck", { length: 255 })
     .notNull()
     .references(() => deck.id),
@@ -60,7 +66,10 @@ export const question = createTable("question", {
 export const posts = createTable(
   "post",
   {
-    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
     name: varchar("name", { length: 256 }),
     createdById: varchar("created_by", { length: 255 })
       .notNull()
@@ -78,13 +87,13 @@ export const posts = createTable(
   }),
 );
 
-export const actual_users = createTable("user", {
+export const actual_users = createTable("actual_users", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  username: varchar("username", { length: 255 }),
-  email: varchar("email", { length: 255 }).notNull(),
+  username: varchar("username", { length: 255 }).unique(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(), // New password field
 
   image: varchar("image", { length: 255 }),
@@ -97,7 +106,7 @@ export const users = createTable("user", {
     .$defaultFn(() => crypto.randomUUID()),
   username: varchar("username", { length: 255 }),
   name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(), // New password field
 
   emailVerified: timestamp("email_verified", {

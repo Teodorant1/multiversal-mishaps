@@ -14,17 +14,46 @@ import {
 import { SpinningMolecule } from "./SpinningMolecule";
 import { SciFiLoadingBar } from "./SciFiLoadingBar";
 import { motion } from "framer-motion";
+import { api } from "~/trpc/react";
+import { signIn } from "next-auth/react";
+import { CosmicButton } from "./CosmicButton";
 
 export function SignupForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [hasSucceededRegister, sethasSucceededRegister] = useState(false);
+  const [isError, setisError] = useState(false);
+  const [ErrorText, setErrorText] = useState("");
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const make_account = api.auth.register.useMutation({
+    onSuccess: async (data) => {
+      console.log("data", data);
+      setIsLoading(false);
+      // router.push("/api/auth/signin");
+      if (data.error === false) {
+        sethasSucceededRegister(true);
+      } else if (data.error === true) {
+        setisError(true);
+        setErrorText(
+          data.error_description ?? " An unknown error has happened ",
+        );
+      }
+    },
+  });
+
+  function on_click() {
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const password = (document.getElementById("password") as HTMLInputElement)
+      .value;
+    const username = (document.getElementById("username") as HTMLInputElement)
+      .value;
+
+    make_account.mutate({
+      username: username,
+      email: email,
+      password: password,
+    });
   }
 
   return (
@@ -34,6 +63,9 @@ export function SignupForm() {
       <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-cyan-500 to-transparent" />
       <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-cyan-500 to-transparent" />
 
+      {isError === true && (
+        <div className="m-5 bg-red-700 p-5 text-white">ERROR: {ErrorText}</div>
+      )}
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl font-bold text-cyan-50">
@@ -46,7 +78,7 @@ export function SignupForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-cyan-200">
               Email
@@ -91,12 +123,25 @@ export function SignupForm() {
               autoCorrect="off"
               disabled={isLoading}
               required
-              className="border-cyan-800 bg-gray-900/50 text-cyan-50 placeholder:text-cyan-500/50 focus:border-cyan-500 focus:ring-cyan-500/20"
+              className="w-full border-cyan-800 bg-gray-900/50 text-cyan-50 placeholder:text-cyan-500/50 focus:border-cyan-500 focus:ring-cyan-500/20"
             />
+            {/* <CosmicButton
+              onClick={() => {
+                on_click();
+              }}
+              text={"Register"}
+            /> */}
           </div>
 
           <div className="flex items-center justify-between">
-            <motion.div
+            {hasSucceededRegister === true && (
+              <CosmicButton
+                className="m-5"
+                text={"CLICK HERE TO LOGIN"}
+                href={"/api/auth/signin"}
+              />
+            )}{" "}
+            {/* <motion.div
               className="relative h-32 w-48"
               animate={{
                 background: [
@@ -133,21 +178,23 @@ export function SignupForm() {
               >
                 ⌬
               </motion.div>
-            </motion.div>
+            </motion.div> */}
             {isLoading && <SciFiLoadingBar />}
           </div>
 
           <Button
             className="relative w-full overflow-hidden rounded-full bg-gradient-to-r from-violet-700 to-blue-700 text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20"
-            type="submit"
             disabled={isLoading}
+            onClick={() => {
+              on_click();
+            }}
           >
             <span className="relative">
               {isLoading ? "Initializing..." : "Create Account"}
             </span>
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 opacity-0 transition-opacity duration-300 hover:opacity-30" />
           </Button>
-        </form>
+        </div>
       </CardContent>
     </Card>
   );

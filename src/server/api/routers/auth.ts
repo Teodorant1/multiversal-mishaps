@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { hashPassword } from "random-functions/backend/backend1";
+import { hashPassword, sleep } from "random-functions/backend/backend1";
 import { z } from "zod";
 
 import {
@@ -19,38 +19,58 @@ export const authRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const existing_user = await ctx.db.query.actual_users.findFirst({
-        where: eq(actual_users.email, input.email),
-      });
+      console.log("a1");
 
-      if (existing_user) {
+      try {
+        console.log("b1");
+
+        const existing_user = await ctx.db.query.actual_users.findFirst({
+          where: eq(actual_users.email, input.email),
+        });
+        console.log("c1");
+
+        if (existing_user) {
+          console.log("d1");
+
+          return {
+            error: true,
+            error_description:
+              "Email or username is taken, please pick something else.",
+            user: null,
+          };
+        }
+        console.log("e1");
+
+        const hashedPassword = await hashPassword(input.password);
+        console.log("f1");
+
+        const user = await ctx.db
+          .insert(actual_users)
+          .values({
+            username: "input.username",
+            email: "input.email",
+            password: "hashedPassword",
+          })
+          .returning();
+        console.log("g1");
+
+        await sleep(10);
+
+        return {
+          user,
+          error: false,
+          error_description: null,
+        };
+      } catch (error) {
+        console.log("q1");
+
+        console.error("Error in register mutation:", error);
         return {
           error: true,
-          error_description:
-            "email or username is taken, please pick something else",
+          error_description: "Something went wrong. Please try again.",
           user: null,
         };
       }
-
-      const password = "my_secure_password";
-      const hashedPassword = await hashPassword(password);
-
-      const user = ctx.db
-        .insert(actual_users)
-        .values({
-          username: input.username,
-          email: input.email,
-          password: hashedPassword,
-        })
-        .returning();
-
-      const stuff_to_return = {
-        user: user,
-        error: false,
-        error_description: null,
-      };
-
-      return stuff_to_return;
     }),
 
   hello: publicProcedure
