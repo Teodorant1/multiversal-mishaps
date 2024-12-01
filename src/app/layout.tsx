@@ -40,7 +40,10 @@ export default async function RootLayout({
               <div className="flex space-x-4">
                 {session ? (
                   <>
-                    <CosmicButton href="/profile" text="Profile" />
+                    <CosmicButton
+                      href="/profile"
+                      text={"Profile - " + session.user.username}
+                    />
                     <CosmicButton href="/api/auth/signout" text="Sign Out" />
                   </>
                 ) : (

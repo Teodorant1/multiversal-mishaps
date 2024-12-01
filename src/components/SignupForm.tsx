@@ -13,9 +13,10 @@ import {
 } from "~/components/ui/card";
 import { SpinningMolecule } from "./SpinningMolecule";
 import { SciFiLoadingBar } from "./SciFiLoadingBar";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
+// import { signIn } from "next-auth/react";
 import { api } from "~/trpc/react";
-import { signIn } from "next-auth/react";
+
 import { CosmicButton } from "./CosmicButton";
 
 export function SignupForm() {

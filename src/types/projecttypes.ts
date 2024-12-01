@@ -14,3 +14,10 @@ export type AnimatedTextProps = {
 export interface ChaoticTitleProps {
   title: string; // Define a prop for the title
 }
+
+export type QuestionType = "Question" | "Situation";
+export type Deck = {
+  id: string;
+  name: string;
+  questions: { type: QuestionType; content: string }[];
+};

@@ -1,25 +1,26 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export function SpinningMolecule() {
   return (
     <div className="relative h-24 w-24">
       <motion.div
         className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-700 to-blue-700"
-        animate={{ 
+        animate={{
           rotate: 360,
           scale: [1, 1.2, 1],
           background: [
             "linear-gradient(to right, rgb(109, 40, 217), rgb(29, 78, 216))",
             "linear-gradient(to right, rgb(29, 78, 216), rgb(109, 40, 217))",
-            "linear-gradient(to right, rgb(109, 40, 217), rgb(29, 78, 216))"
-          ]
+            "linear-gradient(to right, rgb(109, 40, 217), rgb(29, 78, 216))",
+          ],
         }}
-        transition={{ 
+        transition={{
           rotate: { duration: 10, repeat: Infinity, ease: "linear" },
           scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-          background: { duration: 3, repeat: Infinity, ease: "linear" }
+          background: { duration: 3, repeat: Infinity, ease: "linear" },
         }}
       />
       <motion.div
@@ -45,6 +46,5 @@ export function SpinningMolecule() {
         ))}
       </motion.div>
     </div>
-  )
+  );
 }
-

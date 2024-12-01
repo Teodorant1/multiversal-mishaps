@@ -5,7 +5,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { actual_users } from "~/server/db/schema";
 
-export const authRouter = createTRPCRouter({
+export const gameRouter = createTRPCRouter({
   register: publicProcedure
     .input(
       z.object({

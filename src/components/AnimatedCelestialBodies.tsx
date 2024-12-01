@@ -33,7 +33,6 @@ function CelestialBody({
 }) {
   const getGradientColor = (
     type: "planet" | "sun" | "star" | "mysterious" | "pyramid",
-    subType?: string,
   ): string => {
     if (type === "sun") {
       const colors = [
@@ -88,7 +87,7 @@ function CelestialBody({
             : rng() * 60 + 60,
       delay: rng() * -40,
       yOffset: rng() * 80,
-      color: getGradientColor(type, subType),
+      color: getGradientColor(type),
     });
   }, [type, subType]);
 
