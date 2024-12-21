@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { type Deck, type QuestionType } from "~/types/projecttypes";
 import { CosmicButton } from "./CosmicButton";
@@ -19,12 +19,11 @@ export default function DeckManagement() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
 
-  const [decks, setDecks] = useState<Deck[]>([]);
   const [newDeckName, setNewDeckName] = useState("");
   const [newQuestion, setNewQuestion] = useState("");
   const [description, setdescription] = useState("");
   const [questionType, setQuestionType] = useState<QuestionType>("Question");
-  const [selectedDeck, setSelectedDeck] = useState<Deck | null>(null);
+  // const [selectedDeck, setSelectedDeck] = useState<Deck | null>(null);
   const [my_selectedDeck, set_my_selectedDeck] = useState<combined_type | null>(
     null,
   );
@@ -65,6 +64,7 @@ export default function DeckManagement() {
 
       if (data.error === false) {
         await mydecks.refetch();
+        await selected_deck.refetch();
       } else {
         setIsError(true);
         setErrorText(
@@ -239,7 +239,7 @@ export default function DeckManagement() {
           <div className="my-2">
             <CosmicButton
               onClick={() => {
-                handle_make_deck(false);
+                handle_make_deck(true);
               }}
               text={"Create Public Deck"}
             />
@@ -252,28 +252,17 @@ export default function DeckManagement() {
             placeholder="Enter deck description"
             className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <input
-            type="text"
-            value={newDeckName}
-            onChange={(e) => setNewDeckName(e.target.value)}
-            placeholder="Enter deck name"
-            className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="text"
-            value={newDeckName}
-            onChange={(e) => setNewDeckName(e.target.value)}
-            placeholder="Enter deck name"
-            className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* <motion.button
+
+          <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleCreateDeck}
+            onClick={() => {
+              console.log(" ");
+            }}
             className="w-full rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700"
           >
             Create Deck
-          </motion.button> */}
+          </motion.button>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 20 }}
@@ -283,20 +272,25 @@ export default function DeckManagement() {
         >
           <h2 className="mb-4 text-2xl font-semibold">Add Question</h2>
           <select
-            value={selectedDeck?.id ?? ""}
+            value={selected_deck.data?.id ?? ""}
             onChange={(e) =>
-              setSelectedDeck(
-                decks.find((deck) => deck.id === e.target.value) ?? null,
+              set_my_selectedDeck(
+                mydecks.data!.find((deck) => deck.id === e.target.value) ??
+                  null,
               )
             }
             className="mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a deck</option>
-            {decks.map((deck) => (
-              <option key={deck.id} value={deck.id}>
-                {deck.name}
-              </option>
-            ))}
+            {mydecks.data && (
+              <>
+                {mydecks.data?.map((deck) => (
+                  <option key={deck.id} value={deck.id}>
+                    {deck.name}
+                  </option>
+                ))}
+              </>
+            )}
           </select>
           <select
             value={questionType}

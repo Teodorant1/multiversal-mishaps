@@ -173,6 +173,8 @@ export const deckRouter = createTRPCRouter({
           })
           .returning();
 
+        console.log("new deck", new_deck);
+
         return {
           new_deck: new_deck.at(0),
           error: false,

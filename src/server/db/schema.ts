@@ -31,13 +31,13 @@ export const deck = createTable("deck", {
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 2000 }).notNull(),
   description: varchar("description", { length: 2000 }).notNull(),
-  author: varchar("created_by", { length: 255 })
+  author: varchar("author", { length: 255 })
     .notNull()
     .references(() => actual_users.username, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  createdById: varchar("created_by", { length: 255 })
+  createdById: varchar("createdById", { length: 255 })
     .notNull()
     .references(() => actual_users.id, {
       onDelete: "cascade",
