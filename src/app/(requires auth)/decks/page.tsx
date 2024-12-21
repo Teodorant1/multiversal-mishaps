@@ -1,3 +1,5 @@
+"use client";
+
 import DeckManagement from "~/components/DeckManagement";
 
 export default function DecksPage() {

@@ -1,123 +1,9 @@
 {
-  "id": "e814a010-2a95-4863-a77a-c25603760c81",
+  "id": "d627bfd5-f2f5-4261-8410-dc1e604aa344",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.multiversal-mishaps_account": {
-      "name": "multiversal-mishaps_account",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider": {
-          "name": "provider",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider_account_id": {
-          "name": "provider_account_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "refresh_token": {
-          "name": "refresh_token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "access_token": {
-          "name": "access_token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "token_type": {
-          "name": "token_type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "scope": {
-          "name": "scope",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_token": {
-          "name": "id_token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "session_state": {
-          "name": "session_state",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "account_user_id_idx": {
-          "name": "account_user_id_idx",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "multiversal-mishaps_account_user_id_multiversal-mishaps_user_id_fk": {
-          "name": "multiversal-mishaps_account_user_id_multiversal-mishaps_user_id_fk",
-          "tableFrom": "multiversal-mishaps_account",
-          "tableTo": "multiversal-mishaps_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "multiversal-mishaps_account_provider_provider_account_id_pk": {
-          "name": "multiversal-mishaps_account_provider_provider_account_id_pk",
-          "columns": [
-            "provider",
-            "provider_account_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
-    },
     "public.multiversal-mishaps_actual_users": {
       "name": "multiversal-mishaps_actual_users",
       "schema": "",
@@ -132,7 +18,7 @@
           "name": "username",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "email": {
           "name": "email",
@@ -224,25 +110,38 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "multiversal-mishaps_deck_created_by_multiversal-mishaps_actual_users_email_fk": {
-          "name": "multiversal-mishaps_deck_created_by_multiversal-mishaps_actual_users_email_fk",
+        "multiversal-mishaps_deck_created_by_multiversal-mishaps_actual_users_username_fk": {
+          "name": "multiversal-mishaps_deck_created_by_multiversal-mishaps_actual_users_username_fk",
           "tableFrom": "multiversal-mishaps_deck",
           "tableTo": "multiversal-mishaps_actual_users",
           "columnsFrom": [
             "created_by"
           ],
           "columnsTo": [
-            "email"
+            "username"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "multiversal-mishaps_deck_created_by_multiversal-mishaps_actual_users_id_fk": {
+          "name": "multiversal-mishaps_deck_created_by_multiversal-mishaps_actual_users_id_fk",
+          "tableFrom": "multiversal-mishaps_deck",
+          "tableTo": "multiversal-mishaps_actual_users",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.multiversal-mishaps_post": {
-      "name": "multiversal-mishaps_post",
+    "public.multiversal-mishaps_match": {
+      "name": "multiversal-mishaps_match",
       "schema": "",
       "columns": {
         "id": {
@@ -253,75 +152,120 @@
         },
         "name": {
           "name": "name",
-          "type": "varchar(256)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "created_by": {
-          "name": "created_by",
+        "password": {
+          "name": "password",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "all_questions": {
+          "name": "all_questions",
+          "type": "varchar(2000)[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "question": {
+          "name": "question",
+          "type": "varchar(2000)",
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
+        "deck": {
+          "name": "deck",
+          "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
-      "indexes": {
-        "created_by_idx": {
-          "name": "created_by_idx",
-          "columns": [
-            {
-              "expression": "created_by",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "name_idx": {
-          "name": "name_idx",
-          "columns": [
-            {
-              "expression": "name",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
-        "multiversal-mishaps_post_created_by_multiversal-mishaps_user_id_fk": {
-          "name": "multiversal-mishaps_post_created_by_multiversal-mishaps_user_id_fk",
-          "tableFrom": "multiversal-mishaps_post",
-          "tableTo": "multiversal-mishaps_user",
+        "multiversal-mishaps_match_deck_multiversal-mishaps_deck_id_fk": {
+          "name": "multiversal-mishaps_match_deck_multiversal-mishaps_deck_id_fk",
+          "tableFrom": "multiversal-mishaps_match",
+          "tableTo": "multiversal-mishaps_deck",
           "columnsFrom": [
-            "created_by"
+            "deck"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "multiversal-mishaps_match_name_unique": {
+          "name": "multiversal-mishaps_match_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      }
+    },
+    "public.multiversal-mishaps_player": {
+      "name": "multiversal-mishaps_player",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hashed_password": {
+          "name": "hashed_password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "score": {
+          "name": "score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "answer": {
+          "name": "answer",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "match": {
+          "name": "match",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "multiversal-mishaps_player_match_multiversal-mishaps_match_id_fk": {
+          "name": "multiversal-mishaps_player_match_multiversal-mishaps_match_id_fk",
+          "tableFrom": "multiversal-mishaps_player",
+          "tableTo": "multiversal-mishaps_match",
+          "columnsFrom": [
+            "match"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -343,10 +287,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "question_type": {
-          "name": "question_type",
-          "type": "question_type",
-          "typeSchema": "public",
+        "isSituation": {
+          "name": "isSituation",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true
         },
@@ -378,18 +321,18 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "multiversal-mishaps_question_created_by_multiversal-mishaps_actual_users_email_fk": {
-          "name": "multiversal-mishaps_question_created_by_multiversal-mishaps_actual_users_email_fk",
+        "multiversal-mishaps_question_created_by_multiversal-mishaps_actual_users_id_fk": {
+          "name": "multiversal-mishaps_question_created_by_multiversal-mishaps_actual_users_id_fk",
           "tableFrom": "multiversal-mishaps_question",
           "tableTo": "multiversal-mishaps_actual_users",
           "columnsFrom": [
             "created_by"
           ],
           "columnsTo": [
-            "email"
+            "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "multiversal-mishaps_question_deck_multiversal-mishaps_deck_id_fk": {
           "name": "multiversal-mishaps_question_deck_multiversal-mishaps_deck_id_fk",
@@ -401,166 +344,11 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.multiversal-mishaps_session": {
-      "name": "multiversal-mishaps_session",
-      "schema": "",
-      "columns": {
-        "session_token": {
-          "name": "session_token",
-          "type": "varchar(255)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "expires": {
-          "name": "expires",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "session_user_id_idx": {
-          "name": "session_user_id_idx",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "multiversal-mishaps_session_user_id_multiversal-mishaps_user_id_fk": {
-          "name": "multiversal-mishaps_session_user_id_multiversal-mishaps_user_id_fk",
-          "tableFrom": "multiversal-mishaps_session",
-          "tableTo": "multiversal-mishaps_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "public.multiversal-mishaps_user": {
-      "name": "multiversal-mishaps_user",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(255)",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "username": {
-          "name": "username",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "password": {
-          "name": "password",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email_verified": {
-          "name": "email_verified",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "image": {
-          "name": "image",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "multiversal-mishaps_user_email_unique": {
-          "name": "multiversal-mishaps_user_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      }
-    },
-    "public.multiversal-mishaps_verification_token": {
-      "name": "multiversal-mishaps_verification_token",
-      "schema": "",
-      "columns": {
-        "identifier": {
-          "name": "identifier",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "token": {
-          "name": "token",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "expires": {
-          "name": "expires",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "multiversal-mishaps_verification_token_identifier_token_pk": {
-          "name": "multiversal-mishaps_verification_token_identifier_token_pk",
-          "columns": [
-            "identifier",
-            "token"
-          ]
-        }
-      },
       "uniqueConstraints": {}
     }
   },

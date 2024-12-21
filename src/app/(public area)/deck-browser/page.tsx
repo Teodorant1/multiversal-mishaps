@@ -38,7 +38,7 @@ export default function DeckBrowserPage() {
   const [selectedDeckIndex, setSelectedDeckIndex] = useState(0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900 p-8">
+    <div className="min-h-screen">
       <h1 className="mb-8 text-center text-4xl font-bold text-cyan-300">
         Deck Browser
       </h1>

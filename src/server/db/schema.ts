@@ -6,7 +6,6 @@ import {
   // integer,
   pgEnum,
   pgTableCreator,
-  text,
   // primaryKey,
   // text,
   timestamp,
@@ -32,9 +31,18 @@ export const deck = createTable("deck", {
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 2000 }).notNull(),
   description: varchar("description", { length: 2000 }).notNull(),
+  author: varchar("created_by", { length: 255 })
+    .notNull()
+    .references(() => actual_users.username, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   createdById: varchar("created_by", { length: 255 })
     .notNull()
-    .references(() => actual_users.email),
+    .references(() => actual_users.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -43,6 +51,10 @@ export const deck = createTable("deck", {
   ),
   isPublic: boolean("isPublic").default(false),
 });
+
+export type deck_type = typeof deck.$inferInsert;
+export type question_type = typeof question.$inferInsert;
+export type combined_type = deck_type & { questions: question_type[] };
 
 export const question = createTable("question", {
   id: varchar("id", { length: 255 })
@@ -54,10 +66,13 @@ export const question = createTable("question", {
   isSituation: boolean("isSituation").notNull(),
   createdById: varchar("created_by", { length: 255 })
     .notNull()
-    .references(() => actual_users.email),
+    .references(() => actual_users.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   deck: varchar("deck", { length: 255 })
     .notNull()
-    .references(() => deck.id),
+    .references(() => deck.id, { onDelete: "cascade", onUpdate: "cascade" }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -83,13 +98,19 @@ export const match = createTable("match", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: varchar("username", { length: 255 }).unique(),
+  name: varchar("name", { length: 255 }).unique(),
+  current_judge: varchar("name", { length: 255 }),
   password: varchar("password", { length: 255 }), // New password field
-  all_questions: text("all_questions").notNull(),
-  question: varchar("question", { length: 255 }).notNull(), // New password field
+  // hold all of the questions in one array
+  all_questions: varchar("all_questions", { length: 2000 })
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+
+  question: varchar("question", { length: 2000 }).notNull(), // New password field
   deck: varchar("deck", { length: 255 })
     .notNull()
-    .references(() => deck.id),
+    .references(() => deck.id, { onDelete: "cascade", onUpdate: "cascade" }),
 });
 
 export const player = createTable("player", {
@@ -103,7 +124,7 @@ export const player = createTable("player", {
   answer: varchar("answer", { length: 255 }).default(""), // New password field
   match: varchar("match", { length: 255 })
     .notNull()
-    .references(() => match.id),
+    .references(() => match.id, { onDelete: "cascade", onUpdate: "cascade" }),
 });
 // Define the relations between the match and player tables
 export const matchRelations = relations(match, ({ many }) => ({
@@ -111,7 +132,20 @@ export const matchRelations = relations(match, ({ many }) => ({
 }));
 
 export const playerRelations = relations(player, ({ one }) => ({
-  match: one(match), // A player belongs to one match
+  match: one(match, {
+    fields: [player.match],
+    references: [match.id],
+  }), // A player belongs to one match
+}));
+export const deckRelations = relations(deck, ({ many }) => ({
+  questions: many(question),
+}));
+
+export const questionRelations = relations(question, ({ one }) => ({
+  deck: one(deck, {
+    fields: [question.deck],
+    references: [deck.id],
+  }),
 }));
 
 // export const usersRelations = relations(users, ({ many }) => ({

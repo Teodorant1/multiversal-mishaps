@@ -48,28 +48,28 @@ export const authConfig = {
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
-        console.log("credentials", credentials);
+        //    console.log("credentials", credentials);
         const username = credentials.username as string;
         const password = credentials.password as string;
         // Fetch user data from Drizzle schema
-        console.log("username + password", username + password);
+        //    console.log("username + password", username + password);
         try {
-          console.log("1");
+          //     console.log("1");
           const the_user = await db.query.actual_users.findFirst({
             where: eq(actual_users.username, username),
           });
-          console.log("2");
+          //    console.log("2");
 
           if (!the_user) {
-            console.log("3");
+            //   console.log("3");
 
             return null;
           }
           const comparison = await bcrypt.compare(password, the_user.password);
-          console.log("4");
+          //   console.log("4");
 
           if (!comparison) {
-            console.log("5");
+            //       console.log("5");
 
             return null;
           }
@@ -95,7 +95,7 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       try {
-        console.log("jwt", token, user);
+        //    console.log("jwt", token, user);
 
         if (user) {
           // Store user data in the token
@@ -119,7 +119,7 @@ export const authConfig = {
     },
     async session({ session, token }) {
       try {
-        console.log("session", session, token);
+        //  console.log("session", session, token);
 
         if (token) {
           // Attach user data from token to session

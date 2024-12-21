@@ -21,3 +21,9 @@ export type Deck = {
   name: string;
   questions: { type: QuestionType; content: string }[];
 };
+
+export interface ErrorPopupProps {
+  message: string;
+  duration?: number;
+  onDismiss?: () => void;
+}
