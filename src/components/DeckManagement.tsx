@@ -5,11 +5,6 @@ import { motion } from "framer-motion";
 import { type Deck, type QuestionType } from "~/types/projecttypes";
 import { CosmicButton } from "./CosmicButton";
 import { api } from "~/trpc/react";
-import {
-  type deck_type,
-  type question_type,
-  type combined_type,
-} from "~/server/db/schema";
 import { DeckQuestionsList } from "./DeckQuestionsList";
 import { ErrorPopup } from "./ErrorPopup";
 
@@ -18,14 +13,13 @@ export default function DeckManagement() {
   const [errorText, setErrorText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [ShowDecks, setShowDecks] = useState(true);
+
+  const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
+  const [typedName, setTypedName] = useState("");
   const [newDeckName, setNewDeckName] = useState("");
   const [newQuestion, setNewQuestion] = useState("");
   const [description, setdescription] = useState("");
   const [questionType, setQuestionType] = useState<QuestionType>("Question");
-  // const [selectedDeck, setSelectedDeck] = useState<Deck | null>(null);
-  // const [my_selectedDeck, set_my_selectedDeck] = useState<combined_type | null>(
-  //   null,
-  // );
   const [current_selectedDeck_id, set_current_selectedDeck_id] =
     useState<string>("null");
 
@@ -33,7 +27,9 @@ export default function DeckManagement() {
   const selected_deck = api.deck.get_deck_by_id.useQuery({
     id: current_selectedDeck_id,
   });
-
+  function isNameMatched(deckname: string) {
+    return deckname === typedName;
+  }
   function Toggle_Show_decks() {
     setShowDecks(!ShowDecks);
   }
@@ -45,6 +41,7 @@ export default function DeckManagement() {
 
       if (data.error === false) {
         await mydecks.refetch();
+        await selected_deck.refetch();
       } else {
         setIsError(true);
         setErrorText(
@@ -94,6 +91,7 @@ export default function DeckManagement() {
       setIsLoading(false);
 
       if (data.error === false) {
+        set_current_selectedDeck_id("");
         await mydecks.refetch();
       } else {
         setIsError(true);
@@ -163,7 +161,6 @@ export default function DeckManagement() {
       id: id,
     });
   };
-
   function get_is_SITUATION_figured_out(input: string) {
     if (input === "Question") {
       return false;
@@ -365,17 +362,68 @@ export default function DeckManagement() {
                 <motion.div
                   key={deck.id}
                   whileHover={{ scale: 1.05 }}
-                  className="rounded-md bg-gray-700 p-4"
+                  className="flex h-full flex-col overflow-hidden break-words rounded-md bg-gray-700 p-4"
                   onClick={() => {
                     console.log("deck", deck);
                     set_current_selectedDeck_id(deck.id);
                     // set_my_selectedDeck(deck);
                   }}
                 >
-                  <h3 className="mb-2 text-xl font-semibold">
-                    {deck.name} - {deck.isPublic ? "Public" : "Private"}
-                  </h3>
-                  <p>{deck.questions.length} questions</p>
+                  <div>
+                    <h3 className="mb-2 text-xl font-semibold">
+                      {deck.name} - {deck.isPublic ? "Public" : "Private"}
+                    </h3>
+                    <p>{deck.questions.length} questions</p>
+                  </div>
+
+                  <div className="mt-auto">
+                    <div className="my-2">
+                      <CosmicButton
+                        onClick={() => {
+                          handle_toggle_deck(deck.id);
+                        }}
+                        text={"Toggle Public/Private"}
+                      />
+                    </div>
+                    {deckToDelete === deck.id ? (
+                      <div className="flex flex-col items-start">
+                        <input
+                          type="text"
+                          placeholder={`Type "${deck.name}" to confirm`}
+                          value={typedName}
+                          onChange={(e) => setTypedName(e.target.value)}
+                          className="mb-2 rounded border bg-black p-1 text-white"
+                        />
+                        <button
+                          className={`rounded-sm p-2 text-white ${
+                            isNameMatched(deck.name)
+                              ? "bg-red-700 hover:bg-red-800"
+                              : "cursor-not-allowed bg-gray-400"
+                          }`}
+                          onClick={() =>
+                            isNameMatched(deck.name) &&
+                            handle_delete_deck(deck.id)
+                          }
+                          disabled={!isNameMatched(deck.name)}
+                        >
+                          Confirm Delete
+                        </button>
+                        <button
+                          className="mt-2 rounded-sm bg-gray-300 p-2 text-black hover:bg-gray-400"
+                          onClick={() => setDeckToDelete(null)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className="flex rounded-sm bg-red-700 p-2 text-white hover:bg-red-800"
+                        onClick={() => setDeckToDelete(deck.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -388,6 +436,7 @@ export default function DeckManagement() {
           <DeckQuestionsList
             deck={selected_deck.data}
             all_questions={selected_deck.data.questions}
+            handle_delete_question={handle_delete_question}
           />
         </div>
       )}

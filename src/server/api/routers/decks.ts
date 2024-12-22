@@ -21,21 +21,36 @@ export const deckRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const toggled_deck = await ctx.db
-          .update(deck)
-          .set({
-            isPublic: !deck.isPublic,
-          })
-          .where(
-            and(
-              eq(deck.id, input.id),
-              eq(deck.createdById, ctx.session.user.id),
-            ),
-          )
-          .returning();
+        const original_deck = await ctx.db.query.deck.findFirst({
+          where: and(
+            eq(deck.id, input.id),
+            eq(deck.createdById, ctx.session.user.id),
+          ),
+        });
+        if (original_deck) {
+          const toggled_deck = await ctx.db
+            .update(deck)
+            .set({
+              isPublic: !original_deck.isPublic,
+            })
+            .where(
+              and(
+                eq(deck.id, input.id),
+                eq(deck.createdById, ctx.session.user.id),
+              ),
+            )
+            .returning();
 
+          console.log("changed value", toggled_deck.at(0));
+
+          return {
+            toggled_deck: toggled_deck.at(0),
+            error: false,
+            error_description: null,
+          };
+        }
         return {
-          toggled_deck: toggled_deck.at(0),
+          toggled_deck: null,
           error: false,
           error_description: null,
         };
