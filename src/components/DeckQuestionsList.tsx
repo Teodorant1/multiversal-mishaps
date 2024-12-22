@@ -38,6 +38,7 @@ export function DeckQuestionsList({
           <CardTitle className="text-2xl font-bold text-cyan-300">
             {deck.name}
           </CardTitle>
+
           <Badge
             variant="outline"
             className="border-cyan-700 bg-cyan-900/50 text-cyan-300"

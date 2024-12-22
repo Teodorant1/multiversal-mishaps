@@ -26,7 +26,7 @@ export default async function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
-          <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
+          <div className="relative min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             {session && (
               <>
                 <AnimatedCelestialBodies />
@@ -68,7 +68,7 @@ export default async function RootLayout({
               </>
             )}
             <div className="space-x-4">
-              <div className="relative z-40 h-screen w-screen items-center justify-center text-white">
+              <div className="relative z-40 min-h-screen w-screen items-center justify-center text-white">
                 {session ? (
                   <TRPCReactProvider>{children}</TRPCReactProvider>
                 ) : (

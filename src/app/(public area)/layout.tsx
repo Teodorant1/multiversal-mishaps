@@ -25,7 +25,7 @@ export default async function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
-          <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
+          <div className="relative min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             <AnimatedCelestialBodies />
             <nav className="relative z-30 flex items-center justify-between px-4 py-4">
               {/* Left-aligned navigation links */}
@@ -56,7 +56,7 @@ export default async function RootLayout({
               </div>
             </nav>
 
-            <main className="relative z-40">
+            <main className="relative z-40 min-h-screen">
               <TRPCReactProvider>{children}</TRPCReactProvider>
             </main>
           </div>

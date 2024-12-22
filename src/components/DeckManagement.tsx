@@ -17,16 +17,15 @@ export default function DeckManagement() {
   const [isError, setIsError] = useState<boolean | null>(false);
   const [errorText, setErrorText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isPublic, setIsPublic] = useState(false);
-
+  const [ShowDecks, setShowDecks] = useState(true);
   const [newDeckName, setNewDeckName] = useState("");
   const [newQuestion, setNewQuestion] = useState("");
   const [description, setdescription] = useState("");
   const [questionType, setQuestionType] = useState<QuestionType>("Question");
   // const [selectedDeck, setSelectedDeck] = useState<Deck | null>(null);
-  const [my_selectedDeck, set_my_selectedDeck] = useState<combined_type | null>(
-    null,
-  );
+  // const [my_selectedDeck, set_my_selectedDeck] = useState<combined_type | null>(
+  //   null,
+  // );
   const [current_selectedDeck_id, set_current_selectedDeck_id] =
     useState<string>("null");
 
@@ -34,6 +33,10 @@ export default function DeckManagement() {
   const selected_deck = api.deck.get_deck_by_id.useQuery({
     id: current_selectedDeck_id,
   });
+
+  function Toggle_Show_decks() {
+    setShowDecks(!ShowDecks);
+  }
 
   const toggle_deck_visibility = api.deck.toggle_deck_visibility.useMutation({
     onSuccess: async (data) => {
@@ -61,6 +64,8 @@ export default function DeckManagement() {
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
+      setNewDeckName("");
+      setdescription("");
 
       if (data.error === false) {
         await mydecks.refetch();
@@ -112,7 +117,10 @@ export default function DeckManagement() {
       setNewQuestion("");
 
       if (data.error === false) {
+        setNewDeckName("");
+        setdescription("");
         await selected_deck.refetch();
+        await mydecks.refetch();
       } else {
         setIsError(true);
         setErrorText(
@@ -253,7 +261,7 @@ export default function DeckManagement() {
             className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => {
@@ -262,7 +270,7 @@ export default function DeckManagement() {
             className="w-full rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700"
           >
             Create Deck
-          </motion.button>
+          </motion.button> */}
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 20 }}
@@ -273,19 +281,23 @@ export default function DeckManagement() {
           <h2 className="mb-4 text-2xl font-semibold">Add Question</h2>
           <select
             value={selected_deck.data?.id ?? ""}
-            onChange={(e) =>
-              set_my_selectedDeck(
-                mydecks.data!.find((deck) => deck.id === e.target.value) ??
-                  null,
-              )
-            }
+            onChange={(e) => {
+              console.log("printing E", e.target.value);
+              set_current_selectedDeck_id(e.target.value);
+            }}
             className="mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a deck</option>
             {mydecks.data && (
               <>
                 {mydecks.data?.map((deck) => (
-                  <option key={deck.id} value={deck.id}>
+                  <option
+                    key={deck.id}
+                    value={deck.id}
+                    onClick={() => {
+                      console.log(deck);
+                    }}
+                  >
                     {deck.name}
                   </option>
                 ))}
@@ -326,15 +338,28 @@ export default function DeckManagement() {
           </motion.button> */}
         </motion.div>
       </div>
-      {mydecks.data && mydecks.data.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8 rounded-lg bg-gray-800 p-6"
-        >
-          <>
+
+      {/* <div className="c m-2 p-5"></div> */}
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="mt-8 rounded-lg bg-gray-800 p-6"
+      >
+        <>
+          <div className="m-2 flex p-2">
             <h2 className="mb-4 text-2xl font-semibold">Your Decks</h2>
+            <div className="mx-5">
+              <CosmicButton
+                onClick={() => {
+                  Toggle_Show_decks();
+                }}
+                text={"Toggle Decklist visibility"}
+              />
+            </div>
+          </div>
+          {ShowDecks === true && mydecks.data && mydecks.data.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               {mydecks.data.map((deck) => (
                 <motion.div
@@ -342,20 +367,28 @@ export default function DeckManagement() {
                   whileHover={{ scale: 1.05 }}
                   className="rounded-md bg-gray-700 p-4"
                   onClick={() => {
-                    set_my_selectedDeck(deck);
+                    console.log("deck", deck);
+                    set_current_selectedDeck_id(deck.id);
+                    // set_my_selectedDeck(deck);
                   }}
                 >
-                  <h3 className="mb-2 text-xl font-semibold">{deck.name}</h3>
+                  <h3 className="mb-2 text-xl font-semibold">
+                    {deck.name} - {deck.isPublic ? "Public" : "Private"}
+                  </h3>
                   <p>{deck.questions.length} questions</p>
                 </motion.div>
               ))}
             </div>
-          </>
-        </motion.div>
-      )}
-      {my_selectedDeck && (
-        <div className="relative z-10 mt-2">
-          <DeckQuestionsList deck={my_selectedDeck} all_questions={[]} />
+          )}
+        </>
+      </motion.div>
+
+      {selected_deck.data && (
+        <div className="z-10 mt-2">
+          <DeckQuestionsList
+            deck={selected_deck.data}
+            all_questions={selected_deck.data.questions}
+          />
         </div>
       )}
     </div>
