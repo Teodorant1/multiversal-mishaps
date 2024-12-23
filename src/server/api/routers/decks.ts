@@ -261,7 +261,7 @@ export const deckRouter = createTRPCRouter({
         };
       }
     }),
-  register: protectedProcedure
+  register: publicProcedure
     .input(
       z.object({
         username: z.string(),
