@@ -1,7 +1,8 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, gte, lte } from "drizzle-orm";
 import {
   hashPassword,
   questions,
+  situations,
   sleep,
 } from "random-functions/backend/backend1";
 import { z } from "zod";
@@ -41,7 +42,7 @@ export const deckRouter = createTRPCRouter({
             )
             .returning();
 
-          console.log("changed value", toggled_deck.at(0));
+          // console.log("changed value", toggled_deck.at(0));
 
           return {
             toggled_deck: toggled_deck.at(0),
@@ -70,17 +71,33 @@ export const deckRouter = createTRPCRouter({
       with: { questions: true },
     });
 
-    console.log("mydecks", my_decks);
+    // console.log("mydecks", my_decks);
 
     return my_decks ?? [];
   }),
-  fetch_public_decks: publicProcedure.query(async ({ ctx }) => {
-    const my_decks = await ctx.db.query.deck.findMany({
-      where: and(eq(deck.isPublic, true), eq(deck.isPublic, !false)),
-      with: { questions: true },
-    });
-    return my_decks;
-  }),
+  fetch_public_decks: publicProcedure
+    .input(
+      z.object({
+        from: z.date(),
+        to: z.date(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      if (input.from && input.to) {
+        const public_decks = await ctx.db.query.deck.findMany({
+          where: and(
+            eq(deck.isPublic, true),
+            gte(deck.updatedAt, input.from),
+            lte(deck.updatedAt, input.to),
+          ),
+          with: { questions: true },
+        });
+        console.log("public_decks", public_decks);
+
+        return public_decks;
+      }
+      return [];
+    }),
 
   get_deck_by_id: protectedProcedure
     .input(
@@ -94,6 +111,19 @@ export const deckRouter = createTRPCRouter({
           eq(deck.id, input.id),
           eq(deck.createdById, ctx.session.user.id),
         ),
+        with: { questions: true },
+      });
+      return exact_deck ?? null;
+    }),
+  get_public_deck_by_id: publicProcedure
+    .input(
+      z.object({
+        id: z.string().max(255, "id must be at most 255 characters"),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const exact_deck = await ctx.db.query.deck.findFirst({
+        where: and(eq(deck.id, input.id), eq(deck.isPublic, true)),
         with: { questions: true },
       });
       return exact_deck ?? null;
@@ -188,7 +218,7 @@ export const deckRouter = createTRPCRouter({
           })
           .returning();
 
-        console.log("new deck", new_deck);
+        // console.log("new deck", new_deck);
 
         return {
           new_deck: new_deck.at(0),
@@ -240,19 +270,12 @@ export const deckRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log("a1");
-
       try {
-        console.log("b1");
-
         const existing_user = await ctx.db.query.actual_users.findFirst({
           where: eq(actual_users.email, input.email),
         });
-        console.log("c1");
 
         if (existing_user) {
-          console.log("d1");
-
           return {
             error: true,
             error_description:
@@ -260,10 +283,8 @@ export const deckRouter = createTRPCRouter({
             user: null,
           };
         }
-        console.log("e1");
 
         const hashedPassword = await hashPassword(input.password);
-        console.log("f1");
 
         const user = await ctx.db
           .insert(actual_users)
@@ -273,7 +294,6 @@ export const deckRouter = createTRPCRouter({
             password: hashedPassword,
           })
           .returning();
-        console.log("g1");
 
         await sleep(10);
 
@@ -283,8 +303,6 @@ export const deckRouter = createTRPCRouter({
           error_description: null,
         };
       } catch (error) {
-        console.log("q1");
-
         console.error("Error in register mutation:", error);
         return {
           error: true,
@@ -293,33 +311,4 @@ export const deckRouter = createTRPCRouter({
         };
       }
     }),
-
-  //   hello: publicProcedure
-  //     .input(z.object({ text: z.string() }))
-  //     .query(({ input }) => {
-  //       return {
-  //         greeting: `Hello ${input.text}`,
-  //       };
-  //     }),
-
-  //   create: protectedProcedure
-  //     .input(z.object({ name: z.string().min(1) }))
-  //     .mutation(async ({ ctx, input }) => {
-  //       await ctx.db.insert(posts).values({
-  //         name: input.name,
-  //         createdById: ctx.session.user.id,
-  //       });
-  //     }),
-
-  //   getLatest: protectedProcedure.query(async ({ ctx }) => {
-  //     const post = await ctx.db.query.posts.findFirst({
-  //       orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-  //     });
-
-  //     return post ?? null;
-  //   }),
-
-  //   getSecretMessage: protectedProcedure.query(() => {
-  //     return "you can now see this secret message!";
-  //   }),
 });

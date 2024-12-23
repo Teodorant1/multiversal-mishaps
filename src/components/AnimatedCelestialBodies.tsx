@@ -3,6 +3,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { type RandomProps } from "~/types/projecttypes";
 
 function createRng() {
   let seed = 1234;
@@ -13,14 +14,6 @@ function createRng() {
 }
 
 const rng = createRng();
-
-interface RandomProps {
-  size: number;
-  duration: number;
-  delay: number;
-  yOffset: number;
-  color: string;
-}
 
 function CelestialBody({
   type,

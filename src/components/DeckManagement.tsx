@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { type Deck, type QuestionType } from "~/types/projecttypes";
+import { type QuestionType } from "~/types/projecttypes";
 import { CosmicButton } from "./CosmicButton";
 import { api } from "~/trpc/react";
 import { DeckQuestionsList } from "./DeckQuestionsList";
@@ -170,45 +170,6 @@ export default function DeckManagement() {
     }
     return false;
   }
-  // useEffect(() => {
-  //   if (my_selectedDeck) {
-  //   }
-  // }, [mydecks.data]); // Empty dependency array means this will run once on mount
-
-  // function getDeck_by_id(id: string) {
-  //   const deck = mydecks.data?.filter(
-  //     (deck) => deck.id === current_selectedDeck_id,
-  //   );
-  //   return deck?.[0] ?? null; // Return the first matching deck or null if none found
-  // }
-  // const handleCreateDeck = () => {
-  //   if (newDeckName.trim()) {
-  //     const newDeck: Deck = {
-  //       id: Date.now().toString(),
-  //       name: newDeckName.trim(),
-  //       questions: [],
-  //     };
-  //     setDecks([...decks, newDeck]);
-  //     setNewDeckName("");
-  //   }
-  // };
-
-  // const handleAddQuestion = () => {
-  //   if (selectedDeck && newQuestion.trim()) {
-  //     const updatedDeck = {
-  //       ...selectedDeck,
-  //       questions: [
-  //         ...selectedDeck.questions,
-  //         { type: questionType, content: newQuestion.trim() },
-  //       ],
-  //     };
-  //     setDecks(
-  //       decks.map((deck) => (deck.id === selectedDeck.id ? updatedDeck : deck)),
-  //     );
-  //     setSelectedDeck(updatedDeck);
-  //     setNewQuestion("");
-  //   }
-  // };
 
   return (
     <div className="mx-auto max-w-4xl text-white">
@@ -257,17 +218,6 @@ export default function DeckManagement() {
             placeholder="Enter deck description"
             className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-
-          {/* <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              console.log(" ");
-            }}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700"
-          >
-            Create Deck
-          </motion.button> */}
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 20 }}
@@ -324,20 +274,8 @@ export default function DeckManagement() {
               text={"Add Question"}
             />
           )}
-
-          {/* <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleAddQuestion}
-            className="w-full rounded-md bg-green-600 px-4 py-2 text-white transition duration-300 hover:bg-green-700"
-          >
-            Add Question
-          </motion.button> */}
         </motion.div>
       </div>
-
-      {/* <div className="c m-2 p-5"></div> */}
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

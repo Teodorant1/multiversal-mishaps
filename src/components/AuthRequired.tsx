@@ -5,10 +5,7 @@ import { motion, useAnimation } from "framer-motion";
 import { CosmicButton } from "./CosmicButton";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-interface AuthRequiredProps {
-  message?: string;
-}
+import { AuthRequiredProps } from "~/types/projecttypes";
 
 export function AuthRequired({
   message = "ONLY THOSE WHO BEAR THE MARK MAY TRAVERSE BEYOND",
