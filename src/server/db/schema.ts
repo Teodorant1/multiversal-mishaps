@@ -43,28 +43,24 @@ export const deck = createTable("deck", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  createdAt: timestamp("created_at", { withTimezone: true })
+  createdAt: timestamp("createdAt", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+  updatedAt: timestamp("updatedAt", { withTimezone: true }).$onUpdate(
     () => new Date(),
   ),
   isPublic: boolean("isPublic").default(false),
 });
-
-export type deck_type = typeof deck.$inferInsert;
-export type question_type = typeof question.$inferInsert;
-export type combined_type = deck_type & { questions: question_type[] };
 
 export const question = createTable("question", {
   id: varchar("id", { length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  text: varchar("text", { length: 2000 }),
+  text: varchar("text", { length: 1500 }),
   // question_type: question_type("question_type").notNull(),
   isSituation: boolean("isSituation").notNull(),
-  createdById: varchar("created_by", { length: 255 })
+  createdById: varchar("createdById", { length: 255 })
     .notNull()
     .references(() => actual_users.id, {
       onDelete: "cascade",
@@ -73,10 +69,10 @@ export const question = createTable("question", {
   deck: varchar("deck", { length: 255 })
     .notNull()
     .references(() => deck.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  createdAt: timestamp("created_at", { withTimezone: true })
+  createdAt: timestamp("createdAt", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+  updatedAt: timestamp("updatedAt", { withTimezone: true }).$onUpdate(
     () => new Date(),
   ),
 });
@@ -98,19 +94,21 @@ export const match = createTable("match", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: varchar("name", { length: 255 }).unique(),
-  current_judge: varchar("name", { length: 255 }),
+  name: varchar("name", { length: 255 }),
+  current_judge: varchar("current_judge", { length: 255 }),
   password: varchar("password", { length: 255 }), // New password field
   // hold all of the questions in one array
-  all_questions: varchar("all_questions", { length: 2000 })
+  all_questions: varchar("all_questions", { length: 3000 })
     .array()
     .notNull()
     .default(sql`'{}'::text[]`),
 
-  question: varchar("question", { length: 2000 }).notNull(), // New password field
+  question: varchar("question", { length: 3000 }).notNull(), // New password field
   deck: varchar("deck", { length: 255 })
     .notNull()
     .references(() => deck.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  scheduled_for_deletion: boolean("scheduled_for_deletion").default(false),
+  has_started: boolean("has_started").default(false),
 });
 
 export const player = createTable("player", {
@@ -118,7 +116,7 @@ export const player = createTable("player", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: varchar("username", { length: 255 }).notNull(),
+  username: varchar("username", { length: 255 }).notNull(),
   hashed_password: varchar("hashed_password", { length: 255 }).notNull(), // New password field
   score: integer("score").default(0), // New password field
   answer: varchar("answer", { length: 255 }).default(""), // New password field
@@ -147,6 +145,11 @@ export const questionRelations = relations(question, ({ one }) => ({
     references: [deck.id],
   }),
 }));
+
+export type deck_type = typeof deck.$inferInsert;
+export type question_type = typeof question.$inferInsert;
+export type combined_type = deck_type & { questions: question_type[] };
+export type match_type = typeof match.$inferSelect;
 
 // export const usersRelations = relations(users, ({ many }) => ({
 //   accounts: many(accounts),

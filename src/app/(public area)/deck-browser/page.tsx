@@ -51,7 +51,6 @@ export default function DeckArchivePage() {
           {selected_deck.data && (
             <div className="my-2 flex">
               <CosmicButton
-                classname="mx-auto"
                 onClick={() => {
                   ToggleResults();
                 }}

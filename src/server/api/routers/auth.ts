@@ -15,19 +15,12 @@ export const authRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log("a1");
-
       try {
-        console.log("b1");
-
         const existing_user = await ctx.db.query.actual_users.findFirst({
           where: eq(actual_users.email, input.email),
         });
-        console.log("c1");
 
         if (existing_user) {
-          console.log("d1");
-
           return {
             error: true,
             error_description:
@@ -35,10 +28,8 @@ export const authRouter = createTRPCRouter({
             user: null,
           };
         }
-        console.log("e1");
 
         const hashedPassword = await hashPassword(input.password);
-        console.log("f1");
 
         const user = await ctx.db
           .insert(actual_users)
@@ -48,9 +39,8 @@ export const authRouter = createTRPCRouter({
             password: hashedPassword,
           })
           .returning();
-        console.log("g1");
 
-        await sleep(10);
+        await sleep(1);
 
         return {
           user,
@@ -58,8 +48,6 @@ export const authRouter = createTRPCRouter({
           error_description: null,
         };
       } catch (error) {
-        console.log("q1");
-
         console.error("Error in register mutation:", error);
         return {
           error: true,

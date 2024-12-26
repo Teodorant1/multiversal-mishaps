@@ -18,8 +18,8 @@ import { CosmicButton } from "./CosmicButton";
 import { ErrorPopup } from "./ErrorPopup";
 
 export function SignupForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const [hasSucceededRegister, setHasSucceededRegister] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<boolean | null>(false);
   const [errorText, setErrorText] = useState("");
 

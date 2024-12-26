@@ -295,7 +295,7 @@ export const deckRouter = createTRPCRouter({
           })
           .returning();
 
-        await sleep(10);
+        await sleep(2);
 
         return {
           user,

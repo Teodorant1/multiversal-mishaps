@@ -1,4 +1,7 @@
 import bcrypt from "bcrypt";
+import { db } from "~/server/db";
+import { and, eq, gte, lte } from "drizzle-orm";
+import { deck, question_type } from "~/server/db/schema";
 
 // Situation parts
 export const situations: string[] = [
@@ -47,6 +50,49 @@ export const questions: string[] = [
   "how could this escalate even further?",
   "what lessons might humanity learn from this?",
 ];
+const shuffleArray = (array: question_type[]): question_type[] => {
+  const shuffledArray = [...array]; // Create a copy of the array
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [
+      shuffledArray[j]!,
+      shuffledArray[i]!,
+    ]; // Swap elements
+  }
+  return shuffledArray;
+};
+
+export async function get_question_list_ready_for_match(
+  id: string,
+  userID: string,
+) {
+  const exact_deck = await db.query.deck.findFirst({
+    where: and(eq(deck.id, id), eq(deck.createdById, userID)),
+    with: { questions: true },
+  });
+
+  const situations_v0 =
+    exact_deck?.questions.filter((q) => q.isSituation === true) ?? [];
+  const questions_v0 =
+    exact_deck?.questions.filter((q) => q.isSituation === false) ?? [];
+
+  // Function to shuffle an array
+
+  // Shuffle both situations and questions
+  const situations = shuffleArray(situations_v0);
+  const questions = shuffleArray(questions_v0);
+
+  // Determine the number of pairs based on the smaller array's length
+  const numberOfPairs = Math.min(situations.length, questions.length);
+
+  // Combine them into pairs
+  const pairs: string[] = [];
+  for (let i = 0; i < numberOfPairs; i++) {
+    pairs.push(`${situations[i]?.text}, ${questions[i]?.text}`);
+  }
+
+  return pairs.length > 0 ? pairs : null;
+}
 
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10; // Adjust salt rounds as needed (default is 10)
@@ -66,22 +112,22 @@ export async function sleep(ms: number): Promise<void> {
   });
 }
 
-// Function to shuffle an array
-function shuffleArray<T>(array: T[]): T[] {
-  if (array.length > 0) {
-    const shuffled = [...array]; // Create a copy of the array to avoid mutating the original
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // Swap elements
-    }
-    return shuffled;
-  }
-  return [];
-}
+// // Function to shuffle an array
+// function shuffleArray<T>(array: T[]): T[] {
+//   if (array.length > 0) {
+//     const shuffled = [...array]; // Create a copy of the array to avoid mutating the original
+//     for (let i = shuffled.length - 1; i > 0; i--) {
+//       const j = Math.floor(Math.random() * (i + 1));
+//       [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // Swap elements
+//     }
+//     return shuffled;
+//   }
+//   return [];
+// }
 
-// Function to shuffle and return both arrays
-function getShuffledContent() {
-  const shuffledSituations = shuffleArray(situations);
-  const shuffledQuestions = shuffleArray(questions);
-  return { shuffledSituations, shuffledQuestions };
-}
+// // Function to shuffle and return both arrays
+// function getShuffledContent() {
+//   const shuffledSituations = shuffleArray(situations);
+//   const shuffledQuestions = shuffleArray(questions);
+//   return { shuffledSituations, shuffledQuestions };
+// }

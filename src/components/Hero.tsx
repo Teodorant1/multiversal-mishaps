@@ -12,7 +12,7 @@ export default async function Hero() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 text-white">
       <ChaoticTitle title={"Multiversal Mishaps"} />
-      <></>{" "}
+
       <p className="mt-4 max-w-2xl text-center text-xl">
         Embark on a cosmic journey through the multiverse, where chaos and order
         collide in a card game of epic proportions!

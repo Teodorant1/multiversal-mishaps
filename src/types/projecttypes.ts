@@ -4,7 +4,6 @@ import { type DateRange } from "react-day-picker";
 export interface CosmicButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
-  classname?: string;
   text: string;
   onClick?: () => void; // Optional click handler
 }
@@ -51,4 +50,10 @@ export interface CosmicButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
   text: string;
+}
+export interface CosmicGameInterfaceProps {
+  gameID: string;
+  game_password: string;
+  player_password: string;
+  game_has_launched: string;
 }
