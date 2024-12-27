@@ -56,7 +56,7 @@ export const authConfig = {
         try {
           //     console.log("1");
           const the_user = await db.query.actual_users.findFirst({
-            where: eq(actual_users.username, username),
+            where: eq(actual_users.username, username.trim()),
           });
           //    console.log("2");
 
@@ -65,7 +65,10 @@ export const authConfig = {
 
             return null;
           }
-          const comparison = await bcrypt.compare(password, the_user.password);
+          const comparison = await bcrypt.compare(
+            password,
+            the_user.password.trim(),
+          );
           //   console.log("4");
 
           if (!comparison) {
@@ -74,13 +77,13 @@ export const authConfig = {
             return null;
           }
           return {
-            id: the_user.id,
-            username: the_user.username,
-            email: the_user.email,
+            id: the_user.id.trim(),
+            username: the_user.username.trim(),
+            email: the_user.email.trim(),
             paloki: "the_user.paloki", // Optional additional field
           };
         } catch (error) {
-          console.error("Error in TEOS authorize:", error);
+          console.error("Error in authorize function:", error);
           return null;
         }
       },

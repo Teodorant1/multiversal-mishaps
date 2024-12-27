@@ -102,7 +102,6 @@ export const match = createTable("match", {
     .array()
     .notNull()
     .default(sql`'{}'::text[]`),
-
   question: varchar("question", { length: 3000 }).notNull(), // New password field
   deck: varchar("deck", { length: 255 })
     .notNull()
@@ -116,7 +115,14 @@ export const player = createTable("player", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  username: varchar("username", { length: 255 }).notNull(),
+  username: varchar("username", { length: 255 })
+    .notNull()
+    .references(() => actual_users.username, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    })
+    .unique(),
+
   hashed_password: varchar("hashed_password", { length: 255 }).notNull(), // New password field
   score: integer("score").default(0), // New password field
   answer: varchar("answer", { length: 255 }).default(""), // New password field

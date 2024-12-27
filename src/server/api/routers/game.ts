@@ -13,7 +13,7 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        player_username: z.string(),
+        // player_username: z.string(),
         deck_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -35,7 +35,7 @@ export const gameRouter = createTRPCRouter({
           .insert(match)
           .values({
             name: input.match_name.trim(),
-            current_judge: " ",
+            current_judge: ctx.session.user.username,
             password: input.match_password.trim(),
             all_questions: question_list,
             question: first_question!,
@@ -55,7 +55,8 @@ export const gameRouter = createTRPCRouter({
         const first_player = await ctx.db
           .insert(player)
           .values({
-            username: input.player_username.trim(),
+            // username: input.player_username.trim(),
+            username: ctx.session.user.username,
             hashed_password: hashedPassword,
             match: returned_new_match?.id,
           })
@@ -80,7 +81,7 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        player_username: z.string(),
+        // player_username: z.string(),
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -97,7 +98,9 @@ export const gameRouter = createTRPCRouter({
         });
         if (existing_match) {
           const this_player = existing_match.players.find(
-            (player) => player.username === input.player_username.trim(),
+            // (player) => player.username === input.player_username.trim(),
+
+            (player) => player.username === ctx.session.user.username.trim(),
           );
 
           if (this_player) {
@@ -123,7 +126,8 @@ export const gameRouter = createTRPCRouter({
           const new_player = await ctx.db
             .insert(player)
             .values({
-              username: input.player_username.trim(),
+              // username: input.player_username.trim(),
+              username: ctx.session.user.username.trim(),
               hashed_password: hashedPassword,
               match: existing_match.id,
             })
@@ -153,7 +157,7 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        player_username: z.string(),
+        // player_username: z.string(),
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -170,7 +174,8 @@ export const gameRouter = createTRPCRouter({
         });
         if (existing_match) {
           const this_player = existing_match.players.find(
-            (player) => player.username === input.player_username.trim(),
+            //            (player) => player.username === input.player_username.trim(),
+            (player) => player.username === ctx.session.user.username,
           );
           if (this_player) {
             const comparison = await bcrypt.compare(
@@ -198,7 +203,8 @@ export const gameRouter = createTRPCRouter({
             const new_player = await ctx.db
               .insert(player)
               .values({
-                username: input.player_username.trim(),
+                // username: input.player_username.trim(),
+                username: ctx.session.user.username,
                 hashed_password: hashedPassword,
                 match: existing_match.id,
               })

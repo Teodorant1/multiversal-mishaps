@@ -25,7 +25,7 @@ export default async function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
-          <div className="relative min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
+          <div className="relative min-h-screen min-w-max bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             <AnimatedCelestialBodies />
             <nav className="relative z-30 flex items-center justify-between px-4 py-4">
               {/* Left-aligned navigation links */}

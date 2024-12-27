@@ -17,7 +17,7 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const existing_user = await ctx.db.query.actual_users.findFirst({
-          where: eq(actual_users.email, input.email),
+          where: eq(actual_users.email, input.email.trim()),
         });
 
         if (existing_user) {
@@ -29,14 +29,14 @@ export const authRouter = createTRPCRouter({
           };
         }
 
-        const hashedPassword = await hashPassword(input.password);
+        const hashedPassword = await hashPassword(input.password.trim());
 
         const user = await ctx.db
           .insert(actual_users)
           .values({
-            username: input.username,
-            email: input.email,
-            password: hashedPassword,
+            username: input.username.trim(),
+            email: input.email.trim(),
+            password: hashedPassword.trim(),
           })
           .returning();
 

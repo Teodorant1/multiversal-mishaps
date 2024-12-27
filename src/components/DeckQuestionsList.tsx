@@ -19,8 +19,12 @@ export function DeckQuestionsList({
   const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
   const [typedText, setTypedText] = useState<string>("");
 
-  const situations = all_questions.filter((q) => q.isSituation === true);
-  const questions = all_questions.filter((q) => q.isSituation === false);
+  const situations = all_questions
+    .filter((q) => q.isSituation === true)
+    .sort(() => Math.random() - 0.5);
+  const questions = all_questions
+    .filter((q) => q.isSituation === false)
+    .sort(() => Math.random() - 0.5);
 
   const container = {
     hidden: { opacity: 0 },

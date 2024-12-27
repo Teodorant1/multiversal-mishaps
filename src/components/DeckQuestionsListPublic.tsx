@@ -15,8 +15,12 @@ export function DeckQuestionsListPublic({
   all_questions: question_type[];
   // handle_delete_question: (id: string) => void;
 }) {
-  const situations = all_questions.filter((q) => q.isSituation === true);
-  const questions = all_questions.filter((q) => q.isSituation === false);
+  const situations = all_questions
+    .filter((q) => q.isSituation === true)
+    .sort(() => Math.random() - 0.5);
+  const questions = all_questions
+    .filter((q) => q.isSituation === false)
+    .sort(() => Math.random() - 0.5);
 
   const container = {
     hidden: { opacity: 0 },
