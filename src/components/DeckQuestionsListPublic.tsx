@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -9,18 +10,25 @@ import { type deck_type, type question_type } from "~/server/db/schema";
 export function DeckQuestionsListPublic({
   deck,
   all_questions,
-  //  handle_delete_question,
 }: {
   deck: deck_type;
   all_questions: question_type[];
-  // handle_delete_question: (id: string) => void;
 }) {
-  const situations = all_questions
-    .filter((q) => q.isSituation === true)
-    .sort(() => Math.random() - 0.5);
-  const questions = all_questions
-    .filter((q) => q.isSituation === false)
-    .sort(() => Math.random() - 0.5);
+  const [shuffledSituations, setShuffledSituations] = useState(() =>
+    all_questions
+      .filter((q) => q.isSituation === true)
+      .sort(() => Math.random() - 0.5),
+  );
+  const [shuffledQuestions, setShuffledQuestions] = useState(() =>
+    all_questions
+      .filter((q) => q.isSituation === false)
+      .sort(() => Math.random() - 0.5),
+  );
+
+  const handleShuffle = () => {
+    setShuffledSituations((prev) => [...prev].sort(() => Math.random() - 0.5));
+    setShuffledQuestions((prev) => [...prev].sort(() => Math.random() - 0.5));
+  };
 
   const container = {
     hidden: { opacity: 0 },
@@ -40,17 +48,23 @@ export function DeckQuestionsListPublic({
   return (
     <Card className="mx-auto w-full overflow-hidden break-all border-cyan-800 bg-gray-900/90 text-cyan-50 shadow-xl shadow-cyan-500/20">
       <CardHeader className="border-b border-cyan-800">
-        <div className="items-center justify-between">
+        <div className="flex items-center justify-between">
           <Badge
             variant="outline"
             className="border-cyan-700 bg-cyan-900/50 text-cyan-300"
           >
             By {deck.author}
-          </Badge>{" "}
-          <CardTitle className="text-2xl font-bold text-cyan-300">
-            <div>{deck.name}</div> <div>-id:</div>
+          </Badge>
+          <CardTitle className="flex text-2xl font-bold text-cyan-300">
+            <div>Name: {deck.name}</div> <div>-id:</div>
             <div>{deck.id}</div>
           </CardTitle>
+          <button
+            onClick={handleShuffle}
+            className="ml-4 rounded bg-cyan-700 px-4 py-2 text-cyan-50 transition hover:bg-cyan-600"
+          >
+            Shuffle
+          </button>
         </div>
       </CardHeader>
       <CardContent className="p-6">
@@ -79,7 +93,7 @@ export function DeckQuestionsListPublic({
                 animate="show"
                 className="space-y-3"
               >
-                {situations.map((situation) => (
+                {shuffledSituations.map((situation) => (
                   <motion.div
                     key={situation.id}
                     variants={item}
@@ -117,15 +131,13 @@ export function DeckQuestionsListPublic({
                 animate="show"
                 className="space-y-3"
               >
-                {questions.map((question) => (
+                {shuffledQuestions.map((question) => (
                   <motion.div
                     key={question.id}
                     variants={item}
                     className="rounded-lg border border-purple-800/50 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 p-4 transition-colors hover:border-purple-600/50"
                   >
-                    <div className="items-center justify-between">
-                      <p className="text-purple-100">{question.text}</p>
-                    </div>
+                    <p className="text-purple-100">{question.text}</p>
                   </motion.div>
                 ))}
               </motion.div>

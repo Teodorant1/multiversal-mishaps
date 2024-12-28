@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
 import { and, eq, gte, lte } from "drizzle-orm";
-import { deck, question_type } from "~/server/db/schema";
+import { deck, type question_type } from "~/server/db/schema";
 
 // Situation parts
 export const situations: string[] = [
@@ -88,7 +88,7 @@ export async function get_question_list_ready_for_match(
   // Combine them into pairs
   const pairs: string[] = [];
   for (let i = 0; i < numberOfPairs; i++) {
-    pairs.push(`${situations[i]?.text}, ${questions[i]?.text}`);
+    pairs.push(`${situations[i]?.text} , ${questions[i]?.text}`);
   }
 
   return pairs.length > 0 ? pairs : null;

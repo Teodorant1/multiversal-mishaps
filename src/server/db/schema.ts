@@ -124,7 +124,7 @@ export const player = createTable("player", {
     .unique(),
 
   hashed_password: varchar("hashed_password", { length: 255 }).notNull(), // New password field
-  score: integer("score").default(0), // New password field
+  score: integer("score").default(0).notNull(), // New password field
   answer: varchar("answer", { length: 255 }).default(""), // New password field
   match: varchar("match", { length: 255 })
     .notNull()

@@ -92,7 +92,7 @@ function CelestialBody({
   };
 
   const regularPath = {
-    x: direction === "left" ? [0, "-100vw"] : [0, "100vw"],
+    x: direction === "left" ? ["100vw", "-100vw"] : ["-100vw", "100vw"],
   };
 
   const animationPath =
@@ -113,12 +113,7 @@ function CelestialBody({
         willChange: "transform",
       }}
       initial={{
-        x:
-          type === "mysterious" || type === "pyramid"
-            ? 0
-            : direction === "left"
-              ? "100vw"
-              : "-100vw",
+        x: direction === "left" ? "100vw" : "-100vw",
         y:
           type === "mysterious" || type === "pyramid" ? 0 : randomProps.yOffset,
       }}
@@ -235,10 +230,10 @@ export function AnimatedCelestialBodies() {
 
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
-      {generateBodies("mysterious", 3, celestialConfig.mysterious)}
-      {generateBodies("pyramid", 3, celestialConfig.pyramid)}
-      {generateBodies("planet", 15, celestialConfig.planet)}
-      {generateBodies("sun", 5, celestialConfig.sun)}
+      {generateBodies("mysterious", 1, celestialConfig.mysterious)}
+      {generateBodies("pyramid", 1, celestialConfig.pyramid)}
+      {generateBodies("planet", 20, celestialConfig.planet)}
+      {generateBodies("sun", 6, celestialConfig.sun)}
       {generateBodies("star", 100, celestialConfig.star)}
       {generateSpaceships(10)}
     </div>

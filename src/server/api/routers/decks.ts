@@ -27,6 +27,7 @@ export const deckRouter = createTRPCRouter({
             .update(deck)
             .set({
               isPublic: !original_deck.isPublic,
+              updatedAt: new Date(),
             })
             .where(
               and(
@@ -144,6 +145,20 @@ export const deckRouter = createTRPCRouter({
             createdById: ctx.session.user.id,
           })
           .returning();
+
+        //const updated_deck =
+        await ctx.db
+          .update(deck)
+          .set({
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(deck.id, input.deck),
+              eq(deck.createdById, ctx.session.user.id),
+            ),
+          );
+        // .returning();
 
         return {
           inserted_question: inserted_question.at(0),

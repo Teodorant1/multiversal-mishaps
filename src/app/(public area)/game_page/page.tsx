@@ -3,7 +3,7 @@ import { CosmicFuturisticGame } from "~/components/cosmic-futuristic-game";
 import GameSetup from "~/components/GameSetup";
 // import { CosmicGameInterface } from "~/components/CosmicGameInterface";
 import { useState } from "react";
-import { CosmicGameInterface } from "~/components/CosmicGameInterface";
+// import { CosmicGameInterface } from "~/components/CosmicGameInterface";
 
 const cosmicQuestions = [
   {
@@ -39,16 +39,16 @@ export default function CosmicFuturisticGamePage() {
   return (
     <div className="min-h-screen p-8">
       <h1 className="mb-8 text-center text-4xl font-bold text-cyan-300">
-        Cosmic Futuristic Game
+        MULTIVERSAL MISHAPS GAME
       </h1>
       <GameSetup />
       {/* <CosmicFuturisticGame questions={cosmicQuestions} /> */}
-      <CosmicGameInterface
+      {/* <CosmicGameInterface
         gameID={""}
         game_password={""}
         player_password={""}
         game_has_launched={""}
-      />
+      /> */}
     </div>
   );
 }

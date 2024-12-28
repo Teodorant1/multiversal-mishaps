@@ -1,4 +1,4 @@
-import { eq, and, gte, lte } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import {
   hashPassword,
   get_question_list_ready_for_match,
@@ -6,10 +6,77 @@ import {
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { deck, match, player } from "~/server/db/schema";
+import { match, player } from "~/server/db/schema";
 
 export const gameRouter = createTRPCRouter({
   start_match: protectedProcedure
+    .input(
+      z.object({
+        match_name: z.string(),
+        // player_username: z.string(),
+        match_id: z.string(),
+        match_password: z.string(),
+        player_password: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const existing_match = await ctx.db.query.match.findFirst({
+          where: and(
+            eq(match.id, input.match_id.trim()),
+            eq(match.name, input.match_name.trim()),
+            eq(match.password, input.match_password.trim()),
+          ),
+          with: { players: true },
+        });
+        if (existing_match) {
+          const this_player = existing_match.players.find(
+            //            (player) => player.username === input.player_username.trim(),
+            (player) => player.username === ctx.session.user.username,
+          );
+          if (this_player) {
+            const comparison = await bcrypt.compare(
+              input.player_password,
+              this_player?.hashed_password,
+            );
+            if (
+              comparison &&
+              existing_match.current_judge === ctx.session.user.username
+            ) {
+              await ctx.db
+                .update(match)
+                .set({
+                  has_started: true,
+                })
+                .where(eq(match.id, existing_match.id));
+            }
+            existing_match.players = [];
+            return {
+              this_player,
+              existing_match,
+              error: false,
+              error_description: null,
+            };
+          }
+        }
+        return {
+          this_player: null,
+          existing_match: null,
+          error: true,
+          error_description: "Something went wrong. Please try again.",
+        };
+      } catch (error) {
+        console.error("Error in mutation:", error);
+        return {
+          this_player: null,
+          existing_match: null,
+          error: true,
+          error_description: "Something went wrong. Please try again.",
+        };
+      }
+    }),
+
+  create_match: protectedProcedure
     .input(
       z.object({
         match_name: z.string(),
@@ -137,7 +204,7 @@ export const gameRouter = createTRPCRouter({
           existing_match.players = [];
           return {
             existing_match,
-            first_player: actual_player,
+            this_player: actual_player,
             error: false,
             error_description: null,
           };
@@ -161,6 +228,7 @@ export const gameRouter = createTRPCRouter({
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
+        answer: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -168,6 +236,7 @@ export const gameRouter = createTRPCRouter({
         const existing_match = await ctx.db.query.match.findFirst({
           where: and(
             eq(match.id, input.match_id.trim()),
+            eq(match.name, input.match_name.trim()),
             eq(match.password, input.match_password.trim()),
           ),
           with: { players: true },
@@ -184,9 +253,18 @@ export const gameRouter = createTRPCRouter({
             );
             if (comparison) {
               existing_match.players = [];
+
+              await ctx.db
+                .update(player)
+                .set({ answer: input.answer })
+                .where(
+                  and(
+                    eq(player.username, ctx.session.user.username),
+                    eq(player.hashed_password, this_player.hashed_password),
+                  ),
+                );
+
               return {
-                existing_match,
-                first_player: this_player,
                 error: false,
                 error_description: null,
               };
@@ -195,31 +273,10 @@ export const gameRouter = createTRPCRouter({
             }
           }
 
-          if (existing_match.has_started === false) {
-            const hashedPassword = await hashPassword(
-              input.player_password.trim(),
-            );
-
-            const new_player = await ctx.db
-              .insert(player)
-              .values({
-                // username: input.player_username.trim(),
-                username: ctx.session.user.username,
-                hashed_password: hashedPassword,
-                match: existing_match.id,
-              })
-              .returning();
-
-            const actual_player = new_player.at(0);
-            existing_match.players = [];
-            return {
-              existing_match,
-              first_player: actual_player,
-              error: false,
-              error_description: null,
-            };
-          }
-          return null;
+          return {
+            error: false,
+            error_description: null,
+          };
         } else {
           return null;
         }
@@ -236,7 +293,7 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        player_username: z.string(),
+        target_username: z.string(),
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -248,22 +305,51 @@ export const gameRouter = createTRPCRouter({
           where: and(
             eq(match.id, input.match_id.trim()),
             eq(match.password, input.match_password.trim()),
+            eq(match.name, input.match_name.trim()),
           ),
           with: { players: true },
         });
         if (existing_match) {
           const this_player = existing_match.players.find(
-            (player) => player.username === input.player_username.trim(),
+            (player) => player.username === ctx.session.user.username.trim(),
           );
 
-          if (this_player) {
+          const target_player = existing_match.players.find(
+            (player) => player.username === input.target_username.trim(),
+          );
+
+          if (this_player && target_player) {
             const comparison = await bcrypt.compare(
               input.player_password,
               this_player?.hashed_password,
             );
             if (comparison) {
+              await ctx.db
+                .update(player)
+                .set({
+                  score: target_player.score + 1,
+                })
+                .where(eq(player.id, target_player.id));
+
+              await ctx.db
+                .update(player)
+                .set({
+                  answer: "",
+                })
+                .where(eq(player.match, target_player.match));
+
+              const new_question = existing_match.all_questions.shift();
+              if (new_question) {
+                await ctx.db
+                  .update(match)
+                  .set({
+                    question: new_question,
+                    all_questions: existing_match.all_questions,
+                  })
+                  .where(eq(match.id, existing_match.id));
+              }
+
               return {
-                existing_match,
                 first_player: this_player,
                 error: false,
                 error_description: null,
@@ -279,7 +365,7 @@ export const gameRouter = createTRPCRouter({
           const new_player = await ctx.db
             .insert(player)
             .values({
-              username: input.player_username.trim(),
+              username: input.target_username.trim(),
               hashed_password: hashedPassword,
               match: existing_match.id,
             })
@@ -308,24 +394,28 @@ export const gameRouter = createTRPCRouter({
   get_data_on_match: protectedProcedure
     .input(
       z.object({
-        from: z.date(),
-        to: z.date(),
+        match_name: z.string(),
+        match_id: z.string(),
+        match_password: z.string(),
+        player_password: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (input.from && input.to) {
-        const public_decks = await ctx.db.query.deck.findMany({
-          where: and(
-            eq(deck.isPublic, true),
-            gte(deck.updatedAt, input.from),
-            lte(deck.updatedAt, input.to),
-          ),
-          with: { questions: true },
-        });
-        console.log("public_decks", public_decks);
-
-        return public_decks;
+      const existing_match = await ctx.db.query.match.findFirst({
+        where: and(
+          eq(match.id, input.match_id.trim()),
+          eq(match.password, input.match_password.trim()),
+          eq(match.name, input.match_name.trim()),
+        ),
+        with: { players: true },
+      });
+      if (!existing_match?.players) {
+        return null;
       }
-      return [];
+      for (let i = 0; i < existing_match?.players.length; i++) {
+        existing_match.players[i]!.hashed_password = "hashedpassword";
+      }
+
+      return existing_match;
     }),
 });

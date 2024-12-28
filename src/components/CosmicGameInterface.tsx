@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Atom, Zap, Stars, Binary } from "lucide-react";
 import { type CosmicGameInterfaceProps } from "~/types/projecttypes";
+import { useState } from "react";
+import { api } from "~/trpc/react";
+import { ErrorPopup } from "./ErrorPopup";
 
 export function CosmicGameInterface({
   gameID,
@@ -14,6 +17,10 @@ export function CosmicGameInterface({
   player_password,
   game_has_launched,
 }: CosmicGameInterfaceProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState<boolean | null>(false);
+  const [errorText, setErrorText] = useState("");
+
   // Mock for players and currentJudge assignment
   const players = [
     {
