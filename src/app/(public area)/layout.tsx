@@ -31,7 +31,7 @@ export default async function RootLayout({
               {/* Left-aligned navigation links */}
               <div className="flex space-x-4">
                 <CosmicButton href="/" text="Home" />
-                <CosmicButton href="/game-setup" text="Play Game" />
+                <CosmicButton href="/game_page" text="Play Game" />
                 <CosmicButton href="/decks" text="Manage Decks" />
                 <CosmicButton href="/deck-browser" text="Browse Public Decks" />
                 <CosmicButton href="/faq" text="About" />

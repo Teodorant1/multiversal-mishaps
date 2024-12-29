@@ -234,7 +234,7 @@ export function AnimatedCelestialBodies() {
       {generateBodies("pyramid", 1, celestialConfig.pyramid)}
       {generateBodies("planet", 20, celestialConfig.planet)}
       {generateBodies("sun", 6, celestialConfig.sun)}
-      {generateBodies("star", 100, celestialConfig.star)}
+      {generateBodies("star", 60, celestialConfig.star)}
       {generateSpaceships(10)}
     </div>
   );

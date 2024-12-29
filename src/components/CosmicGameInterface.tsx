@@ -10,6 +10,8 @@ import { type CosmicGameInterfaceProps } from "~/types/projecttypes";
 import { useState } from "react";
 import { api } from "~/trpc/react";
 import { ErrorPopup } from "./ErrorPopup";
+import { CosmicButton } from "./CosmicButton";
+import { useSession } from "next-auth/react";
 
 export function CosmicGameInterface({
   gameID,
@@ -18,9 +20,12 @@ export function CosmicGameInterface({
   game_has_launched,
   game_name,
 }: CosmicGameInterfaceProps) {
+  const [answer_text, setanswer_text] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<boolean | null>(false);
   const [errorText, setErrorText] = useState("");
+
+  const { data: session } = useSession();
 
   const match = api.game.get_data_on_match.useQuery(
     {
@@ -30,9 +35,103 @@ export function CosmicGameInterface({
       match_password: game_password,
     },
     {
-      refetchInterval: 7000, // Refetch every 7 seconds
+      refetchIntervalInBackground: true,
+      refetchInterval: 10000, // Refetch every 7 seconds
     },
   );
+
+  const start_match = api.game.start_match.useMutation({
+    onSuccess: async (data) => {
+      console.log("data", data);
+      setIsLoading(false);
+      if (data?.existing_match && data?.error === false) {
+        // setgame_has_launched(true);
+        // setgameID(data.existing_match.id);
+        // setgame_name(data.existing_match.name);
+        // setgame_password(data.existing_match.password);
+      } else {
+        setIsError(true);
+        setErrorText(
+          data?.error_description ?? "An unknown error has occurred.",
+        );
+      }
+    },
+  });
+
+  const handle_start_match = () => {
+    if (game_name && game_password && player_password && gameID) {
+      setIsLoading(true);
+      start_match.mutate({
+        match_id: gameID,
+        match_name: game_name,
+        match_password: game_password,
+        player_password: player_password,
+      });
+    }
+  };
+
+  const answer = api.game.answer.useMutation({
+    onSuccess: async (data) => {
+      console.log("data", data);
+      setIsLoading(false);
+      if (data && data?.error === false) {
+        setanswer_text(" ");
+        // setgame_has_launched(true);
+        // setgameID(data.existing_match.id);
+        // setgame_name(data.existing_match.name);
+        // setgame_password(data.existing_match.password);
+      } else {
+        setIsError(true);
+        setErrorText(
+          data?.error_description ?? "An unknown error has occurred.",
+        );
+      }
+    },
+  });
+
+  const handle_answer = () => {
+    // if (game_name && game_password && player_password && gameID) {
+    setIsLoading(true);
+    answer.mutate({
+      player_password: player_password,
+      answer: answer_text,
+      match_name: game_name,
+      match_id: gameID,
+      match_password: game_password,
+    });
+    // }
+  };
+
+  const judge_vote_for = api.game.judge_vote_for.useMutation({
+    onSuccess: async (data) => {
+      console.log("data", data);
+      setIsLoading(false);
+      if (data?.existing_match && data?.error === false) {
+        // setgame_has_launched(true);
+        // setgameID(data.existing_match.id);
+        // setgame_name(data.existing_match.name);
+        // setgame_password(data.existing_match.password);
+      } else {
+        setIsError(true);
+        setErrorText(
+          data?.error_description ?? "An unknown error has occurred.",
+        );
+      }
+    },
+  });
+
+  const handle_judge_vote_for = (target_username: string) => {
+    // if (game_name && game_password && player_password && gameID) {
+    setIsLoading(true);
+    judge_vote_for.mutate({
+      player_password: player_password,
+      match_name: game_name,
+      match_id: gameID,
+      match_password: game_password,
+      target_username: target_username,
+    });
+    // }
+  };
 
   // Particle animation for background effects
   const ParticleEffect = () => (
@@ -86,7 +185,7 @@ export function CosmicGameInterface({
   );
 
   return (
-    <div className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-xl border border-cyan-500/20 bg-gray-900/80">
+    <div className="relative mx-auto w-full overflow-hidden rounded-xl border border-cyan-500/20 bg-gray-900/80">
       {isError && (
         <div className="flex w-full items-center justify-center">
           <ErrorPopup message={errorText} onDismiss={() => setIsError(null)} />
@@ -94,11 +193,11 @@ export function CosmicGameInterface({
       )}
       <ParticleEffect />
       <DataStream />
-      <div className="relative grid grid-cols-1 gap-6 p-6 lg:grid-cols-3">
+      <div className="relative w-full p-5">
         {/* Left Column - Judge and Deck Info */}
         <div className="space-y-6">
           {/* Judge Panel */}
-          <Card className="overflow-hidden border-cyan-500/20 bg-gray-900/80">
+          <Card className="w-full border-cyan-500/20 bg-gray-900/80">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-cyan-300">
                 <motion.div
@@ -107,10 +206,11 @@ export function CosmicGameInterface({
                 >
                   <Atom className="h-5 w-5 text-cyan-500" />
                 </motion.div>
-                Current Judge:{" "}
+                Current Judge:
                 {match.data?.current_judge && match.data && (
                   <div className=""> {match.data.current_judge}</div>
                 )}
+                / currentUser: {session?.user.username}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -140,21 +240,22 @@ export function CosmicGameInterface({
                     <Avatar className="h-20 w-20 ring-2 ring-cyan-500/50">
                       <AvatarImage
                         src={
-                          "https://static-cdn.jtvnw.net/jtv_user_pictures/17fad5a73dae9bba-profile_image-300x300.png"
+                          "https://i1.sndcdn.com/artworks-46Iy8SxkMaxepPTL-u5icpA-t500x500.jpg"
                         }
                       />
                       <AvatarFallback className="bg-cyan-950 text-2xl">
                         {match.data?.current_judge && match.data && (
                           <div className=""> {match.data.current_judge}</div>
-                        )}{" "}
+                        )}
                       </AvatarFallback>
                     </Avatar>
                   </motion.div>
+
                   <div>
                     <h3 className="text-xl font-bold text-cyan-100">
                       {match.data?.current_judge && match.data && (
                         <div className=""> {match.data.current_judge}</div>
-                      )}{" "}
+                      )}
                     </h3>
                     {/* <p className="text-cyan-300/70">
                       Total Score: {currentJudge.score}
@@ -192,7 +293,10 @@ export function CosmicGameInterface({
                     <Stars className="h-5 w-5 text-purple-500" />
                   </motion.div>
                   {match.data?.deck && match.data && (
-                    <div className=""> {match.data.deck}</div>
+                    <div>
+                      <div className="m-2">DECK_ID: {match.data.deck}</div>
+                      <div className="m-2">MATCH_ID: {match.data.id}</div>
+                    </div>
                   )}
                 </CardTitle>
                 {/* <Badge variant="outline" className="bg-purple-900/50">
@@ -238,7 +342,7 @@ export function CosmicGameInterface({
           </Card>
         </div>
         {/* Right Column - Question and Players */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="m-5 space-y-6 lg:col-span-2">
           {/* Current Question */}
           <Card className="border-cyan-500/20 bg-gray-900/80">
             {/* <CardHeader>
@@ -259,11 +363,11 @@ export function CosmicGameInterface({
                 Round {roundNumber}
               </CardTitle>
             </CardHeader> */}
-            <CardContent>
+            <>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-lg bg-gradient-to-r from-blue-900/50 to-purple-900/50 p-6"
+                className="relative rounded-lg bg-gradient-to-r from-blue-900/50 to-purple-900/50 p-3"
               >
                 <motion.div
                   className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-500/5 to-purple-500/5"
@@ -284,10 +388,41 @@ export function CosmicGameInterface({
                   transition={{ delay: 0.5 }}
                 >
                   {match.data?.question && match.data && (
-                    <div className=""> {match.data.question}</div>
+                    <div> {match.data.question}</div>
                   )}
                 </motion.p>
               </motion.div>
+            </>
+          </Card>
+          <Card className="border-cyan-500/20 bg-gray-900/80 text-white">
+            <CardHeader>
+              <CardTitle className="text-cyan-300">Players</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="max-h-[300px]">
+                <div className="mb-6">
+                  <label className="mb-2 block text-lg font-semibold">
+                    Game Name
+                  </label>
+                  <input
+                    type="text"
+                    value={answer_text ?? ""}
+                    onChange={(e) => setanswer_text(e.target.value)}
+                    className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter Game Name"
+                  />
+                  <div className="m-5">
+                    <CosmicButton
+                      text="Send Answer"
+                      color="bg-gradient-to-r from-green-600 to-blue-600"
+                      onClick={() => {
+                        handle_answer();
+                        console.log("handle_answer();");
+                      }}
+                    />
+                  </div>
+                </div>
+              </ScrollArea>
             </CardContent>
           </Card>
           {/* Player List */}
@@ -306,22 +441,40 @@ export function CosmicGameInterface({
                       >
                         <div className="flex items-center gap-2">
                           <Avatar className="h-8 w-8 ring-2 ring-cyan-500">
-                            {/* <AvatarImage src={player.avatarUrl} /> */}
+                            <AvatarImage
+                              src={
+                                "https://i1.sndcdn.com/artworks-46Iy8SxkMaxepPTL-u5icpA-t500x500.jpg"
+                              }
+                            />
                             <AvatarFallback>{player.username}</AvatarFallback>
                           </Avatar>
-                          <p className="font-medium text-cyan-100">
+                          <div className="font-medium text-cyan-100">
                             {player.username}
-                          </p>
+                          </div>
                         </div>
-                        <p className="text-cyan-300">{player.score}</p>
+                        <div className="text-cyan-300">{player.score}</div>
                         {match.data &&
                           match.data.current_judge === player.username && (
-                            <p className="text-cyan-300">
+                            <div className="text-cyan-300">
                               THIS PLAYER IS THE JUDGE
-                            </p>
+                            </div>
+                          )}
+                        {match.data &&
+                          match.data.current_judge !== player.username &&
+                          match.data.current_judge ===
+                            session?.user.username && (
+                            <div className="m-5">
+                              <CosmicButton
+                                text="VOTE"
+                                color="bg-gradient-to-r from-green-600 to-blue-600"
+                                onClick={() => {
+                                  handle_judge_vote_for(player.username);
+                                }}
+                              />
+                            </div>
                           )}
                       </div>
-                    ))}{" "}
+                    ))}
                   </div>
                 )}
               </ScrollArea>

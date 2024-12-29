@@ -54,36 +54,6 @@ export default function GameSetup() {
     }
   };
 
-  const start_match = api.game.start_match.useMutation({
-    onSuccess: async (data) => {
-      console.log("data", data);
-      setIsLoading(false);
-      if (data?.existing_match && data?.error === false) {
-        // setgame_has_launched(true);
-        // setgameID(data.existing_match.id);
-        // setgame_name(data.existing_match.name);
-        // setgame_password(data.existing_match.password);
-      } else {
-        setIsError(true);
-        setErrorText(
-          data?.error_description ?? "An unknown error has occurred.",
-        );
-      }
-    },
-  });
-
-  const handle_start_match = () => {
-    if (game_name && game_password && player_password && gameID) {
-      setIsLoading(true);
-      start_match.mutate({
-        match_id: gameID,
-        match_name: game_name,
-        match_password: game_password,
-        player_password: player_password,
-      });
-    }
-  };
-
   const join_match = api.game.join_match.useMutation({
     onSuccess: async (data) => {
       console.log("data", data);
@@ -123,7 +93,7 @@ export default function GameSetup() {
   // };
 
   return (
-    <div className="mx-auto max-w-2xl text-white">
+    <div className="mx-auto w-full text-white">
       {game_has_launched === true ? (
         <CosmicGameInterface
           gameID={gameID ?? ""}
@@ -190,8 +160,8 @@ export default function GameSetup() {
             </label>
             <input
               type="password"
-              value={game_password ?? ""}
-              onChange={(e) => setgame_password(e.target.value.trim())}
+              value={gameID ?? ""}
+              onChange={(e) => setgameID(e.target.value.trim())}
               className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter Game ID"
             />

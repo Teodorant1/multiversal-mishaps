@@ -401,6 +401,10 @@ export const gameRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      const new_date = new Date();
+      console.log(new_date);
+
+      console.log("getting data for get_data_on_match PROCEDURE ");
       const existing_match = await ctx.db.query.match.findFirst({
         where: and(
           eq(match.id, input.match_id.trim()),

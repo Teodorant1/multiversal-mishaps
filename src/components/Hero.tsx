@@ -22,13 +22,13 @@ export default async function Hero() {
           <CosmicButton href="/" text="Home" />
         </div>
         <div className="m-5">
-          <CosmicButton href="/game" text="Play Game" />
+          <CosmicButton href="/game_page" text="Play Game" />
         </div>
         <div className="m-5">
           <CosmicButton href="/decks" text="Manage Decks" />
         </div>
         <div className="m-5">
-          <CosmicButton href="/about" text="About" />
+          <CosmicButton href="/faq" text="About" />
         </div>
       </div>
     </div>
