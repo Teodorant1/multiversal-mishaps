@@ -53,7 +53,8 @@ export interface CosmicButtonProps
 }
 export interface CosmicGameInterfaceProps {
   gameID: string;
+  game_name: string;
   game_password: string;
   player_password: string;
-  game_has_launched: string;
+  game_has_launched: boolean;
 }

@@ -16,46 +16,23 @@ export function CosmicGameInterface({
   game_password,
   player_password,
   game_has_launched,
+  game_name,
 }: CosmicGameInterfaceProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<boolean | null>(false);
   const [errorText, setErrorText] = useState("");
 
-  // Mock for players and currentJudge assignment
-  const players = [
+  const match = api.game.get_data_on_match.useQuery(
     {
-      id: "1",
-      name: "Player 1",
-      score: 10,
-      isJudge: true,
-      avatarUrl: "",
-      currentAnswer: "Answer 1",
+      player_password: player_password,
+      match_id: gameID,
+      match_name: game_name,
+      match_password: game_password,
     },
     {
-      id: "2",
-      name: "Player 2",
-      score: 5,
-      isJudge: false,
-      avatarUrl: "",
-      currentAnswer: "Answer 2",
+      refetchInterval: 7000, // Refetch every 7 seconds
     },
-    // Mock player data
-  ];
-
-  const currentJudge = players.find((p) => p.isJudge); // Find the judge in the players array
-  if (!currentJudge) {
-    return <div>No judge found!</div>; // Handle the case when there is no judge
-  }
-
-  const roundNumber = 1; // Mock round number
-  const question = { text: "Sample question?" }; // Mock question
-  const deck = {
-    name: "Sample Deck",
-    roundsPlayed: 2,
-    questionCount: 10,
-    author: "Author",
-    description: "Sample description",
-  }; // Mock deck info
+  );
 
   // Particle animation for background effects
   const ParticleEffect = () => (
@@ -110,6 +87,11 @@ export function CosmicGameInterface({
 
   return (
     <div className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-xl border border-cyan-500/20 bg-gray-900/80">
+      {isError && (
+        <div className="flex w-full items-center justify-center">
+          <ErrorPopup message={errorText} onDismiss={() => setIsError(null)} />
+        </div>
+      )}
       <ParticleEffect />
       <DataStream />
       <div className="relative grid grid-cols-1 gap-6 p-6 lg:grid-cols-3">
@@ -125,7 +107,10 @@ export function CosmicGameInterface({
                 >
                   <Atom className="h-5 w-5 text-cyan-500" />
                 </motion.div>
-                Current Judge
+                Current Judge:{" "}
+                {match.data?.current_judge && match.data && (
+                  <div className=""> {match.data.current_judge}</div>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -153,19 +138,27 @@ export function CosmicGameInterface({
                     }}
                   >
                     <Avatar className="h-20 w-20 ring-2 ring-cyan-500/50">
-                      <AvatarImage src={currentJudge.avatarUrl} />
+                      <AvatarImage
+                        src={
+                          "https://static-cdn.jtvnw.net/jtv_user_pictures/17fad5a73dae9bba-profile_image-300x300.png"
+                        }
+                      />
                       <AvatarFallback className="bg-cyan-950 text-2xl">
-                        {currentJudge.name[0]}
+                        {match.data?.current_judge && match.data && (
+                          <div className=""> {match.data.current_judge}</div>
+                        )}{" "}
                       </AvatarFallback>
                     </Avatar>
                   </motion.div>
                   <div>
                     <h3 className="text-xl font-bold text-cyan-100">
-                      {currentJudge.name}
+                      {match.data?.current_judge && match.data && (
+                        <div className=""> {match.data.current_judge}</div>
+                      )}{" "}
                     </h3>
-                    <p className="text-cyan-300/70">
+                    {/* <p className="text-cyan-300/70">
                       Total Score: {currentJudge.score}
-                    </p>
+                    </p> */}
                     <motion.div
                       className="mt-2 h-1 rounded-full bg-cyan-500"
                       initial={{ width: "100%" }}
@@ -198,14 +191,16 @@ export function CosmicGameInterface({
                   >
                     <Stars className="h-5 w-5 text-purple-500" />
                   </motion.div>
-                  {deck.name}
+                  {match.data?.deck && match.data && (
+                    <div className=""> {match.data.deck}</div>
+                  )}
                 </CardTitle>
-                <Badge variant="outline" className="bg-purple-900/50">
+                {/* <Badge variant="outline" className="bg-purple-900/50">
                   {deck.roundsPlayed} / {deck.questionCount}
-                </Badge>
+                </Badge> */}
               </div>
             </CardHeader>
-            <CardContent>
+            {/* <CardContent>
               <div className="space-y-4">
                 <div>
                   <h4 className="flex items-center gap-2 text-sm font-medium text-purple-300">
@@ -239,14 +234,14 @@ export function CosmicGameInterface({
                   />
                 </motion.div>
               </div>
-            </CardContent>
+            </CardContent> */}
           </Card>
         </div>
         {/* Right Column - Question and Players */}
         <div className="space-y-6 lg:col-span-2">
           {/* Current Question */}
           <Card className="border-cyan-500/20 bg-gray-900/80">
-            <CardHeader>
+            {/* <CardHeader>
               <CardTitle className="flex items-center gap-2 text-cyan-300">
                 <motion.div
                   animate={{
@@ -263,7 +258,7 @@ export function CosmicGameInterface({
                 </motion.div>
                 Round {roundNumber}
               </CardTitle>
-            </CardHeader>
+            </CardHeader> */}
             <CardContent>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -288,7 +283,9 @@ export function CosmicGameInterface({
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  {question.text}
+                  {match.data?.question && match.data && (
+                    <div className=""> {match.data.question}</div>
+                  )}
                 </motion.p>
               </motion.div>
             </CardContent>
@@ -300,21 +297,33 @@ export function CosmicGameInterface({
             </CardHeader>
             <CardContent>
               <ScrollArea className="max-h-[300px]">
-                {players.map((player) => (
-                  <div
-                    key={player.id}
-                    className="flex items-center justify-between py-2"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8 ring-2 ring-cyan-500">
-                        <AvatarImage src={player.avatarUrl} />
-                        <AvatarFallback>{player.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <p className="font-medium text-cyan-100">{player.name}</p>
-                    </div>
-                    <p className="text-cyan-300">{player.score}</p>
+                {match.data?.players && match.data && (
+                  <div className="">
+                    {match.data?.players.map((player) => (
+                      <div
+                        key={player.id}
+                        className="flex items-center justify-between py-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8 ring-2 ring-cyan-500">
+                            {/* <AvatarImage src={player.avatarUrl} /> */}
+                            <AvatarFallback>{player.username}</AvatarFallback>
+                          </Avatar>
+                          <p className="font-medium text-cyan-100">
+                            {player.username}
+                          </p>
+                        </div>
+                        <p className="text-cyan-300">{player.score}</p>
+                        {match.data &&
+                          match.data.current_judge === player.username && (
+                            <p className="text-cyan-300">
+                              THIS PLAYER IS THE JUDGE
+                            </p>
+                          )}
+                      </div>
+                    ))}{" "}
                   </div>
-                ))}
+                )}
               </ScrollArea>
             </CardContent>
           </Card>

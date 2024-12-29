@@ -12,9 +12,7 @@ export default function GameSetup() {
   const [game_name, setgame_name] = useState<string | null>(null);
   const [game_password, setgame_password] = useState<string | null>(null);
   const [player_password, setplayer_password] = useState<string | null>(null);
-  const [game_has_launched, setgame_has_launched] = useState<boolean | null>(
-    false,
-  );
+  const [game_has_launched, setgame_has_launched] = useState<boolean>(false);
   const [selectedDeck_id, setSelectedDeck_id] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +20,9 @@ export default function GameSetup() {
   const [errorText, setErrorText] = useState("");
   // const [gameName, setGameName] = useState("");
   // const [password, setPassword] = useState("");
-  const mydecks = api.deck.fetch_my_decks.useQuery();
+  const mydecks = api.deck.fetch_my_decks.useQuery(undefined, {
+    staleTime: Infinity,
+  });
 
   const create_match = api.game.create_match.useMutation({
     onSuccess: async (data) => {
@@ -126,10 +126,11 @@ export default function GameSetup() {
     <div className="mx-auto max-w-2xl text-white">
       {game_has_launched === true ? (
         <CosmicGameInterface
-          gameID={""}
-          game_password={""}
-          player_password={""}
-          game_has_launched={""}
+          gameID={gameID ?? ""}
+          game_password={game_password ?? ""}
+          player_password={player_password ?? ""}
+          game_name={game_name ?? ""}
+          game_has_launched={game_has_launched}
         />
       ) : (
         <motion.div
@@ -138,6 +139,14 @@ export default function GameSetup() {
           transition={{ duration: 0.5 }}
           className="rounded-lg bg-gray-800 p-6"
         >
+          {isError && (
+            <div className="flex w-full items-center justify-center">
+              <ErrorPopup
+                message={errorText}
+                onDismiss={() => setIsError(null)}
+              />
+            </div>
+          )}
           <h1 className="mb-8 text-center text-4xl font-bold">SETUP</h1>
           <div className="mb-6">
             <label className="mb-2 block text-lg font-semibold">
@@ -148,7 +157,7 @@ export default function GameSetup() {
               value={game_name ?? ""}
               onChange={(e) => setgame_name(e.target.value)}
               className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter game name"
+              placeholder="Enter Game Name"
             />
           </div>
           <div className="mb-6">
@@ -160,7 +169,7 @@ export default function GameSetup() {
               value={game_password ?? ""}
               onChange={(e) => setgame_password(e.target.value.trim())}
               className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter password"
+              placeholder="Enter Game Password"
             />
           </div>
           <div className="mb-6">
@@ -172,7 +181,7 @@ export default function GameSetup() {
               value={player_password ?? ""}
               onChange={(e) => setplayer_password(e.target.value.trim())}
               className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter password"
+              placeholder="Enter Player password"
             />
           </div>
           <div className="mb-6">
@@ -184,7 +193,7 @@ export default function GameSetup() {
               value={game_password ?? ""}
               onChange={(e) => setgame_password(e.target.value.trim())}
               className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter password"
+              placeholder="Enter Game ID"
             />
           </div>
           {/* <div className="mb-6">
