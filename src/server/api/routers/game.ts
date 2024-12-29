@@ -419,7 +419,15 @@ export const gameRouter = createTRPCRouter({
       for (let i = 0; i < existing_match?.players.length; i++) {
         existing_match.players[i]!.hashed_password = "hashedpassword";
       }
-
+      console.log("existing_match", existing_match);
       return existing_match;
     }),
+  get_available_matches: protectedProcedure.query(async ({ ctx }) => {
+    const existing_matches = await ctx.db.query.match.findMany({
+      columns: { id: true, name: true },
+      where: and(eq(match.has_started, false)),
+    });
+
+    return existing_matches;
+  }),
 });

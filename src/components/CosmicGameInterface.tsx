@@ -36,7 +36,7 @@ export function CosmicGameInterface({
     },
     {
       refetchIntervalInBackground: true,
-      refetchInterval: 10000, // Refetch every 7 seconds
+      refetchInterval: 10000, // Refetch every 10 seconds
     },
   );
 
@@ -76,6 +76,7 @@ export function CosmicGameInterface({
       setIsLoading(false);
       if (data && data?.error === false) {
         setanswer_text(" ");
+        await match.refetch();
         // setgame_has_launched(true);
         // setgameID(data.existing_match.id);
         // setgame_name(data.existing_match.name);
@@ -210,7 +211,7 @@ export function CosmicGameInterface({
                 {match.data?.current_judge && match.data && (
                   <div className=""> {match.data.current_judge}</div>
                 )}
-                / currentUser: {session?.user.username}
+                {/* / currentUser: {session?.user.username} */}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -402,14 +403,14 @@ export function CosmicGameInterface({
               <ScrollArea className="max-h-[300px]">
                 <div className="mb-6">
                   <label className="mb-2 block text-lg font-semibold">
-                    Game Name
+                    Answer
                   </label>
                   <input
                     type="text"
                     value={answer_text ?? ""}
                     onChange={(e) => setanswer_text(e.target.value)}
                     className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter Game Name"
+                    placeholder="Enter Answer"
                   />
                   <div className="m-5">
                     <CosmicButton
@@ -437,42 +438,49 @@ export function CosmicGameInterface({
                     {match.data?.players.map((player) => (
                       <div
                         key={player.id}
-                        className="flex items-center justify-between py-2"
+                        className="items-center justify-between py-2"
                       >
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8 ring-2 ring-cyan-500">
-                            <AvatarImage
-                              src={
-                                "https://i1.sndcdn.com/artworks-46Iy8SxkMaxepPTL-u5icpA-t500x500.jpg"
-                              }
-                            />
-                            <AvatarFallback>{player.username}</AvatarFallback>
-                          </Avatar>
-                          <div className="font-medium text-cyan-100">
-                            {player.username}
-                          </div>
-                        </div>
-                        <div className="text-cyan-300">{player.score}</div>
-                        {match.data &&
-                          match.data.current_judge === player.username && (
-                            <div className="text-cyan-300">
-                              THIS PLAYER IS THE JUDGE
-                            </div>
-                          )}
-                        {match.data &&
-                          match.data.current_judge !== player.username &&
-                          match.data.current_judge ===
-                            session?.user.username && (
-                            <div className="m-5">
-                              <CosmicButton
-                                text="VOTE"
-                                color="bg-gradient-to-r from-green-600 to-blue-600"
-                                onClick={() => {
-                                  handle_judge_vote_for(player.username);
-                                }}
+                        <div className="flex items-center justify-between py-2">
+                          {" "}
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8 ring-2 ring-cyan-500">
+                              <AvatarImage
+                                src={
+                                  "https://i1.sndcdn.com/artworks-46Iy8SxkMaxepPTL-u5icpA-t500x500.jpg"
+                                }
                               />
+                              <AvatarFallback>{player.username}</AvatarFallback>
+                            </Avatar>
+                            <div className="font-medium text-cyan-100">
+                              {player.username}
                             </div>
-                          )}
+                          </div>
+                          <div className="text-cyan-300">{player.score}</div>
+                          {match.data &&
+                            match.data.current_judge === player.username && (
+                              <div className="text-cyan-300">
+                                THIS PLAYER IS THE JUDGE
+                              </div>
+                            )}
+                          {match.data &&
+                            match.data.current_judge !== player.username &&
+                            match.data.current_judge ===
+                              session?.user.username && (
+                              <div className="m-5">
+                                <CosmicButton
+                                  text="VOTE"
+                                  onClick={() => {
+                                    handle_judge_vote_for(player.username);
+                                  }}
+                                />
+                                {/* <div className="m-5">{player.answer}</div> */}
+                              </div>
+                            )}
+                        </div>
+
+                        <div className="m-5 text-cyan-300">
+                          Answer:{player.answer}
+                        </div>
                       </div>
                     ))}
                   </div>
