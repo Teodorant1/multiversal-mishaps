@@ -50,14 +50,6 @@ export function SignupForm() {
     makeAccount.mutate({ username, email, password });
   };
 
-  const simulateError = () => {
-    setIsError(true);
-    setErrorText(
-      "QUANTUM ANOMALY DETECTED: Unable to establish connection with the multiverse database.",
-    );
-    // Error will auto-dismiss after 15 seconds due to the ErrorPopup component
-  };
-
   return (
     <Card className="relative w-full max-w-md overflow-hidden bg-gray-900/90 text-cyan-50 shadow-xl shadow-cyan-500/20">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />

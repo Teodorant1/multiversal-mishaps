@@ -17,7 +17,6 @@ export function CosmicGameInterface({
   gameID,
   game_password,
   player_password,
-  game_has_launched,
   game_name,
 }: CosmicGameInterfaceProps) {
   const [answer_text, setanswer_text] = useState("");
@@ -45,6 +44,7 @@ export function CosmicGameInterface({
       console.log("data", data);
       setIsLoading(false);
       if (data?.existing_match && data?.error === false) {
+        await match.refetch();
         // setgame_has_launched(true);
         // setgameID(data.existing_match.id);
         // setgame_name(data.existing_match.name);
@@ -59,15 +59,13 @@ export function CosmicGameInterface({
   });
 
   const handle_start_match = () => {
-    if (game_name && game_password && player_password && gameID) {
-      setIsLoading(true);
-      start_match.mutate({
-        match_id: gameID,
-        match_name: game_name,
-        match_password: game_password,
-        player_password: player_password,
-      });
-    }
+    setIsLoading(true);
+    start_match.mutate({
+      match_id: gameID,
+      match_name: game_name,
+      match_password: game_password,
+      player_password: player_password,
+    });
   };
 
   const answer = api.game.answer.useMutation({
@@ -192,6 +190,24 @@ export function CosmicGameInterface({
           <ErrorPopup message={errorText} onDismiss={() => setIsError(null)} />
         </div>
       )}
+      {/* HAS STARTED:
+      {match.data?.has_started === true && <div>{"true"} </div>}
+      {match.data?.has_started === false && <div>{"false"} </div>}
+      owner: {match.data?.creator_owner} */}
+      {match.data &&
+        match.data.has_started === false &&
+        match.data.creator_owner.trim() === session?.user.username.trim() && (
+          <div className="m-5">
+            <CosmicButton
+              text="START MATCH & DISABLE NEW JOINS"
+              color="bg-gradient-to-r from-green-600 to-blue-600"
+              onClick={() => {
+                handle_start_match();
+                console.log("handle_start_match();");
+              }}
+            />
+          </div>
+        )}
       <ParticleEffect />
       <DataStream />
       <div className="relative w-full p-5">
@@ -297,6 +313,7 @@ export function CosmicGameInterface({
                     <div>
                       <div className="m-2">DECK_ID: {match.data.deck}</div>
                       <div className="m-2">MATCH_ID: {match.data.id}</div>
+                      <div className="m-2">MATCH_NAME: {match.data.name}</div>
                     </div>
                   )}
                 </CardTitle>
@@ -441,7 +458,6 @@ export function CosmicGameInterface({
                         className="items-center justify-between py-2"
                       >
                         <div className="flex items-center justify-between py-2">
-                          {" "}
                           <div className="flex items-center gap-2">
                             <Avatar className="h-8 w-8 ring-2 ring-cyan-500">
                               <AvatarImage

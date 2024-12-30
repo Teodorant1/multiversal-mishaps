@@ -29,46 +29,47 @@ export const gameRouter = createTRPCRouter({
           ),
           with: { players: true },
         });
-        if (existing_match) {
-          const this_player = existing_match.players.find(
-            //            (player) => player.username === input.player_username.trim(),
-            (player) => player.username === ctx.session.user.username,
+        if (
+          existing_match &&
+          existing_match?.creator_owner === ctx.session.user.username
+        ) {
+          await ctx.db
+            .update(match)
+            .set({
+              has_started: true,
+            })
+            .where(eq(match.id, existing_match.id));
+
+          existing_match.players = [];
+          return {
+            existing_match,
+            error: false,
+            error_description: null,
+          };
+        } else {
+          throw new Error(
+            "The match you are trying to start either doesn't exist OR you aren't the creator_owner of it",
           );
-          if (this_player) {
-            const comparison = await bcrypt.compare(
-              input.player_password,
-              this_player?.hashed_password,
-            );
-            if (
-              comparison &&
-              existing_match.current_judge === ctx.session.user.username
-            ) {
-              await ctx.db
-                .update(match)
-                .set({
-                  has_started: true,
-                })
-                .where(eq(match.id, existing_match.id));
-            }
-            existing_match.players = [];
-            return {
-              this_player,
-              existing_match,
-              error: false,
-              error_description: null,
-            };
-          }
+
+          // return {
+          //   existing_match: null,
+          //   error: true,
+          //   error_description:
+          //     "The match you are trying to start either doesn't exist OR you aren't the creator_owner of it",
+          // };
         }
-        return {
-          this_player: null,
-          existing_match: null,
-          error: true,
-          error_description: "Something went wrong. Please try again.",
-        };
       } catch (error) {
+        if (error instanceof Error) {
+          console.log(error.message); // Access safely
+
+          return {
+            existing_match: null,
+            error: true,
+            error_description: error.message,
+          };
+        }
         console.error("Error in mutation:", error);
         return {
-          this_player: null,
           existing_match: null,
           error: true,
           error_description: "Something went wrong. Please try again.",
@@ -89,12 +90,13 @@ export const gameRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const question_list = await get_question_list_ready_for_match(
-          input.deck_id,
+          input.deck_id.trim(),
           ctx.session.user.id,
         );
 
         if (!question_list) {
-          return null;
+          throw new Error("Cannot create question list for some reason");
+          //      return null;
         }
         const first_question = question_list.shift();
 
@@ -103,10 +105,11 @@ export const gameRouter = createTRPCRouter({
           .values({
             name: input.match_name.trim(),
             current_judge: ctx.session.user.username,
+            creator_owner: ctx.session.user.username,
             password: input.match_password.trim(),
             all_questions: question_list,
             question: first_question!,
-            deck: input.deck_id,
+            deck: input.deck_id.trim(),
             scheduled_for_deletion: false,
           })
           .returning();
@@ -114,7 +117,7 @@ export const gameRouter = createTRPCRouter({
         const returned_new_match = new_match.at(0);
 
         if (!returned_new_match) {
-          return null;
+          throw new Error("Couldn't create the match for some weird reason");
         }
 
         const hashedPassword = await hashPassword(input.player_password.trim());
@@ -137,10 +140,20 @@ export const gameRouter = createTRPCRouter({
         };
       } catch (error) {
         console.error("Error in mutation:", error);
+        if (error instanceof Error) {
+          console.log(error.message); // Access safely
+          return {
+            returned_new_match: null,
+            first_player: null,
+            error: true,
+            error_description: error.message,
+          };
+        }
         return {
           error: true,
           error_description: "Something went wrong. Please try again.",
-          user: null,
+          first_player: null,
+          returned_new_match: null,
         };
       }
     }),
@@ -182,9 +195,11 @@ export const gameRouter = createTRPCRouter({
                 error: false,
                 error_description: null,
               };
-            } else {
-              return null;
+            } else if (!comparison) {
+              throw new Error("Wrong Credentials");
             }
+          } else if (!this_player) {
+            throw new Error("User Doesn't exist");
           }
           const hashedPassword = await hashPassword(
             input.player_password.trim(),
@@ -209,14 +224,25 @@ export const gameRouter = createTRPCRouter({
             error_description: null,
           };
         } else {
-          return null;
+          throw new Error("Match doesn't exist");
         }
       } catch (error) {
         console.error("Error in mutation:", error);
+        if (error instanceof Error) {
+          console.log(error.message); // Access safely
+
+          return {
+            existing_match: null,
+            this_player: null,
+            error: true,
+            error_description: error.message,
+          };
+        }
         return {
+          existing_match: null,
+          this_player: null,
           error: true,
           error_description: "Something went wrong. Please try again.",
-          user: null,
         };
       }
     }),

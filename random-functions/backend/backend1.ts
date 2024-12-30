@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
-import { and, eq, gte, lte } from "drizzle-orm";
+import { and, eq, gte, lte, or } from "drizzle-orm";
 import { deck, type question_type } from "~/server/db/schema";
 
 // Situation parts
@@ -67,9 +67,16 @@ export async function get_question_list_ready_for_match(
   userID: string,
 ) {
   const exact_deck = await db.query.deck.findFirst({
-    where: and(eq(deck.id, id), eq(deck.createdById, userID)),
+    where: or(
+      and(eq(deck.id, id), eq(deck.createdById, userID)),
+      and(eq(deck.id, id), eq(deck.isPublic, true)),
+    ),
     with: { questions: true },
   });
+
+  if (!exact_deck) {
+    throw new Error("deck doesn't exist or isn't public or isn't owned by you");
+  }
 
   const situations_v0 =
     exact_deck?.questions.filter((q) => q.isSituation === true) ?? [];

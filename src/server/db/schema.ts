@@ -95,7 +95,12 @@ export const match = createTable("match", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: varchar("name", { length: 255 }),
-  current_judge: varchar("current_judge", { length: 255 }),
+  current_judge: varchar("current_judge", { length: 255 })
+    .notNull()
+    .default(""),
+  creator_owner: varchar("creator_owner", { length: 255 })
+    .notNull()
+    .default(""),
   password: varchar("password", { length: 255 }), // New password field
   // hold all of the questions in one array
   all_questions: varchar("all_questions", { length: 3000 })

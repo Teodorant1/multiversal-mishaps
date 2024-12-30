@@ -164,7 +164,7 @@ export default function GameSetup() {
               placeholder="Enter Player password"
             />
           </div>
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <label className="mb-2 block text-lg font-semibold">
               Game ID (ONLY IF JOINING AN ALREADY EXISTING GAME)
             </label>
@@ -175,7 +175,7 @@ export default function GameSetup() {
               className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter Game ID"
             />
-          </div>
+          </div> */}
           {/* <div className="mb-6">
           <label className="mb-2 block text-lg font-semibold">
             Number of Players
@@ -190,6 +190,7 @@ export default function GameSetup() {
           />
           <span className="mt-2 block text-center">{playerCount} players</span>
         </div> */}
+
           <div className="mb-6">
             <label className="mb-2 block text-lg font-semibold">
               Select Deck (ONLY IF CREATING A NEW GAME)
@@ -210,6 +211,19 @@ export default function GameSetup() {
             ) : (
               <div className="text-gray-500">Loading...</div>
             )}
+          </div>
+          <h1 className="mx-auto text-cyan-300">OR CHOOSE A PUBLIC DECK</h1>
+          <div className="mb-6">
+            <label className="mb-2 block text-lg font-semibold text-cyan-300">
+              Public Deck ID (from /deck-browser)
+            </label>
+            <input
+              type="text"
+              value={selectedDeck_id ?? ""}
+              onChange={(e) => setSelectedDeck_id(e.target.value)}
+              className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Public Deck ID "
+            />
           </div>
           {/* <div className="mb-6">
           <label className="mb-2 block text-lg font-semibold">

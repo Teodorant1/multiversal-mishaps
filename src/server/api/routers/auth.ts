@@ -49,6 +49,15 @@ export const authRouter = createTRPCRouter({
         };
       } catch (error) {
         console.error("Error in register mutation:", error);
+        if (error instanceof Error) {
+          console.log(error.message); // Access safely
+
+          return {
+            error: true,
+            error_description: error.message,
+            user: null,
+          };
+        }
         return {
           error: true,
           error_description: "Something went wrong. Please try again.",
