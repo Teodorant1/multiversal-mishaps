@@ -108,9 +108,7 @@ export const match = createTable("match", {
     .notNull()
     .default(sql`'{}'::text[]`),
   question: varchar("question", { length: 3000 }).notNull(), // New password field
-  deck: varchar("deck", { length: 255 })
-    .notNull()
-    .references(() => deck.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  deck: varchar("deck", { length: 255 }).notNull(),
   scheduled_for_deletion: boolean("scheduled_for_deletion").default(false),
   has_started: boolean("has_started").default(false),
 });

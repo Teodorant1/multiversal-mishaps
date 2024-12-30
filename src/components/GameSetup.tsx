@@ -8,12 +8,12 @@ import { api } from "~/trpc/react";
 import { ErrorPopup } from "./ErrorPopup";
 
 export default function GameSetup() {
-  const [gameID, setgameID] = useState<string | null>("default");
+  const [gameID, setgameID] = useState<string | null>("");
   const [game_name, setgame_name] = useState<string | null>("");
   const [game_password, setgame_password] = useState<string | null>("");
   const [player_password, setplayer_password] = useState<string | null>("");
   const [game_has_launched, setgame_has_launched] = useState<boolean>(false);
-  const [selectedDeck_id, setSelectedDeck_id] = useState("");
+  const [selectedDeck_id, setSelectedDeck_id] = useState("default");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<boolean | null>(false);
@@ -219,7 +219,7 @@ export default function GameSetup() {
             </label>
             <input
               type="text"
-              value={selectedDeck_id ?? ""}
+              value={selectedDeck_id}
               onChange={(e) => setSelectedDeck_id(e.target.value)}
               className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Public Deck ID "
