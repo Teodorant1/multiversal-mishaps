@@ -97,7 +97,10 @@ export const gameRouter = createTRPCRouter({
           //      return null;
         }
         const first_question = question_list.shift();
-
+        if (!first_question) {
+          throw new Error("Cannot create first_question for some reason");
+          //      return null;
+        }
         const new_match = await ctx.db
           .insert(match)
           .values({
@@ -106,7 +109,7 @@ export const gameRouter = createTRPCRouter({
             creator_owner: ctx.session.user.username,
             password: input.match_password.trim(),
             all_questions: question_list,
-            question: first_question!,
+            question: first_question,
             deck: input.deck_id.trim(),
             scheduled_for_deletion: false,
           })
@@ -283,8 +286,13 @@ export const gameRouter = createTRPCRouter({
                 .set({ answer: input.answer })
                 .where(
                   and(
-                    eq(player.username, ctx.session.user.username),
-                    eq(player.hashed_password, this_player.hashed_password),
+                    eq(player.match, input.match_id.trim()),
+                    eq(player.username, ctx.session.user.username.trim()),
+                    eq(player.id, this_player.id.trim()),
+                    eq(
+                      player.hashed_password,
+                      this_player.hashed_password.trim(),
+                    ),
                   ),
                 );
 
@@ -309,7 +317,6 @@ export const gameRouter = createTRPCRouter({
         return {
           error: true,
           error_description: "Something went wrong. Please try again.",
-          user: null,
         };
       }
     }),
@@ -317,7 +324,7 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        target_username: z.string(),
+        target_id: z.string(),
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -339,10 +346,13 @@ export const gameRouter = createTRPCRouter({
           );
 
           const target_player = existing_match.players.find(
-            (player) => player.username === input.target_username.trim(),
+            (player) => player.id === input.target_id.trim(),
           );
 
-          if (this_player && target_player) {
+          if (
+            this_player?.username === existing_match.current_judge &&
+            target_player
+          ) {
             const comparison = await bcrypt.compare(
               input.player_password,
               this_player?.hashed_password,
@@ -369,6 +379,7 @@ export const gameRouter = createTRPCRouter({
                   .set({
                     question: new_question,
                     all_questions: existing_match.all_questions,
+                    current_judge: target_player.username,
                   })
                   .where(eq(match.id, existing_match.id));
               }
@@ -389,7 +400,7 @@ export const gameRouter = createTRPCRouter({
           const new_player = await ctx.db
             .insert(player)
             .values({
-              username: input.target_username.trim(),
+              username: input.target_id.trim(),
               hashed_password: hashedPassword,
               match: existing_match.id,
             })

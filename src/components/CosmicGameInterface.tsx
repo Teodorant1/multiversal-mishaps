@@ -119,7 +119,7 @@ export function CosmicGameInterface({
     },
   });
 
-  const handle_judge_vote_for = (target_username: string) => {
+  const handle_judge_vote_for = (target_id: string) => {
     // if (game_name && game_password && player_password && gameID) {
     setIsLoading(true);
     judge_vote_for.mutate({
@@ -127,7 +127,7 @@ export function CosmicGameInterface({
       match_name: game_name,
       match_id: gameID,
       match_password: game_password,
-      target_username: target_username,
+      target_id: target_id,
     });
     // }
   };
@@ -486,7 +486,7 @@ export function CosmicGameInterface({
                                 <CosmicButton
                                   text="VOTE"
                                   onClick={() => {
-                                    handle_judge_vote_for(player.username);
+                                    handle_judge_vote_for(player.id);
                                   }}
                                 />
                                 {/* <div className="m-5">{player.answer}</div> */}
