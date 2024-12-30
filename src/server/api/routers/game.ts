@@ -27,7 +27,6 @@ export const gameRouter = createTRPCRouter({
             eq(match.name, input.match_name.trim()),
             eq(match.password, input.match_password.trim()),
           ),
-          with: { players: true },
         });
         if (
           existing_match &&
@@ -40,7 +39,6 @@ export const gameRouter = createTRPCRouter({
             })
             .where(eq(match.id, existing_match.id));
 
-          existing_match.players = [];
           return {
             existing_match,
             error: false,

@@ -1,56 +1,54 @@
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
-import { and, eq, gte, lte, or } from "drizzle-orm";
-import { deck, type question_type } from "~/server/db/schema";
+import { and, eq, or } from "drizzle-orm";
+import { deck } from "~/server/db/schema";
 
-// Situation parts
 export const situations: string[] = [
-  "If a galactic council accidentally voted to outlaw gravity",
-  "If your spaceship's AI developed an existential crisis",
-  "If a rogue scientist turned half the planet into tapioca pudding",
-  "If the interdimensional cable network aired your most embarrassing moment",
-  "If a black hole suddenly decided to become sentient",
-  "In a world where the moon got an unsolicited rebranding by a cosmic marketing agency",
-  "In a world where aliens landed on Earth, demanding the recipe for lasagna",
-  "If your parallel universe doppelgänger became a celebrity influencer",
-  "If time itself took a day off and caused utter chaos",
-  "In a world where a hyper-intelligent toaster claimed dominion over all small appliances",
-  "If a wormhole appeared in your backyard, leading to a dimension of bad puns",
-  "In a world where the president of Mars declared war on improperly made pancakes",
-  "If a malfunctioning teleportation device fused two very incompatible objects",
-  "In a world where the space station vending machine achieved self-awareness",
-  "If an asteroid composed entirely of rubber ducks was discovered",
-  "In a world where a mad scientist unleashed an army of quantum cats",
-  "If the galactic internet crashed due to an overload of cat memes",
-  "In a world where a time-traveling sandwich threatened the space-time continuum",
-  "If your robot assistant joined an underground robot rebellion",
-  "In a world where a comet began broadcasting reality TV shows from another galaxy",
+  "If a reality TV show host accidentally became the leader of the free world",
+  "If your grandmother started a viral OnlyFans account",
+  "If the national anthem was replaced with a Nickelback song",
+  "If all fast-food chains banned sauces overnight",
+  "If billionaires were legally required to work as janitors once a year",
+  "In a world where karaoke nights determined the new Supreme Court justices",
+  "In a world where pineapple on pizza became mandatory by law",
+  "If your worst childhood photo was printed on every cereal box",
+  "If Mondays were declared a public holiday, but only for clowns",
+  "In a world where pets could post on social media without your permission",
+  "If your Wi-Fi password was randomly reset every 30 minutes",
+  "In a world where deodorant was banned for environmental reasons",
+  "If the Tooth Fairy started leaving IOUs instead of cash",
+  "In a world where everyone had to speak in song lyrics for a day",
+  "If coffee was outlawed and replaced with kale smoothies",
+  "If a typo in the Constitution made TikTok the new national religion",
+  "In a world where dentists were allowed to nominate people for jail time",
+  "If all emojis were replaced with your ex’s face",
+  "In a world where public nudity was encouraged but socks were illegal",
+  "If every dog suddenly learned how to file taxes but refused to share how",
 ];
 
-// Question parts
 export const questions: string[] = [
-  "how would society adapt to this change?",
-  "what would the media say about it?",
-  "how would scientists explain it?",
-  "who or what might benefit from this situation?",
-  "what could possibly be the next step?",
-  "how would humanity solve the problem?",
-  "how might future historians describe this event?",
-  "what absurd solution might actually work?",
-  "who would be the unlikely hero of this story?",
-  "how would intergalactic politics handle it?",
-  "what would become the most pressing issue?",
-  "what strange innovations might this inspire?",
-  "how would the internet react?",
-  "what would conspiracy theorists say about it?",
-  "how might this affect everyday life?",
-  "what would the aliens think of us?",
-  "how could this be turned into a blockbuster movie?",
-  "who might write the ultimate guide to surviving this?",
-  "how could this escalate even further?",
-  "what lessons might humanity learn from this?",
+  "how would society react to this change?",
+  "what would the tabloids write about it?",
+  "who would profit the most from this situation?",
+  "what would be the weirdest unintended consequence?",
+  "how could this be turned into a Netflix original series?",
+  "what would Karen think about this?",
+  "how would influencers try to monetize it?",
+  "what would your weird uncle say about this on Facebook?",
+  "what's the most embarrassing way this could escalate?",
+  "who would get cancelled over this?",
+  "how would the internet collectively lose its mind?",
+  "what's the first thing your mom would say about it?",
+  "what would be the biggest conspiracy theory surrounding it?",
+  "how might this ruin someone’s wedding?",
+  "what dumb law would be passed in response to it?",
+  "how could someone exploit this for clout?",
+  "how would your boss handle it?",
+  "what’s the worst possible headline about this?",
+  "who would write the ultimate self-help book about it?",
+  "how could this lead to the next viral TikTok trend?",
 ];
-const shuffleArray = (array: question_type[]): question_type[] => {
+const shuffleArray = (array: string[]): string[] => {
   const shuffledArray = [...array]; // Create a copy of the array
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -66,39 +64,77 @@ export async function get_question_list_ready_for_match(
   id: string,
   userID: string,
 ) {
-  const exact_deck = await db.query.deck.findFirst({
-    where: or(
-      and(eq(deck.id, id), eq(deck.createdById, userID)),
-      and(eq(deck.id, id), eq(deck.isPublic, true)),
-    ),
-    with: { questions: true },
-  });
+  try {
+    let situationsToUse: string[] = [];
+    let questionsToUse: string[] = [];
 
-  if (!exact_deck) {
-    throw new Error("deck doesn't exist or isn't public or isn't owned by you");
+    if (id === "default") {
+      // Use the default arrays
+      situationsToUse = situations;
+      questionsToUse = questions;
+    } else {
+      // Fetch the deck from the database
+      const exact_deck = await db.query.deck.findFirst({
+        where: or(
+          and(eq(deck.id, id), eq(deck.createdById, userID)),
+          and(eq(deck.id, id), eq(deck.isPublic, true)),
+        ),
+        with: { questions: true },
+      });
+
+      if (!exact_deck) {
+        throw new Error(
+          "Deck doesn't exist, isn't public, or isn't owned by you.",
+        );
+      }
+
+      // Split the deck's questions into situations and questions
+      const situations_v0 =
+        exact_deck.questions.filter((q) => q.isSituation === true) ?? [];
+      const questions_v0 =
+        exact_deck.questions.filter((q) => q.isSituation === false) ?? [];
+
+      // Assign the filtered arrays to the variables
+      situationsToUse = situations_v0
+        .map((s) => s.text)
+        .filter((text): text is string => text !== null);
+      questionsToUse = questions_v0
+        .map((q) => q.text)
+        .filter((text): text is string => text !== null);
+    }
+
+    // Shuffle the arrays
+    const shuffledSituations = shuffleArray(situationsToUse);
+    const shuffledQuestions = shuffleArray(questionsToUse);
+
+    // Determine the number of pairs based on the smaller array's length
+    const numberOfPairs = Math.min(
+      shuffledSituations.length,
+      shuffledQuestions.length,
+    );
+
+    // Combine them into pairs
+    const pairs: string[] = [];
+    for (let i = 0; i < numberOfPairs; i++) {
+      pairs.push(`${shuffledSituations[i]} , ${shuffledQuestions[i]}`);
+    }
+
+    // Return the pairs or null if no pairs were generated
+    return pairs.length > 0 ? pairs : null;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(
+        "Error in get_question_list_ready_for_match:",
+        error.message,
+      );
+      return null;
+    }
+    console.error(
+      "Unexpected error in get_question_list_ready_for_match:",
+      error,
+    );
+    return null;
   }
-
-  const situations_v0 =
-    exact_deck?.questions.filter((q) => q.isSituation === true) ?? [];
-  const questions_v0 =
-    exact_deck?.questions.filter((q) => q.isSituation === false) ?? [];
-
-  // Function to shuffle an array
-
-  // Shuffle both situations and questions
-  const situations = shuffleArray(situations_v0);
-  const questions = shuffleArray(questions_v0);
-
-  // Determine the number of pairs based on the smaller array's length
-  const numberOfPairs = Math.min(situations.length, questions.length);
-
-  // Combine them into pairs
-  const pairs: string[] = [];
-  for (let i = 0; i < numberOfPairs; i++) {
-    pairs.push(`${situations[i]?.text} , ${questions[i]?.text}`);
-  }
-
-  return pairs.length > 0 ? pairs : null;
 }
 
 export async function hashPassword(password: string): Promise<string> {
