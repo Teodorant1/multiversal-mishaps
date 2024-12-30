@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
-import { Atom, Zap, Stars, Binary } from "lucide-react";
+import { Atom, Stars } from "lucide-react";
 import { type CosmicGameInterfaceProps } from "~/types/projecttypes";
 import { useState } from "react";
 import { api } from "~/trpc/react";
@@ -322,65 +321,12 @@ export function CosmicGameInterface({
                 </Badge> */}
               </div>
             </CardHeader>
-            {/* <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <h4 className="flex items-center gap-2 text-sm font-medium text-purple-300">
-                    <Binary className="h-4 w-4" />
-                    Author
-                  </h4>
-                  <p className="text-purple-100">{deck.author}</p>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-purple-300">
-                    Description
-                  </h4>
-                  <p className="text-purple-100">{deck.description}</p>
-                </div>
-                <motion.div
-                  className="h-1 w-full overflow-hidden rounded-full"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, rgba(147,51,234,0.3) 0%, rgba(34,211,238,0.3) 100%)",
-                  }}
-                >
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-purple-500 to-cyan-500"
-                    initial={{ x: "-100%" }}
-                    animate={{ x: "100%" }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
-                </motion.div>
-              </div>
-            </CardContent> */}
           </Card>
         </div>
         {/* Right Column - Question and Players */}
         <div className="m-5 space-y-6 lg:col-span-2">
           {/* Current Question */}
           <Card className="border-cyan-500/20 bg-gray-900/80">
-            {/* <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-cyan-300">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [1, 0.7, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <Zap className="h-5 w-5 text-cyan-500" />
-                </motion.div>
-                Round {roundNumber}
-              </CardTitle>
-            </CardHeader> */}
             <>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -399,7 +345,7 @@ export function CosmicGameInterface({
                     ease: "easeInOut",
                   }}
                 />
-                <motion.p
+                <motion.div
                   className="relative text-center text-xl font-semibold text-white"
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -408,7 +354,7 @@ export function CosmicGameInterface({
                   {match.data?.question && match.data && (
                     <div> {match.data.question}</div>
                   )}
-                </motion.p>
+                </motion.div>
               </motion.div>
             </>
           </Card>

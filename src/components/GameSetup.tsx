@@ -264,7 +264,10 @@ export default function GameSetup() {
                       setgame_name(game.name);
                     }}
                   >
-                    <span className="flex-grow">{game.name}</span>
+                    NAME:{" "}
+                    <span className="flex-grow text-cyan-300">{game.name}</span>
+                    ID:{" "}
+                    <span className="flex-grow text-cyan-300">{game.id}</span>
                     <div className="flex items-center space-x-2">
                       {
                         (gameID === game.id,
