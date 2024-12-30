@@ -105,7 +105,7 @@ export function CosmicGameInterface({
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
-      if (data?.existing_match && data?.error === false) {
+      if (data?.error === false) {
         // setgame_has_launched(true);
         // setgameID(data.existing_match.id);
         // setgame_name(data.existing_match.name);

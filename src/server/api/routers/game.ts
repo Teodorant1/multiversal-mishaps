@@ -385,44 +385,23 @@ export const gameRouter = createTRPCRouter({
               }
 
               return {
-                first_player: this_player,
                 error: false,
                 error_description: null,
               };
             } else {
-              return null;
+              throw new Error("Wrong password");
             }
+          } else {
+            throw new Error("You aint a judge buddy");
           }
-          const hashedPassword = await hashPassword(
-            input.player_password.trim(),
-          );
-
-          const new_player = await ctx.db
-            .insert(player)
-            .values({
-              username: input.target_id.trim(),
-              hashed_password: hashedPassword,
-              match: existing_match.id,
-            })
-            .returning();
-
-          const actual_player = new_player.at(0);
-          existing_match.players = [];
-          return {
-            existing_match,
-            first_player: actual_player,
-            error: false,
-            error_description: null,
-          };
         } else {
-          return null;
+          throw new Error("Match doesn't exist");
         }
       } catch (error) {
         console.error("Error in mutation:", error);
         return {
           error: true,
           error_description: "Something went wrong. Please try again.",
-          user: null,
         };
       }
     }),
