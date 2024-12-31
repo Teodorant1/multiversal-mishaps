@@ -382,6 +382,10 @@ export const gameRouter = createTRPCRouter({
                     current_judge: target_player.username,
                   })
                   .where(eq(match.id, existing_match.id));
+              } else if (!new_question) {
+                throw new Error(
+                  "Can't create new question , most likely since there aren't any remaining questions",
+                );
               }
 
               return {
