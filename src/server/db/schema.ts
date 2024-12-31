@@ -24,6 +24,10 @@ export const createTable = pgTableCreator(
 );
 export const question_type = pgEnum("question_type", ["question", "situation"]);
 
+export const cronjob_Runs = createTable("cronjob_Runs", {
+  runDate: timestamp("runDate", { withTimezone: true }).primaryKey().notNull(),
+});
+
 export const deck = createTable("deck", {
   id: varchar("id", { length: 255 })
     .notNull()

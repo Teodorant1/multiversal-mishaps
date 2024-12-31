@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
-import { and, eq, or } from "drizzle-orm";
-import { deck } from "~/server/db/schema";
+import { and, desc, eq, or, sql } from "drizzle-orm";
+import { deck, cronjob_Runs } from "~/server/db/schema";
 
 export const situations: string[] = [
   "If a reality TV show host accidentally became the leader of the free world",
@@ -48,6 +48,37 @@ export const questions: string[] = [
   "who would write the ultimate self-help book about it?",
   "how could this lead to the next viral TikTok trend?",
 ];
+
+export async function shouldRunJob() {
+  // const [latestRun] = await db
+  //   .select({ runDate: cronjob_Runs.runDate })
+  //   .from(cronjob_Runs)
+  //   .orderBy(sql`${cronjob_Runs.runDate} DESC`)
+  //   .limit(1);
+
+  const latestRun = await db.query.cronjob_Runs.findFirst({
+    columns: { runDate: true },
+    orderBy: [desc(cronjob_Runs.runDate)],
+    // orderBy: { runDate: "desc" },
+  });
+
+  if (!latestRun) {
+    return true;
+  }
+
+  console.log("latestRun", latestRun);
+
+  const currentTime = new Date();
+  console.log("currentTime", currentTime);
+
+  const lastRunTime = new Date(latestRun.runDate);
+
+  const minutesDifference =
+    (currentTime.getTime() - lastRunTime.getTime()) / (1000 * 60);
+
+  return minutesDifference >= 55;
+}
+
 const shuffleArray = (array: string[]): string[] => {
   const shuffledArray = [...array]; // Create a copy of the array
   for (let i = shuffledArray.length - 1; i > 0; i--) {

@@ -348,7 +348,9 @@ export const gameRouter = createTRPCRouter({
           const target_player = existing_match.players.find(
             (player) => player.id === input.target_id.trim(),
           );
-
+          if (target_player?.id === this_player?.id) {
+            throw new Error("It is illegal to vote for yourself!");
+          }
           if (
             this_player?.username === existing_match.current_judge &&
             target_player

@@ -9,7 +9,7 @@ import { ErrorPopup } from "./ErrorPopup";
 
 export default function GameSetup() {
   const [gameID, setgameID] = useState<string | null>("");
-  const [game_name, setgame_name] = useState<string | null>("default");
+  const [game_name, setgame_name] = useState<string | null>(null);
   const [game_password, setgame_password] = useState<string | null>("");
   const [player_password, setplayer_password] = useState<string | null>("");
   const [game_has_launched, setgame_has_launched] = useState<boolean>(false);
@@ -258,16 +258,19 @@ export default function GameSetup() {
                 {filteredMatches.map((game) => (
                   <li
                     key={game.id}
-                    className="flex items-center justify-between rounded-md bg-gray-700 p-3"
+                    className="flex rounded-md bg-gray-700 p-3"
                     onClick={() => {
                       setgameID(game.id);
                       setgame_name(game.name);
                     }}
                   >
-                    NAME:{" "}
-                    <span className="flex-grow text-cyan-300">{game.name}</span>
-                    ID:{" "}
-                    <span className="flex-grow text-cyan-300">{game.id}</span>
+                    <div className="left-1 flex-grow text-cyan-300">
+                      NAME:{game.name}
+                    </div>
+
+                    <div className="left-1 flex-grow text-cyan-300">
+                      ID:{game.id}
+                    </div>
                     <div className="flex items-center space-x-2">
                       {
                         (gameID === game.id,
