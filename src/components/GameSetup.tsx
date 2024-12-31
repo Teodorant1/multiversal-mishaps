@@ -9,7 +9,7 @@ import { ErrorPopup } from "./ErrorPopup";
 
 export default function GameSetup() {
   const [gameID, setgameID] = useState<string | null>("");
-  const [game_name, setgame_name] = useState<string | null>("");
+  const [game_name, setgame_name] = useState<string | null>("default");
   const [game_password, setgame_password] = useState<string | null>("");
   const [player_password, setplayer_password] = useState<string | null>("");
   const [game_has_launched, setgame_has_launched] = useState<boolean>(false);
