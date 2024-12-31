@@ -258,7 +258,7 @@ export default function GameSetup() {
                 {filteredMatches.map((game) => (
                   <li
                     key={game.id}
-                    className="flex rounded-md bg-gray-700 p-3"
+                    className="flex content-evenly items-center rounded-md bg-gray-700 p-3"
                     onClick={() => {
                       setgameID(game.id);
                       setgame_name(game.name);
