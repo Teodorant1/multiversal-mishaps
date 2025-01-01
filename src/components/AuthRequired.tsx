@@ -159,7 +159,7 @@ export function AuthRequired({
           {/* Actions */}
           <div className="z-20 space-y-4 pt-8">
             <div className="my-5">
-              <CosmicButton href="/api/auth/signin" text="INITIATE SEQUENCE" />
+              <CosmicButton href="/api/auth/signin" text="INITIATE SIGNIN" />
             </div>
             <div className="my-5">
               <CosmicButton href="/signup" text="INITIATE REGISTRATION" />
