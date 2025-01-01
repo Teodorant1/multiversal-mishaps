@@ -3,18 +3,14 @@
 
 import { motion, useAnimation } from "framer-motion";
 import { CosmicButton } from "./CosmicButton";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AuthRequiredProps } from "~/types/projecttypes";
+import { type AuthRequiredProps } from "~/types/projecttypes";
 
 export function AuthRequired({
   message = "ONLY THOSE WHO BEAR THE MARK MAY TRAVERSE BEYOND",
 }: AuthRequiredProps) {
-  const router = useRouter();
   const controls = useAnimation();
   const [hoveredGlyph, setHoveredGlyph] = useState<number | null>(null);
-
-  // Ancient glyphs that appear to be counting or measuring something
   const glyphs = ["◊", "◇", "⬡", "⬢", "⬣", "⬣+", "⬣++"];
 
   useEffect(() => {
@@ -24,7 +20,6 @@ export function AuthRequired({
     });
   }, [controls]);
 
-  // Deterministic star positions and durations
   const stars = Array.from({ length: 100 }, (_, i) => ({
     left: `${(i % 10) * 10 + 5}%`,
     top: `${Math.floor(i / 10) * 10 + 5}%`,
@@ -34,7 +29,6 @@ export function AuthRequired({
 
   return (
     <div className="flex min-h-screen items-center justify-center overflow-hidden bg-black p-4">
-      {/* Starfield background */}
       <div className="fixed inset-0">
         {stars.map((star, i) => (
           <motion.div
@@ -57,14 +51,12 @@ export function AuthRequired({
         ))}
       </div>
 
-      {/* The Monolith */}
       <motion.div
         className="relative aspect-[1/4] w-full max-w-[300px] bg-black"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 3, ease: "easeOut" }}
       >
-        {/* Mysterious surface patterns */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/20 to-transparent"
           animate={{
@@ -77,7 +69,6 @@ export function AuthRequired({
             ease: "linear",
           }}
         />
-
         {/* Ancient measurement markings */}
         <div className="absolute left-0 h-full w-[1px] bg-gray-800">
           {[...Array(20)].map((_, i) => (
@@ -97,8 +88,6 @@ export function AuthRequired({
             />
           ))}
         </div>
-
-        {/* Central inscription */}
         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
           <motion.div
             className="space-y-8"
@@ -106,7 +95,6 @@ export function AuthRequired({
             animate={{ opacity: 1 }}
             transition={{ delay: 2, duration: 3 }}
           >
-            {/* Ancient glyphs */}
             <div className="mb-8 flex justify-center space-x-4">
               {glyphs.map((glyph, index) => (
                 <motion.div
@@ -128,8 +116,6 @@ export function AuthRequired({
                 </motion.div>
               ))}
             </div>
-
-            {/* Message */}
             <motion.p
               className="font-mono text-sm leading-relaxed tracking-[0.2em] text-gray-400"
               animate={{
@@ -155,8 +141,7 @@ export function AuthRequired({
                 </motion.span>
               ))}
             </motion.p>
-          </motion.div>{" "}
-          {/* Actions */}
+          </motion.div>
           <div className="z-20 space-y-4 pt-8">
             <div className="my-5">
               <CosmicButton href="/api/auth/signin" text="INITIATE SIGNIN" />
@@ -169,8 +154,6 @@ export function AuthRequired({
             </div>
           </div>
         </div>
-
-        {/* Mysterious scanning effect */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/10 to-transparent"
           style={{ height: "100px" }}
@@ -183,11 +166,7 @@ export function AuthRequired({
             ease: "linear",
           }}
         />
-
-        {/* Edge details */}
         <div className="absolute inset-0 border border-gray-800/50" />
-
-        {/* Corner markers */}
         {[0, 90, 180, 270].map((rotation) => (
           <motion.div
             key={rotation}

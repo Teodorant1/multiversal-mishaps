@@ -56,26 +56,11 @@ export function SignupForm() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
       <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-cyan-500 to-transparent" />
       <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-cyan-500 to-transparent" />
-
-      {/* {isError && (
-        <div className="m-5 bg-red-700 p-5 text-white">ERROR: {errorText}</div>
-      )} */}
-
       {isError && (
         <div className="flex w-full items-center justify-center">
           <ErrorPopup message={errorText} onDismiss={() => setIsError(null)} />
         </div>
       )}
-
-      {/* <Button
-        className="relative w-full overflow-hidden rounded-full bg-gradient-to-r from-violet-700 to-blue-700 text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20"
-        disabled={isLoading}
-        onClick={simulateError}
-      >
-        <span className="relative">simulateError</span>
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-700 opacity-0 transition-opacity duration-300 hover:opacity-30" />
-      </Button> */}
-
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl font-bold text-cyan-50">

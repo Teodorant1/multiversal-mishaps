@@ -36,9 +36,6 @@ export const deckRouter = createTRPCRouter({
               ),
             )
             .returning();
-
-          // console.log("changed value", toggled_deck.at(0));
-
           return {
             toggled_deck: toggled_deck.at(0),
             error: false,
@@ -65,9 +62,6 @@ export const deckRouter = createTRPCRouter({
       where: eq(deck.createdById, ctx.session.user.id),
       with: { questions: true },
     });
-
-    // console.log("mydecks", my_decks);
-
     return my_decks ?? [];
   }),
   fetch_public_decks: publicProcedure
@@ -145,8 +139,6 @@ export const deckRouter = createTRPCRouter({
             createdById: ctx.session.user.id,
           })
           .returning();
-
-        //const updated_deck =
         await ctx.db
           .update(deck)
           .set({
@@ -158,8 +150,6 @@ export const deckRouter = createTRPCRouter({
               eq(deck.createdById, ctx.session.user.id),
             ),
           );
-        // .returning();
-
         return {
           inserted_question: inserted_question.at(0),
           error: false,
@@ -226,9 +216,6 @@ export const deckRouter = createTRPCRouter({
             createdById: ctx.session.user.id,
           })
           .returning();
-
-        // console.log("new deck", new_deck);
-
         return {
           new_deck: new_deck.at(0),
           error: false,

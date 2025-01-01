@@ -19,9 +19,6 @@ export default function GameSetup() {
   const [isError, setIsError] = useState<boolean | null>(false);
   const [errorText, setErrorText] = useState("");
   const [filterText, setFilterText] = useState("");
-
-  // const [gameName, setGameName] = useState("");
-  // const [password, setPassword] = useState("");
   const mydecks = api.deck.fetch_my_decks.useQuery(undefined, {
     staleTime: Infinity,
   });
@@ -92,16 +89,6 @@ export default function GameSetup() {
     });
   };
 
-  // const handleStartGame = () => {
-  //   console.log("Starting game with:", {
-  //     playerCount,
-  //     selectedDeck,
-  //     winningScore,
-  //     gameName,
-  //     password,
-  //   });
-  // };
-
   return (
     <div className="mx-auto w-full text-white">
       {game_has_launched === true ? (
@@ -164,32 +151,6 @@ export default function GameSetup() {
               placeholder="Enter Player password"
             />
           </div>
-          {/* <div className="mb-6">
-            <label className="mb-2 block text-lg font-semibold">
-              Game ID (ONLY IF JOINING AN ALREADY EXISTING GAME)
-            </label>
-            <input
-              type="text"
-              value={gameID ?? ""}
-              onChange={(e) => setgameID(e.target.value.trim())}
-              className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter Game ID"
-            />
-          </div> */}
-          {/* <div className="mb-6">
-          <label className="mb-2 block text-lg font-semibold">
-            Number of Players
-          </label>
-          <input
-            type="range"
-            min="3"
-            max="10"
-            value={playerCount}
-            onChange={(e) => setPlayerCount(Number(e.target.value))}
-            className="w-full"
-          />
-          <span className="mt-2 block text-center">{playerCount} players</span>
-        </div> */}
 
           <div className="mb-6">
             <label className="mb-2 block text-lg font-semibold">
@@ -225,20 +186,7 @@ export default function GameSetup() {
               placeholder="Public Deck ID "
             />
           </div>
-          {/* <div className="mb-6">
-          <label className="mb-2 block text-lg font-semibold">
-            Winning Score
-          </label>
-          <input
-            type="number"
-            min="1"
-            max="20"
-            value={winningScore}
-            onChange={(e) => setWinningScore(Number(e.target.value))}
-            className="w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div> */}
-          {/* Open Games List */}
+
           <div className="mb-6">
             <h2 className="mb-4 text-xl font-bold">Open Games</h2>
             <div className="mb-6">
@@ -303,50 +251,6 @@ export default function GameSetup() {
             ) : (
               <div className="text-gray-500">No games match your filter.</div>
             )}
-            {/* {available_matches.data && available_matches.data.length > 0 ? (
-              <ul className="space-y-4">
-                {available_matches.data.map((game) => (
-                  <li
-                    key={game.id}
-                    className="flex items-center justify-between rounded-md bg-gray-700 p-3"
-                    onClick={() => {
-                      setgameID(game.id);
-                      setgame_name(game.name);
-                    }}
-                  >
-                    <span className="flex-grow">{game.name}</span>
-                    <div className="flex items-center space-x-2">
-                      {
-                        (gameID === game.id,
-                        game_name === game.name && (
-                          <input
-                            type="text"
-                            placeholder="Enter Password"
-                            value={game_password ?? ""}
-                            onChange={(e) => setgame_password(e.target.value)}
-                            className="rounded-md bg-gray-800 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        ))
-                      }
-                      <CosmicButton
-                        text="Join Match"
-                        color="bg-gradient-to-r from-green-600 to-blue-600"
-                        onClick={() =>
-                          handle_join_match(
-                            game.id,
-                            game.name!,
-                            game_password!,
-                            player_password!,
-                          )
-                        }
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-500">No open games available.</p>
-            )} */}
           </div>
           <div className="flex">
             <div className="mx-5">
@@ -358,15 +262,6 @@ export default function GameSetup() {
                 }}
               />
             </div>
-            {/* <div className="mx-5">
-              <CosmicButton
-                text="Join Game"
-                color="bg-gradient-to-r from-green-600 to-blue-600"
-                onClick={() => {
-                  handle_join_match();
-                }}
-              />
-            </div> */}
           </div>
         </motion.div>
       )}

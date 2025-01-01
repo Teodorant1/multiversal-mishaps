@@ -2,15 +2,9 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { type combined_type, type question_type } from "~/server/db/schema";
+import { type combined_type } from "~/server/db/schema";
 import { format } from "date-fns";
 import { Clock } from "lucide-react";
-
-// interface DeckListProps {
-//   decks: Deck[];
-//   onDeckSelect: (deck: Deck) => void;
-//   selectedDeck?: Deck;
-// }
 
 export function DeckList({
   decks,

@@ -31,7 +31,6 @@ export default async function RootLayout({
               <>
                 <AnimatedCelestialBodies />
                 <nav className="relative z-50 flex items-center justify-between px-4 py-4">
-                  {/* Left-aligned navigation links */}
                   <div className="flex space-x-4">
                     <CosmicButton href="/" text="Home" />
                     <CosmicButton href="/game_page" text="Play Game" />
@@ -43,7 +42,6 @@ export default async function RootLayout({
                     <CosmicButton href="/faq" text="About" />
                   </div>
 
-                  {/* Right-aligned authentication buttons */}
                   <div className="flex space-x-4">
                     {session ? (
                       <>
@@ -63,7 +61,6 @@ export default async function RootLayout({
                       </>
                     )}
                   </div>
-                  {/* BOTTOM-aligned main */}
                 </nav>
               </>
             )}

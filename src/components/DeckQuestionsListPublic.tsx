@@ -105,8 +105,6 @@ export function DeckQuestionsListPublic({
               </motion.div>
             </ScrollArea>
           </div>
-
-          {/* Questions Column */}
           <div>
             <h3 className="mb-4 flex items-center text-lg font-semibold text-purple-400">
               <motion.div

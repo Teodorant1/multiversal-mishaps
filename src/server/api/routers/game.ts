@@ -13,7 +13,6 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        // player_username: z.string(),
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -48,17 +47,10 @@ export const gameRouter = createTRPCRouter({
           throw new Error(
             "The match you are trying to start either doesn't exist OR you aren't the creator_owner of it",
           );
-
-          // return {
-          //   existing_match: null,
-          //   error: true,
-          //   error_description:
-          //     "The match you are trying to start either doesn't exist OR you aren't the creator_owner of it",
-          // };
         }
       } catch (error) {
         if (error instanceof Error) {
-          console.log(error.message); // Access safely
+          console.log(error.message);
 
           return {
             existing_match: null,
@@ -79,7 +71,6 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        // player_username: z.string(),
         deck_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -94,12 +85,10 @@ export const gameRouter = createTRPCRouter({
 
         if (!question_list) {
           throw new Error("Cannot create question list for some reason");
-          //      return null;
         }
         const first_question = question_list.shift();
         if (!first_question) {
           throw new Error("Cannot create first_question for some reason");
-          //      return null;
         }
         const new_match = await ctx.db
           .insert(match)
@@ -126,7 +115,6 @@ export const gameRouter = createTRPCRouter({
         const first_player = await ctx.db
           .insert(player)
           .values({
-            // username: input.player_username.trim(),
             username: ctx.session.user.username,
             hashed_password: hashedPassword,
             match: returned_new_match?.id,
@@ -142,7 +130,7 @@ export const gameRouter = createTRPCRouter({
       } catch (error) {
         console.error("Error in mutation:", error);
         if (error instanceof Error) {
-          console.log(error.message); // Access safely
+          console.log(error.message);
           return {
             returned_new_match: null,
             first_player: null,
@@ -162,7 +150,6 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        // player_username: z.string(),
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -179,8 +166,6 @@ export const gameRouter = createTRPCRouter({
         });
         if (existing_match) {
           const this_player = existing_match.players.find(
-            // (player) => player.username === input.player_username.trim(),
-
             (player) => player.username === ctx.session.user.username.trim(),
           );
 
@@ -209,7 +194,6 @@ export const gameRouter = createTRPCRouter({
           const new_player = await ctx.db
             .insert(player)
             .values({
-              // username: input.player_username.trim(),
               username: ctx.session.user.username.trim(),
               hashed_password: hashedPassword,
               match: existing_match.id,
@@ -251,7 +235,6 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         match_name: z.string(),
-        // player_username: z.string(),
         match_id: z.string(),
         match_password: z.string(),
         player_password: z.string(),
@@ -270,7 +253,6 @@ export const gameRouter = createTRPCRouter({
         });
         if (existing_match) {
           const this_player = existing_match.players.find(
-            //            (player) => player.username === input.player_username.trim(),
             (player) => player.username === ctx.session.user.username,
           );
           if (this_player) {

@@ -16,7 +16,6 @@ export function CosmicCalendar({
       animate={{ opacity: 1, y: 0 }}
       className="relative mx-auto w-fit rounded-lg border border-cyan-500/20 bg-gray-900/80 p-6"
     >
-      {/* Animated background effects */}
       <motion.div
         className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-500/5 to-purple-500/5"
         animate={{
@@ -30,7 +29,6 @@ export function CosmicCalendar({
         }}
       />
 
-      {/* Corner decorations */}
       {[0, 90, 180, 270].map((rotation) => (
         <motion.div
           key={rotation}

@@ -76,7 +76,7 @@ function CelestialBody({
         : isStar
           ? rng() * 30 + 50
           : isMysterious || isPyramid
-            ? rng() * 1000 + 2000 // Super slow movement for mysterious planets and pyramids
+            ? rng() * 1000 + 2000
             : rng() * 60 + 60,
       delay: rng() * -40,
       yOffset: rng() * 80,

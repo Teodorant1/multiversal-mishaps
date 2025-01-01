@@ -10,9 +10,6 @@ export async function POST(request: Request) {
   try {
     const should_run_cron = await shouldRunJob();
     if (should_run_cron === true) {
-      // we might need this to debug later
-      // if (1 > 0) {
-
       await db.delete(match).where(eq(match.scheduled_for_deletion, true));
 
       await db.update(match).set({

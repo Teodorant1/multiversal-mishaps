@@ -8,13 +8,6 @@ export default function CosmicFuturisticGamePage() {
         MULTIVERSAL MISHAPS GAME
       </h1>
       <GameSetup />
-      {/* <CosmicFuturisticGame questions={cosmicQuestions} /> */}
-      {/* <CosmicGameInterface
-        gameID={""}
-        game_password={""}
-        player_password={""}
-        game_has_launched={""}
-      /> */}
     </div>
   );
 }

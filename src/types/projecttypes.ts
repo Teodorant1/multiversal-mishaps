@@ -5,7 +5,7 @@ export interface CosmicButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
   text: string;
-  onClick?: () => void; // Optional click handler
+  onClick?: () => void;
 }
 
 export type AnimatedTextProps = {
@@ -13,7 +13,7 @@ export type AnimatedTextProps = {
 };
 
 export interface ChaoticTitleProps {
-  title: string; // Define a prop for the title
+  title: string;
 }
 
 export type QuestionType = "Question" | "Situation";

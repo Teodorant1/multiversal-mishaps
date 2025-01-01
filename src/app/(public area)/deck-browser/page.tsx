@@ -9,8 +9,6 @@ import { DeckList } from "~/components/DeckDetails";
 import { DeckQuestionsListPublic } from "~/components/DeckQuestionsListPublic";
 import { api } from "~/trpc/react";
 
-// Example data - in a real app, this would come from an API
-
 export default function DeckArchivePage() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subDays(new Date(), 8),
@@ -40,14 +38,12 @@ export default function DeckArchivePage() {
           Multiversal Deck Archive
         </h1>
         <div className="">
-          {/* Calendar Column */}
           <div className="m-5 p-5">
             <CosmicCalendar
               dateRange={dateRange}
               onDateRangeSelect={setDateRange}
             />
           </div>
-          {/* Deck List Column */}
           {selected_deck.data && (
             <div className="my-2 flex">
               <CosmicButton
@@ -57,7 +53,7 @@ export default function DeckArchivePage() {
                 text={"Toggle DeckList"}
               />
             </div>
-          )}{" "}
+          )}
           {public_decks.data && show_results === true && (
             <div className="m-5 p-5">
               <DeckList
@@ -66,8 +62,7 @@ export default function DeckArchivePage() {
                 onDeckSelect={setSelectedDeck_id}
               />
             </div>
-          )}{" "}
-          {/* Deck Details Column */}
+          )}
           {public_decks.data && selected_deck.data && (
             <div className="m-5 p-5">
               <DeckQuestionsListPublic
@@ -76,7 +71,7 @@ export default function DeckArchivePage() {
               />
             </div>
           )}
-        </div>{" "}
+        </div>
       </div>
     </div>
   );

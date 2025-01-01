@@ -45,7 +45,6 @@ export function ErrorPopup({
           className="fixed left-1/2 top-4 z-50 -translate-x-1/2"
         >
           <div className="relative">
-            {/* Background with glitch effect */}
             <motion.div
               className="absolute inset-0 rounded-lg bg-red-500/20 blur-2xl"
               animate={{
@@ -59,9 +58,7 @@ export function ErrorPopup({
               }}
             />
 
-            {/* Main content */}
             <div className="relative flex min-w-[600px] max-w-2xl items-center gap-6 rounded-lg border border-red-500/50 bg-gray-900/95 px-8 py-6 text-red-500 shadow-2xl backdrop-blur-sm">
-              {/* Animated icon */}
               <motion.div
                 animate={{
                   scale: [1, 1.2, 1],
@@ -76,7 +73,6 @@ export function ErrorPopup({
                 <AlertCircle className="h-12 w-12" />
               </motion.div>
 
-              {/* Message with glitch effect */}
               <motion.p
                 className="flex-1 font-mono text-lg"
                 animate={{
@@ -91,7 +87,6 @@ export function ErrorPopup({
                 {message}
               </motion.p>
 
-              {/* Progress bar */}
               <motion.div
                 className="absolute bottom-0 left-0 h-1 bg-red-500"
                 initial={{ width: "100%" }}
@@ -102,7 +97,6 @@ export function ErrorPopup({
                 }}
               />
 
-              {/* Decorative corner elements */}
               {[0, 90, 180, 270].map((rotation) => (
                 <motion.div
                   key={rotation}

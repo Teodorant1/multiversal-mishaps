@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
-import { and, desc, eq, or, sql } from "drizzle-orm";
+import { and, desc, eq, or } from "drizzle-orm";
 import { deck, cronjob_Runs } from "~/server/db/schema";
 
 export const situations: string[] = [
@@ -50,16 +50,9 @@ export const questions: string[] = [
 ];
 
 export async function shouldRunJob() {
-  // const [latestRun] = await db
-  //   .select({ runDate: cronjob_Runs.runDate })
-  //   .from(cronjob_Runs)
-  //   .orderBy(sql`${cronjob_Runs.runDate} DESC`)
-  //   .limit(1);
-
   const latestRun = await db.query.cronjob_Runs.findFirst({
     columns: { runDate: true },
     orderBy: [desc(cronjob_Runs.runDate)],
-    // orderBy: { runDate: "desc" },
   });
 
   if (!latestRun) {
@@ -80,13 +73,13 @@ export async function shouldRunJob() {
 }
 
 const shuffleArray = (array: string[]): string[] => {
-  const shuffledArray = [...array]; // Create a copy of the array
+  const shuffledArray = [...array];
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledArray[i], shuffledArray[j]] = [
       shuffledArray[j]!,
       shuffledArray[i]!,
-    ]; // Swap elements
+    ];
   }
   return shuffledArray;
 };
@@ -100,11 +93,9 @@ export async function get_question_list_ready_for_match(
     let questionsToUse: string[] = [];
 
     if (id === "default") {
-      // Use the default arrays
       situationsToUse = situations;
       questionsToUse = questions;
     } else {
-      // Fetch the deck from the database
       const exact_deck = await db.query.deck.findFirst({
         where: or(
           and(eq(deck.id, id), eq(deck.createdById, userID)),
@@ -119,13 +110,11 @@ export async function get_question_list_ready_for_match(
         );
       }
 
-      // Split the deck's questions into situations and questions
       const situations_v0 =
         exact_deck.questions.filter((q) => q.isSituation === true) ?? [];
       const questions_v0 =
         exact_deck.questions.filter((q) => q.isSituation === false) ?? [];
 
-      // Assign the filtered arrays to the variables
       situationsToUse = situations_v0
         .map((s) => s.text)
         .filter((text): text is string => text !== null);
@@ -134,23 +123,17 @@ export async function get_question_list_ready_for_match(
         .filter((text): text is string => text !== null);
     }
 
-    // Shuffle the arrays
     const shuffledSituations = shuffleArray(situationsToUse);
     const shuffledQuestions = shuffleArray(questionsToUse);
 
-    // Determine the number of pairs based on the smaller array's length
     const numberOfPairs = Math.min(
       shuffledSituations.length,
       shuffledQuestions.length,
     );
-
-    // Combine them into pairs
     const pairs: string[] = [];
     for (let i = 0; i < numberOfPairs; i++) {
       pairs.push(`${shuffledSituations[i]} , ${shuffledQuestions[i]}`);
     }
-
-    // Return the pairs or null if no pairs were generated
     return pairs.length > 0 ? pairs : null;
   } catch (error) {
     if (error instanceof Error) {
@@ -167,41 +150,14 @@ export async function get_question_list_ready_for_match(
     return null;
   }
 }
-
 export async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 10; // Adjust salt rounds as needed (default is 10)
-
-  // Generate a salt
+  const saltRounds = 10;
   const salt = await bcrypt.genSalt(saltRounds);
-
-  // Hash the password using the salt
   const hashedPassword = await bcrypt.hash(password, salt);
-
   return hashedPassword;
 }
-
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
-
-// // Function to shuffle an array
-// function shuffleArray<T>(array: T[]): T[] {
-//   if (array.length > 0) {
-//     const shuffled = [...array]; // Create a copy of the array to avoid mutating the original
-//     for (let i = shuffled.length - 1; i > 0; i--) {
-//       const j = Math.floor(Math.random() * (i + 1));
-//       [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // Swap elements
-//     }
-//     return shuffled;
-//   }
-//   return [];
-// }
-
-// // Function to shuffle and return both arrays
-// function getShuffledContent() {
-//   const shuffledSituations = shuffleArray(situations);
-//   const shuffledQuestions = shuffleArray(questions);
-//   return { shuffledSituations, shuffledQuestions };
-// }

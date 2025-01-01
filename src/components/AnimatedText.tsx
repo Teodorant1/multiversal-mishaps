@@ -1,4 +1,3 @@
-// components/AnimatedText.tsx
 import { motion } from "framer-motion";
 import { type AnimatedTextProps } from "~/types/projecttypes";
 
@@ -19,11 +18,11 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({ text }) => {
     animate: {
       y: [-10, 0, 10, 0],
       color: [
-        "rgb(59,130,246)", // Blue
-        "rgb(168,85,247)", // Purple
-        "rgb(236,72,153)", // Pink
-        "rgb(34,197,94)", // Green
-        "rgb(6,182,212)", // Cyan
+        "rgb(59,130,246)",
+        "rgb(168,85,247)",
+        "rgb(236,72,153)",
+        "rgb(34,197,94)",
+        "rgb(6,182,212)",
       ],
       transition: {
         y: {

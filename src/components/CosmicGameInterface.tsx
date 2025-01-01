@@ -34,7 +34,7 @@ export function CosmicGameInterface({
     },
     {
       refetchIntervalInBackground: true,
-      refetchInterval: 10000, // Refetch every 10 seconds
+      refetchInterval: 10000,
     },
   );
 
@@ -44,10 +44,6 @@ export function CosmicGameInterface({
       setIsLoading(false);
       if (data?.existing_match && data?.error === false) {
         await match.refetch();
-        // setgame_has_launched(true);
-        // setgameID(data.existing_match.id);
-        // setgame_name(data.existing_match.name);
-        // setgame_password(data.existing_match.password);
       } else {
         setIsError(true);
         setErrorText(
@@ -74,10 +70,6 @@ export function CosmicGameInterface({
       if (data && data?.error === false) {
         setanswer_text(" ");
         await match.refetch();
-        // setgame_has_launched(true);
-        // setgameID(data.existing_match.id);
-        // setgame_name(data.existing_match.name);
-        // setgame_password(data.existing_match.password);
       } else {
         setIsError(true);
         setErrorText(
@@ -88,7 +80,6 @@ export function CosmicGameInterface({
   });
 
   const handle_answer = () => {
-    // if (game_name && game_password && player_password && gameID) {
     setIsLoading(true);
     answer.mutate({
       player_password: player_password,
@@ -97,7 +88,6 @@ export function CosmicGameInterface({
       match_id: gameID,
       match_password: game_password,
     });
-    // }
   };
 
   const judge_vote_for = api.game.judge_vote_for.useMutation({
@@ -105,10 +95,6 @@ export function CosmicGameInterface({
       console.log("data", data);
       setIsLoading(false);
       if (data?.error === false) {
-        // setgame_has_launched(true);
-        // setgameID(data.existing_match.id);
-        // setgame_name(data.existing_match.name);
-        // setgame_password(data.existing_match.password);
       } else {
         setIsError(true);
         setErrorText(
@@ -119,7 +105,6 @@ export function CosmicGameInterface({
   });
 
   const handle_judge_vote_for = (target_id: string) => {
-    // if (game_name && game_password && player_password && gameID) {
     setIsLoading(true);
     judge_vote_for.mutate({
       player_password: player_password,
@@ -128,10 +113,8 @@ export function CosmicGameInterface({
       match_password: game_password,
       target_id: target_id,
     });
-    // }
   };
 
-  // Particle animation for background effects
   const ParticleEffect = () => (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {[...Array(50)].map((_, i) => (
@@ -161,7 +144,6 @@ export function CosmicGameInterface({
     </div>
   );
 
-  // Data stream animation
   const DataStream = () => (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {[...Array(20)].map((_, i) => (
@@ -189,10 +171,6 @@ export function CosmicGameInterface({
           <ErrorPopup message={errorText} onDismiss={() => setIsError(null)} />
         </div>
       )}
-      {/* HAS STARTED:
-      {match.data?.has_started === true && <div>{"true"} </div>}
-      {match.data?.has_started === false && <div>{"false"} </div>}
-      owner: {match.data?.creator_owner} */}
       {match.data &&
         match.data.has_started === false &&
         match.data.creator_owner.trim() === session?.user.username.trim() && (
@@ -210,9 +188,7 @@ export function CosmicGameInterface({
       <ParticleEffect />
       <DataStream />
       <div className="relative w-full p-5">
-        {/* Left Column - Judge and Deck Info */}
         <div className="space-y-6">
-          {/* Judge Panel */}
           <Card className="w-full border-cyan-500/20 bg-gray-900/80">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-cyan-300">
@@ -226,7 +202,6 @@ export function CosmicGameInterface({
                 {match.data?.current_judge && match.data && (
                   <div className=""> {match.data.current_judge}</div>
                 )}
-                {/* / currentUser: {session?.user.username} */}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -273,9 +248,7 @@ export function CosmicGameInterface({
                         <div className=""> {match.data.current_judge}</div>
                       )}
                     </h3>
-                    {/* <p className="text-cyan-300/70">
-                      Total Score: {currentJudge.score}
-                    </p> */}
+
                     <motion.div
                       className="mt-2 h-1 rounded-full bg-cyan-500"
                       initial={{ width: "100%" }}
@@ -290,7 +263,6 @@ export function CosmicGameInterface({
               </motion.div>
             </CardContent>
           </Card>
-          {/* Deck Info */}
           <Card className="border-purple-500/20 bg-gray-900/80">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -316,16 +288,11 @@ export function CosmicGameInterface({
                     </div>
                   )}
                 </CardTitle>
-                {/* <Badge variant="outline" className="bg-purple-900/50">
-                  {deck.roundsPlayed} / {deck.questionCount}
-                </Badge> */}
               </div>
             </CardHeader>
           </Card>
         </div>
-        {/* Right Column - Question and Players */}
         <div className="m-5 space-y-6 lg:col-span-2">
-          {/* Current Question */}
           <Card className="border-cyan-500/20 bg-gray-900/80">
             <>
               <motion.div
@@ -435,7 +402,6 @@ export function CosmicGameInterface({
                                     handle_judge_vote_for(player.id);
                                   }}
                                 />
-                                {/* <div className="m-5">{player.answer}</div> */}
                               </div>
                             )}
                         </div>

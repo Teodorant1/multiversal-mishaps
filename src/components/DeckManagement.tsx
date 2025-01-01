@@ -304,7 +304,6 @@ export default function DeckManagement() {
                   onClick={() => {
                     console.log("deck", deck);
                     set_current_selectedDeck_id(deck.id);
-                    // set_my_selectedDeck(deck);
                   }}
                 >
                   <div>
