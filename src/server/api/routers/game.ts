@@ -382,6 +382,7 @@ export const gameRouter = createTRPCRouter({
                     question: new_question,
                     all_questions: existing_match.all_questions,
                     current_judge: target_player.username,
+                    scheduled_for_deletion: false,
                   })
                   .where(eq(match.id, existing_match.id));
               } else if (!new_question) {
