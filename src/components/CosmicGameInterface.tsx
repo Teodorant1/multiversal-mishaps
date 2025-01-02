@@ -94,6 +94,7 @@ export function CosmicGameInterface({
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
+      await match.refetch();
       if (data?.error === false) {
       } else {
         setIsError(true);
@@ -356,7 +357,6 @@ export function CosmicGameInterface({
               </ScrollArea>
             </CardContent>
           </Card>
-          {/* Player List */}
           <Card className="border-cyan-500/20 bg-gray-900/80">
             <CardHeader>
               <CardTitle className="text-cyan-300">Players</CardTitle>

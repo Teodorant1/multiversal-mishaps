@@ -50,7 +50,7 @@ export const gameRouter = createTRPCRouter({
         }
       } catch (error) {
         if (error instanceof Error) {
-          console.log(error.message);
+          console.log(error);
 
           return {
             existing_match: null,
@@ -58,12 +58,6 @@ export const gameRouter = createTRPCRouter({
             error_description: error.message,
           };
         }
-        console.error("Error in mutation:", error);
-        return {
-          existing_match: null,
-          error: true,
-          error_description: "Something went wrong. Please try again.",
-        };
       }
     }),
 
@@ -138,12 +132,6 @@ export const gameRouter = createTRPCRouter({
             error_description: error.message,
           };
         }
-        return {
-          error: true,
-          error_description: "Something went wrong. Please try again.",
-          first_player: null,
-          returned_new_match: null,
-        };
       }
     }),
   join_match: protectedProcedure
@@ -223,12 +211,6 @@ export const gameRouter = createTRPCRouter({
             error_description: error.message,
           };
         }
-        return {
-          existing_match: null,
-          this_player: null,
-          error: true,
-          error_description: "Something went wrong. Please try again.",
-        };
       }
     }),
   answer: protectedProcedure
@@ -296,10 +278,14 @@ export const gameRouter = createTRPCRouter({
         }
       } catch (error) {
         console.error("Error in mutation:", error);
-        return {
-          error: true,
-          error_description: "Something went wrong. Please try again.",
-        };
+        if (error instanceof Error) {
+          console.log(error.message); // Access safely
+
+          return {
+            error: true,
+            error_description: error.message,
+          };
+        }
       }
     }),
   judge_vote_for: protectedProcedure
@@ -335,7 +321,8 @@ export const gameRouter = createTRPCRouter({
           }
           if (
             this_player?.username === existing_match.current_judge &&
-            target_player
+            target_player &&
+            this_player
           ) {
             const comparison = await bcrypt.compare(
               input.player_password,
@@ -388,10 +375,13 @@ export const gameRouter = createTRPCRouter({
         }
       } catch (error) {
         console.error("Error in mutation:", error);
-        return {
-          error: true,
-          error_description: "Something went wrong. Please try again.",
-        };
+        if (error instanceof Error) {
+          console.log(error.message);
+          return {
+            error: true,
+            error_description: error.message,
+          };
+        }
       }
     }),
   get_data_on_match: protectedProcedure
