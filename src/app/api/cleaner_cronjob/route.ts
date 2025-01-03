@@ -6,7 +6,7 @@ import { shouldRunJob } from "random-functions/backend/backend1";
 import { eq } from "drizzle-orm";
 
 export async function POST(request: Request) {
-  console.log("attempting cron job");
+  console.log("attempting cron job to clean the DB");
   try {
     const should_run_cron = await shouldRunJob();
     if (should_run_cron === true) {
