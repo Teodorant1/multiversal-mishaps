@@ -42,7 +42,7 @@ export function ErrorPopup({
             scale: 0.8,
             transition: { duration: 0.2 },
           }}
-          className="fixed left-1/2 top-4 z-50 -translate-x-1/2"
+          className="fixed top-4 z-50 -translate-x-1/2"
         >
           <div className="relative">
             <motion.div
@@ -84,7 +84,7 @@ export function ErrorPopup({
                   repeatDelay: 3,
                 }}
               >
-                {message}
+                ERROR: {message}
               </motion.p>
 
               <motion.div

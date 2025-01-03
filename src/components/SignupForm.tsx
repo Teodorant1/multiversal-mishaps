@@ -57,7 +57,7 @@ export function SignupForm() {
       <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-cyan-500 to-transparent" />
       <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-cyan-500 to-transparent" />
       {isError && (
-        <div className="flex w-full items-center justify-center">
+        <div className="mx-auto flex items-center justify-center">
           <ErrorPopup message={errorText} onDismiss={() => setIsError(null)} />
         </div>
       )}
