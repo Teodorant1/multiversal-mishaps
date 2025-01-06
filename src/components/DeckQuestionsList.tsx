@@ -6,6 +6,7 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { type deck_type, type question_type } from "~/server/db/schema";
+import { CosmicButton } from "./CosmicButton";
 
 export function DeckQuestionsList({
   deck,
@@ -129,12 +130,16 @@ export function DeckQuestionsList({
             {deck.name}
           </CardTitle>
         </div>
-        <button
-          className="mt-4 rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-800"
-          onClick={shuffleQuestions}
-        >
-          Shuffle
-        </button>
+
+        <div className="m-2 w-full">
+          <CosmicButton
+            onClick={() => {
+              shuffleQuestions();
+            }}
+            text="Shuffle"
+            fullWidth={true}
+          />
+        </div>
       </CardHeader>
       <CardContent className="p-6">
         <div className="grid gap-6 md:grid-cols-2">

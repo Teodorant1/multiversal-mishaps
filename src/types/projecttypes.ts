@@ -4,6 +4,7 @@ import { type DateRange } from "react-day-picker";
 export interface CosmicButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
+  fullWidth?: boolean;
   text: string;
   onClick?: () => void;
 }
