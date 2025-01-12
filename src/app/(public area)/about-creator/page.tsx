@@ -1,5 +1,4 @@
 import { CreatorProfile } from "~/components/CreatorProfile";
-import { AnimatedCelestialBodies } from "~/components/AnimatedCelestialBodies";
 
 export default function AboutCreatorPage() {
   return (
