@@ -1,12 +1,16 @@
-"use client"
+"use client";
 
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion";
 
-export default function SciFiPortal() {
+interface SciFiPortalProps {
+  className?: string;
+}
+
+export default function SciFiPortal({ className = "" }: SciFiPortalProps) {
   return (
-    <div className="relative w-64 h-64">
+    <div className={`relative h-64 w-64 ${className}`}>
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-full"
+        className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500"
         animate={{
           scale: [1, 1.2, 1],
           rotate: [0, 360],
@@ -19,7 +23,7 @@ export default function SciFiPortal() {
         }}
       />
       <motion.div
-        className="absolute inset-0 border-4 border-blue-300 rounded-full"
+        className="absolute inset-0 rounded-full border-4 border-blue-300"
         animate={{
           scale: [1, 1.1, 1],
           rotate: [0, -360],
@@ -41,9 +45,8 @@ export default function SciFiPortal() {
           ease: "linear",
         }}
       >
-        <div className="w-1 h-1/2 bg-white rounded-full transform -translate-y-1/2" />
+        <div className="h-1/2 w-1 -translate-y-1/2 transform rounded-full bg-white" />
       </motion.div>
     </div>
-  )
+  );
 }
-

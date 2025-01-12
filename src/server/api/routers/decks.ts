@@ -72,6 +72,7 @@ export const deckRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      console.log("input", input);
       if (input.from && input.to) {
         const public_decks = await ctx.db.query.deck.findMany({
           where: and(

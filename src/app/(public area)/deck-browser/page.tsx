@@ -18,9 +18,10 @@ export default function DeckArchivePage() {
   const [show_results, setshow_results] = useState(true);
   const [selectedDeck_id, setSelectedDeck_id] = useState<string>("");
   const public_decks = api.deck.fetch_public_decks.useQuery({
-    from: dateRange!.from!,
-    to: dateRange!.to!,
+    from: dateRange?.from ?? new Date(new Date().getFullYear(), 0, 1),
+    to: dateRange?.to ?? new Date(),
   });
+
   const selected_deck = api.deck.get_public_deck_by_id.useQuery({
     id: selectedDeck_id,
   });
