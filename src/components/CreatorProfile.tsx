@@ -133,7 +133,7 @@ export function CreatorProfile() {
       >
         <div className="mb-8 flex justify-center gap-8">
           <SpinningMolecule />
-          <motion.div
+          {/* <motion.div
             className="relative h-32 w-32"
             animate={{
               rotate: [0, 360],
@@ -143,13 +143,13 @@ export function CreatorProfile() {
               repeat: Infinity,
               ease: "linear",
             }}
-          >
-            <img
-              src="https://i.imgur.com/HdpHK57.png"
-              alt="Creator Avatar"
-              className="h-32 w-32 rounded-full border-2 border-cyan-500/50"
-            />
-            <motion.div
+          > */}
+          <img
+            src="https://i.imgur.com/HdpHK57.png"
+            alt="Creator Avatar"
+            className="h-32 w-32 rounded-full border-2 border-cyan-500/50"
+          />
+          {/* <motion.div
               className="absolute inset-0 rounded-full"
               animate={{
                 boxShadow: [
@@ -164,11 +164,11 @@ export function CreatorProfile() {
                 ease: "easeInOut",
               }}
             />
-          </motion.div>
+          </motion.div> */}
           <SpinningMolecule />
         </div>
         <h1 className="mb-2 text-4xl font-bold text-cyan-300">
-          Dusan Bojanic , T3 stack developer
+          Dusan Bojanic , T3 stack web developer
         </h1>
         <p className="mb-4 text-xl text-cyan-100">
           Weaving Digital Dreams and Misadventures in 4 Dimensions
