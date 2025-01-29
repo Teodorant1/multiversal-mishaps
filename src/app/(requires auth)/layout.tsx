@@ -40,6 +40,7 @@ export default async function RootLayout({
                       text="Browse Public Decks"
                     />
                     <CosmicButton href="/faq" text="About" />
+                    <CosmicButton href="/about-creator" text="About Creator" />
                   </div>
 
                   <div className="flex space-x-4">

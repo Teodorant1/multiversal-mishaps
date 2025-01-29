@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
@@ -18,70 +19,105 @@ import {
   Workflow,
   Binary,
   Terminal,
+  AtSign,
 } from "lucide-react";
 import { SpinningMolecule } from "./SpinningMolecule";
 import SciFiPortal from "./SciFiPortal";
+import Link from "next/link";
 
 export function CreatorProfile() {
   const [selectedSection, setSelectedSection] = useState<string>("experience");
 
   const sections = {
     experience: {
-      title: "Multiversal Experience",
+      title: "Experience",
       icon: <Rocket className="h-6 w-6" />,
       content: [
         {
-          title: "Interdimensional Web Developer",
-          period: "2020 - Present",
+          title: "Freelance Web Developer",
+          period: "August 2022 - Present",
           description:
-            "Crafting digital realities across multiple universes, specializing in quantum-powered web experiences.",
-          technologies: ["React", "Next.js", "TypeScript", "Node.js"],
-        },
-        {
-          title: "Cosmic Frontend Explorer",
-          period: "2018 - 2020",
-          description:
-            "Pioneered breakthrough UI patterns in the outer reaches of the digital cosmos.",
-          technologies: ["Vue.js", "Nuxt.js", "TailwindCSS"],
+            "Crafting digital applications across multiple projects, specializing in Next.JS-flavored web experiences.",
+          technologies: [
+            "React",
+            "Next.js",
+            "TypeScript",
+            "Node.js",
+            "tRPC",
+            "Drizzle",
+            "Prisma",
+            "Tailwind",
+          ],
         },
       ],
     },
     skills: {
-      title: "Dimensional Powers",
+      title: "Skills",
       icon: <Brain className="h-6 w-6" />,
       content: [
         {
-          category: "Reality Manipulation (Frontend)",
-          items: ["React", "Next.js", "TypeScript", "TailwindCSS"],
+          category: "Frontend",
+          items: ["React", "TailwindCSS"],
           icon: <Terminal className="h-5 w-5" />,
         },
         {
-          category: "Quantum Systems (Backend)",
-          items: ["Node.js", "Express", "PostgreSQL", "MongoDB"],
+          category: "Backend",
+          items: [
+            "Node.js",
+            "Express",
+            "Prisma",
+            "Drizzle",
+            "PostgreSQL",
+            "MySQL",
+            "Golang",
+            "Java",
+          ],
           icon: <Cpu className="h-5 w-5" />,
         },
         {
-          category: "Cosmic Tools",
-          items: ["Git", "Docker", "AWS", "Vercel"],
+          category: "Full-stack",
+          items: ["Next.js", "tRPC", "Typescript"],
           icon: <Workflow className="h-5 w-5" />,
+        },
+        {
+          category: "Other Tools",
+          items: ["v0", "ShadCN", "Supabase", "Vercel"],
+          icon: <AtSign className="h-5 w-5" />,
         },
       ],
     },
     projects: {
-      title: "Multiversal Creations",
+      title: "Projects",
       icon: <Star className="h-6 w-6" />,
       content: [
         {
-          title: "Dimensional Portfolio Engine",
-          description:
-            "A reality-bending portfolio generator that exists simultaneously across multiple universes.",
-          technologies: ["Next.js", "Three.js", "Framer Motion"],
+          title: "multiversal-mishaps.vercel.app",
+          description: "A full-stack cosmic adventure across dimensions",
+          technologies: [
+            "Next.js",
+            "tRPC",
+            "Drizzle",
+            "Tailwind",
+            "Typescript",
+            "React",
+            "Node",
+            "Framer Motion",
+          ],
         },
         {
-          title: "Quantum Chat Nexus",
+          title: "vtsns-Cyberpunk.vercel.app",
           description:
-            "Communication platform that transcends space, time, and dimensional boundaries.",
-          technologies: ["React", "Socket.io", "Node.js"],
+            "Cyberpunk themed article aggregator that provides better UX than the original website and lets users avoid the bugs present on that site",
+          technologies: [
+            "Next.js",
+            "tRPC",
+            "Drizzle",
+            "Tailwind",
+            "Typescript",
+            "React",
+            "Node",
+            "Framer Motion",
+          ],
         },
       ],
     },
@@ -109,7 +145,7 @@ export function CreatorProfile() {
             }}
           >
             <img
-              src="/placeholder.svg?height=150&width=150"
+              src="https://i.imgur.com/HdpHK57.png"
               alt="Creator Avatar"
               className="h-32 w-32 rounded-full border-2 border-cyan-500/50"
             />
@@ -132,17 +168,17 @@ export function CreatorProfile() {
           <SpinningMolecule />
         </div>
         <h1 className="mb-2 text-4xl font-bold text-cyan-300">
-          Multiversal Developer
+          Dusan Bojanic , T3 stack developer
         </h1>
         <p className="mb-4 text-xl text-cyan-100">
-          Weaving Digital Dreams Across Dimensions
+          Weaving Digital Dreams and Misadventures in 4 Dimensions
         </p>
         <div className="flex justify-center gap-2">
           <Badge variant="outline" className="bg-cyan-950/50 text-cyan-300">
-            <Globe2 className="mr-1 h-4 w-4" /> Earth-Prime Based
+            <Globe2 className="mr-1 h-4 w-4" /> Euro TZ Based
           </Badge>
           <Badge variant="outline" className="bg-purple-950/50 text-purple-300">
-            <Code2 className="mr-1 h-4 w-4" /> Reality Engineer
+            <Code2 className="mr-1 h-4 w-4" /> Full Stack Developer
           </Badge>
         </div>
       </motion.div>
@@ -218,7 +254,7 @@ export function CreatorProfile() {
               )}
 
               {selectedSection === "skills" && (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                   {sections.skills.content.map((category, index) => (
                     <motion.div
                       key={index}
@@ -329,9 +365,15 @@ export function CreatorProfile() {
                           </motion.div>
                         </div>
                         <div>
-                          <h3 className="mb-2 text-xl font-bold text-cyan-300">
-                            {project.title}
-                          </h3>
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={"https://" + project.title}
+                          >
+                            <h3 className="mb-2 text-xl font-bold text-cyan-300">
+                              {project.title}
+                            </h3>
+                          </a>
                           <p className="mb-4 text-slate-200">
                             {project.description}
                           </p>
