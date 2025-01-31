@@ -25,10 +25,10 @@ export default async function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
-          <div className="relative min-h-screen min-w-max bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
+          <div className="relative min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             <AnimatedCelestialBodies />
             <nav className="relative z-30 flex items-center justify-between px-4 py-4">
-              <div className="flex space-x-4">
+              <div className="flex flex-col flex-wrap">
                 <CosmicButton href="/" text="Home" />
                 <CosmicButton href="/game_page" text="Play Game" />
                 <CosmicButton href="/decks" text="Manage Decks" />
@@ -37,7 +37,7 @@ export default async function RootLayout({
                 <CosmicButton href="/about-creator" text="About Creator" />
               </div>
 
-              <div className="flex space-x-4">
+              <div className="flex flex-col flex-wrap">
                 {session ? (
                   <>
                     <CosmicButton
@@ -55,7 +55,7 @@ export default async function RootLayout({
               </div>
             </nav>
 
-            <main className="relative z-40 min-h-screen">
+            <main className="relative z-40 min-h-[80vh] w-full px-4">
               <TRPCReactProvider>{children}</TRPCReactProvider>
             </main>
           </div>

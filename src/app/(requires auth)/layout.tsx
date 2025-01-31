@@ -26,12 +26,12 @@ export default async function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
-          <div className="relative min-h-screen min-w-max bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
+          <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             {session && (
               <>
                 <AnimatedCelestialBodies />
-                <nav className="relative z-50 flex items-center justify-between px-4 py-4">
-                  <div className="flex space-x-4">
+                <nav className="relative z-50 flex flex-col items-center justify-between gap-2 px-4 py-4 md:flex-row">
+                  <div className="flex flex-wrap gap-2 md:flex-nowrap">
                     <CosmicButton href="/" text="Home" />
                     <CosmicButton href="/game_page" text="Play Game" />
                     <CosmicButton href="/decks" text="Manage Decks" />
@@ -43,7 +43,7 @@ export default async function RootLayout({
                     <CosmicButton href="/about-creator" text="About Creator" />
                   </div>
 
-                  <div className="flex space-x-4">
+                  <div className="flex flex-wrap gap-2 md:flex-nowrap">
                     {session ? (
                       <>
                         <CosmicButton
@@ -65,8 +65,8 @@ export default async function RootLayout({
                 </nav>
               </>
             )}
-            <div className="space-x-4">
-              <div className="relative z-40 min-h-screen w-screen items-center justify-center text-white">
+            <div className="flex flex-col items-center">
+              <div className="relative z-40 flex min-h-[80vh] w-full flex-col items-center justify-center px-4">
                 {session ? (
                   <TRPCReactProvider>{children}</TRPCReactProvider>
                 ) : (
