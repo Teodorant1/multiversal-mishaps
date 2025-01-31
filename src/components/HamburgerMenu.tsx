@@ -39,7 +39,7 @@ export function HamburgerMenu() {
             <CosmicButton href="/api/auth/signout" text="Sign Out" />
           </div>
         ) : (
-          <div className="flex flex-row">
+          <div className="flex flex-col md:flex-row">
             <CosmicButton href="/api/auth/signin" text="Sign In" />
             <CosmicButton href="/signup" text="Sign Up" />
           </div>
