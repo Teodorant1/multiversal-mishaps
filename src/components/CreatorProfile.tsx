@@ -23,7 +23,6 @@ import {
 } from "lucide-react";
 import { SpinningMolecule } from "./SpinningMolecule";
 import SciFiPortal from "./SciFiPortal";
-// import Link from "next/link";
 
 export function CreatorProfile() {
   const [selectedSection, setSelectedSection] = useState<string>("experience");

@@ -1,5 +1,3 @@
-"use client";
-
 import { AuthRequired } from "~/components/AuthRequired";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -8,19 +6,22 @@ import { AnimatedCelestialBodies } from "~/components/AnimatedCelestialBodies";
 import { CosmicButton } from "~/components/CosmicButton";
 import { TRPCReactProvider } from "~/trpc/react";
 import AuthProvider from "../_components/auth/Provider";
-import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { auth } from "~/server/auth";
+import { HamburgerMenu } from "~/components/HamburgerMenu";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({
+export const metadata: Metadata = {
+  title: "Multiversal Mishaps",
+  description: "A cosmic adventure across dimensions",
+};
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
+  const session = await auth();
 
   return (
     <html lang="en">
@@ -30,46 +31,7 @@ export default function RootLayout({
             {session && (
               <>
                 <AnimatedCelestialBodies />
-                <nav className="relative z-50 px-4 py-4">
-                  <div className="flex items-center justify-between">
-                    <button
-                      className="text-white focus:outline-none md:hidden"
-                      onClick={() => setIsOpen(!isOpen)}
-                    >
-                      {isOpen ? <X size={32} /> : <Menu size={32} />}
-                    </button>
-                  </div>
-                  <div
-                    className={`flex-col flex-wrap items-center justify-between md:flex ${isOpen ? "block" : "hidden"}`}
-                  >
-                    <CosmicButton href="/" text="Home" />
-                    <CosmicButton href="/game_page" text="Play Game" />
-                    <CosmicButton href="/decks" text="Manage Decks" />
-                    <CosmicButton
-                      href="/deck-browser"
-                      text="Browse Public Decks"
-                    />
-                    <CosmicButton href="/faq" text="About" />
-                    <CosmicButton href="/about-creator" text="About Creator" />
-                    {session ? (
-                      <>
-                        <CosmicButton
-                          href="/profile"
-                          text={"Profile - " + session.user.username}
-                        />
-                        <CosmicButton
-                          href="/api/auth/signout"
-                          text="Sign Out"
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <CosmicButton href="/api/auth/signin" text="Sign In" />
-                        <CosmicButton href="/signup" text="Sign Up" />
-                      </>
-                    )}
-                  </div>
-                </nav>
+                <HamburgerMenu />
               </>
             )}
             <div className="flex flex-col items-center">
