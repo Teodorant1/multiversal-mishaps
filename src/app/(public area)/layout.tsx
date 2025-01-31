@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "~/styles/globals.css";
 import { AnimatedCelestialBodies } from "~/components/AnimatedCelestialBodies";
-import { CosmicButton } from "~/components/CosmicButton";
 import { TRPCReactProvider } from "~/trpc/react";
 import AuthProvider from "../_components/auth/Provider";
-import { auth } from "~/server/auth";
 import { HamburgerMenu } from "~/components/HamburgerMenu";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,8 +18,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-
   return (
     <html lang="en">
       <AuthProvider>
