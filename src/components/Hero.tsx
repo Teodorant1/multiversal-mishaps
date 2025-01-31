@@ -17,9 +17,14 @@ export default async function Hero() {
 
       <div className="mt-6 flex flex-wrap justify-center gap-4">
         <CosmicButton href="/" text="Home" />
-        <CosmicButton href="/game_page" text="Play Game" />
-        <CosmicButton href="/decks" text="Manage Decks" />
+
         <CosmicButton href="/faq" text="About" />
+        {session && (
+          <div className="flex flex-col">
+            <CosmicButton href="/game_page" text="Play Game" />
+            <CosmicButton href="/decks" text="Manage Decks" />
+          </div>
+        )}
       </div>
     </div>
   );
