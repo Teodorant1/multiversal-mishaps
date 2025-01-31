@@ -27,7 +27,7 @@ export default async function RootLayout({
         <body className={inter.className}>
           <div className="relative min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             <AnimatedCelestialBodies />
-            <nav className="relative z-30 flex items-center justify-between px-4 py-4">
+            <nav className="relative z-30 flex flex-col flex-wrap items-center justify-between px-4 py-4">
               <div className="flex flex-col flex-wrap">
                 <CosmicButton href="/" text="Home" />
                 <CosmicButton href="/game_page" text="Play Game" />

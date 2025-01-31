@@ -30,7 +30,7 @@ export default async function RootLayout({
             {session && (
               <>
                 <AnimatedCelestialBodies />
-                <nav className="relative z-50 flex flex-col items-center justify-between gap-2 px-4 py-4 md:flex-row">
+                <nav className="relative z-50 flex flex-col flex-wrap items-center justify-between gap-2 px-4 py-4 md:flex-row">
                   <div className="flex flex-wrap gap-2 md:flex-nowrap">
                     <CosmicButton href="/" text="Home" />
                     <CosmicButton href="/game_page" text="Play Game" />
