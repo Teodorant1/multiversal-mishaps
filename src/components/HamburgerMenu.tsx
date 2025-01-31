@@ -29,9 +29,11 @@ export function HamburgerMenu() {
         <CosmicButton href="/faq" text="About" />
         <CosmicButton href="/about-creator" text="About Creator" />
       </div>
-      <div className="ml-auto flex flex-col items-end justify-end md:flex">
+      <div
+        className={`ml-auto flex flex-col items-end justify-end md:flex ${isOpen ? "block" : "hidden"}`}
+      >
         {session ? (
-          <div className="flex flex-col md:flex-row">
+          <div className="flex w-full flex-col md:flex-row">
             <CosmicButton
               href="/profile"
               text={"Profile - " + session.user.username}
@@ -39,7 +41,7 @@ export function HamburgerMenu() {
             <CosmicButton href="/api/auth/signout" text="Sign Out" />
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row">
+          <div className="flex w-full flex-col md:flex-row">
             <CosmicButton href="/api/auth/signin" text="Sign In" />
             <CosmicButton href="/signup" text="Sign Up" />
           </div>
