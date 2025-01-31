@@ -13,11 +13,6 @@ import { useSession } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Multiversal Mishaps",
-  description: "A cosmic adventure across dimensions",
-};
-
 export default function RootLayout({
   children,
 }: {
