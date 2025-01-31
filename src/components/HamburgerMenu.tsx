@@ -31,7 +31,7 @@ export function HamburgerMenu() {
       </div>
       <div className="ml-auto flex flex-col items-end justify-end md:flex">
         {session ? (
-          <div className="flex flex-row">
+          <div className="flex flex-col md:flex-row">
             <CosmicButton
               href="/profile"
               text={"Profile - " + session.user.username}
