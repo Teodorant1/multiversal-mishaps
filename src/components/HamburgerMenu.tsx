@@ -30,7 +30,7 @@ export function HamburgerMenu() {
         <CosmicButton href="/about-creator" text="About Creator" />
       </div>
       <div
-        className={`ml-auto flex flex-col items-end justify-end md:flex ${isOpen ? "block" : "hidden"}`}
+        className={`flex flex-col items-end justify-end md:ml-auto md:flex ${isOpen ? "block" : "hidden"}`}
       >
         {session ? (
           <div className="flex w-full flex-col md:flex-row">
