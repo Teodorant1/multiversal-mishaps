@@ -124,7 +124,7 @@ export function CreatorProfile() {
   };
 
   return (
-    <div className="relative z-10 mx-auto max-w-6xl">
+    <div className="relative z-10 mx-auto min-h-screen max-w-6xl">
       {/* Header Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
