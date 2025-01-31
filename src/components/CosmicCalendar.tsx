@@ -14,7 +14,7 @@ export function CosmicCalendar({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative mx-auto w-fit rounded-lg border border-cyan-500/20 bg-gray-900/80 p-2"
+      className="relative mx-auto w-full max-w-[350px] rounded-lg border border-cyan-500/20 bg-gray-900/80 p-2"
     >
       <motion.div
         className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-500/5 to-purple-500/5"

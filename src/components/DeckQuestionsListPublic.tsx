@@ -49,7 +49,7 @@ export function DeckQuestionsListPublic({
   return (
     <Card className="mx-auto w-full overflow-hidden break-all border-cyan-800 bg-gray-900/90 text-cyan-50 shadow-xl shadow-cyan-500/20">
       <CardHeader className="border-b border-cyan-800">
-        <div className="flex items-center justify-between">
+        <div className="items-center justify-between">
           <Badge
             variant="outline"
             className="border-cyan-700 bg-cyan-900/50 text-cyan-300"
