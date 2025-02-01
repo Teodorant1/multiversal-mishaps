@@ -123,7 +123,7 @@ export function CreatorProfile() {
   };
 
   return (
-    <div className="relative z-40 mx-auto min-h-screen max-w-6xl overflow-hidden">
+    <div className="relative z-40 min-h-screen max-w-6xl overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
