@@ -123,8 +123,7 @@ export function CreatorProfile() {
   };
 
   return (
-    <div className="relative z-10 mx-auto min-h-screen max-w-6xl">
-      {/* Header Section */}
+    <div className="relative z-10 mx-auto max-w-6xl">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -132,38 +131,12 @@ export function CreatorProfile() {
       >
         <div className="mb-8 flex justify-center gap-8">
           <SpinningMolecule />
-          {/* <motion.div
-            className="relative h-32 w-32"
-            animate={{
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          > */}
+
           <img
             src="https://i.imgur.com/HdpHK57.png"
             alt="Creator Avatar"
             className="h-32 w-32 rounded-full border-2 border-cyan-500/50"
           />
-          {/* <motion.div
-              className="absolute inset-0 rounded-full"
-              animate={{
-                boxShadow: [
-                  "0 0 20px rgba(34,211,238,0.2)",
-                  "0 0 40px rgba(34,211,238,0.4)",
-                  "0 0 20px rgba(34,211,238,0.2)",
-                ],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          </motion.div> */}
           <SpinningMolecule />
         </div>
         <h1 className="mb-2 text-4xl font-bold text-cyan-300">
@@ -182,7 +155,6 @@ export function CreatorProfile() {
         </div>
       </motion.div>
 
-      {/* Navigation */}
       <div className="mb-8 flex justify-center gap-4">
         {Object.entries(sections).map(([key, section]) => (
           <motion.button
@@ -201,8 +173,6 @@ export function CreatorProfile() {
           </motion.button>
         ))}
       </div>
-
-      {/* Content Section */}
       <AnimatePresence mode="wait">
         <motion.div
           key={selectedSection}
@@ -398,7 +368,6 @@ export function CreatorProfile() {
           </Card>
         </motion.div>
       </AnimatePresence>
-      {/* Atmospheric Effects */}
       <div className="pointer-events-none absolute inset-0">
         {[...Array(3)].map((_, i) => (
           <motion.div

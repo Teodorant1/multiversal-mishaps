@@ -34,10 +34,7 @@ export function HamburgerMenu() {
       >
         {session ? (
           <div className="flex w-full flex-col md:flex-row">
-            <CosmicButton
-              href="/profile"
-              text={"Profile - " + session.user.username}
-            />
+            <CosmicButton text={"Profile - " + session.user.username} />
             <CosmicButton href="/api/auth/signout" text="Sign Out" />
           </div>
         ) : (
