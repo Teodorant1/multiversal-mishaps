@@ -123,13 +123,13 @@ export function CreatorProfile() {
   };
 
   return (
-    <div className="relative z-10 mx-auto max-w-6xl">
+    <div className="relative z-40 mx-auto min-h-screen max-w-6xl overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative mb-12 text-center"
       >
-        <div className="mb-8 flex justify-center gap-8">
+        <div className="mb-2 mt-5 flex justify-center gap-8">
           <SpinningMolecule />
 
           <img
@@ -155,12 +155,12 @@ export function CreatorProfile() {
         </div>
       </motion.div>
 
-      <div className="mb-8 flex justify-center gap-4">
+      <div className="mb-8 flex flex-col justify-center gap-4 md:flex-row">
         {Object.entries(sections).map(([key, section]) => (
           <motion.button
             key={key}
             onClick={() => setSelectedSection(key)}
-            className={`flex items-center gap-2 rounded-lg px-4 py-2 transition-all ${
+            className={`flex flex-col items-center gap-2 rounded-lg px-4 py-2 transition-all md:flex-row ${
               selectedSection === key
                 ? "bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-red-500/20 text-white"
                 : "bg-gray-900/50 text-slate-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:via-purple-500/10 hover:to-red-500/10 hover:text-white"
@@ -368,7 +368,7 @@ export function CreatorProfile() {
           </Card>
         </motion.div>
       </AnimatePresence>
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none relative inset-0">
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
