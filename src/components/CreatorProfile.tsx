@@ -137,7 +137,6 @@ export function CreatorProfile() {
             alt="Creator Avatar"
             className="h-32 w-32 rounded-full border-2 border-cyan-500/50"
           />
-          <SpinningMolecule />
         </div>
         <h1 className="mb-2 text-4xl font-bold text-cyan-300">
           Dusan Bojanic , T3 stack web developer
