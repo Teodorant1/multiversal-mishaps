@@ -20,7 +20,7 @@ export function DeckList({
       <h2 className="mb-4 text-xl font-bold text-purple-300">Archived Decks</h2>
       <ScrollArea className="h-[400px] pr-4">
         <AnimatePresence mode="wait">
-          <motion.div className="z-10 space-y-4">
+          <motion.div className="z-10 space-y-4 md:p-5">
             {decks.map((deck) => (
               <motion.button
                 key={deck.id}

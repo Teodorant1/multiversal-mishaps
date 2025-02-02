@@ -14,10 +14,10 @@ export function CosmicCalendar({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative mx-auto w-full max-w-[350px] rounded-lg border border-cyan-500/20 bg-gray-900/80 p-2"
+      className="relative mx-auto w-full max-w-[350px] rounded-lg border border-cyan-500/20 bg-gray-900/80 p-2 md:w-fit md:max-w-fit"
     >
       <motion.div
-        className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-500/5 to-purple-500/5"
+        className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-500/5 to-purple-500/5 md:w-fit"
         animate={{
           opacity: [0.5, 0.8, 0.5],
           scale: [1, 1.02, 1],
@@ -59,16 +59,16 @@ export function CosmicCalendar({
         <h2 className="mb-4 text-center text-xl font-bold text-cyan-300">
           Temporal Nexus Navigator
         </h2>
-        <div className="rounded-md border border-cyan-500/20 bg-gray-900/50 p-3 text-cyan-50">
+        <div className="w-fit rounded-md border border-cyan-500/20 bg-gray-900/50 p-3 text-cyan-50">
           <Calendar
             mode="range"
             selected={dateRange}
             onSelect={onDateRangeSelect}
             numberOfMonths={2}
-            className="rounded-md border border-cyan-500/20 bg-gray-900/50 text-cyan-50"
+            className="w-fit rounded-md border border-cyan-500/20 bg-gray-900/50 text-cyan-50"
             classNames={{
               months:
-                "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-fit bg-gray-900/50",
+                "flex flex-col md:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-fit bg-gray-900/50",
               month: "space-y-4",
               caption: "flex justify-center pt-1 relative items-center",
               caption_label: "text-sm font-medium text-cyan-200",
