@@ -22,6 +22,13 @@ export function CosmicButton({
   );
 
   if (href) {
+    if (href && onClick) {
+      return (
+        <Link onClick={onClick} href={href} className={buttonClass}>
+          {innerContent}
+        </Link>
+      );
+    }
     return (
       <Link href={href} className={buttonClass}>
         {innerContent}

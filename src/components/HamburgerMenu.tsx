@@ -20,17 +20,50 @@ export function HamburgerMenu() {
         </button>
       </div>
       <div
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
         className={`flex flex-col gap-4 md:flex md:flex-row ${isOpen ? "block" : "hidden"}`}
       >
-        <CosmicButton href="/" text="Home" />
-        <CosmicButton href="/game_page" text="Play Game" />
-        <CosmicButton href="/decks" text="Manage Decks" />
-        <CosmicButton href="/deck-browser" text="Browse Public Decks" />
-        <CosmicButton href="/faq" text="About" />
-        <CosmicButton href="/about-creator" text="About Creator" />
+        <CosmicButton
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          href="/"
+          text="Home"
+        />
+        <CosmicButton
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          href="/game_page"
+          text="Play Game"
+        />
+        <CosmicButton
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          href="/decks"
+          text="Manage Decks"
+        />
+        <CosmicButton
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          href="/deck-browser"
+          text="Browse Public Decks"
+        />
+        <CosmicButton
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          href="/faq"
+          text="About"
+        />
+        <CosmicButton
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          href="/about-creator"
+          text="About Creator"
+        />
       </div>
       <div
         className={`flex flex-col items-end justify-end md:ml-auto md:flex ${isOpen ? "block" : "hidden"}`}
