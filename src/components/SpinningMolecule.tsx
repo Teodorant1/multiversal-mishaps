@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export function SpinningMolecule() {
   return (
-    <div className="relative z-50 h-24 w-24">
+    <div className="relative z-10 h-24 w-24">
       <motion.div
         className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-700 to-blue-700"
         animate={{
@@ -24,7 +24,7 @@ export function SpinningMolecule() {
         }}
       />
       <motion.div
-        className="absolute inset-0 z-50 flex items-center justify-center"
+        className="absolute inset-0 z-10 flex items-center justify-center"
         animate={{ rotate: 360 }}
         transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       >

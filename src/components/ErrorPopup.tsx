@@ -58,7 +58,7 @@ export function ErrorPopup({
               }}
             />
 
-            <div className="relative flex min-w-[600px] max-w-2xl items-center gap-6 rounded-lg border border-red-500/50 bg-gray-900/95 px-8 py-6 text-red-500 shadow-2xl backdrop-blur-sm">
+            <div className="relative flex w-fit max-w-fit items-center gap-6 rounded-lg border border-red-500/50 bg-gray-900/95 px-8 py-6 text-red-500 shadow-2xl backdrop-blur-sm md:min-w-[600px] md:max-w-2xl">
               <motion.div
                 animate={{
                   scale: [1, 1.2, 1],
