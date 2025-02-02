@@ -20,6 +20,9 @@ export function HamburgerMenu() {
         </button>
       </div>
       <div
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
         className={`flex flex-col gap-4 md:flex md:flex-row ${isOpen ? "block" : "hidden"}`}
       >
         <CosmicButton href="/" text="Home" />
