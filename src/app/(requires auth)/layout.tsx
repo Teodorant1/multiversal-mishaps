@@ -34,11 +34,13 @@ export default async function RootLayout({
               </>
             )}
             <div className="flex flex-col items-center">
-              <div className="relative z-40 flex min-h-[80vh] w-full flex-col items-center justify-center px-4">
+              <div className="relative z-40 flex min-h-[80vh] w-full flex-col items-center justify-center px-4 sm:min-h-[60vh] sm:px-6 md:px-8">
                 {session ? (
-                  <TRPCReactProvider>{children}</TRPCReactProvider>
+                  <div className="w-full max-w-screen-sm sm:max-w-screen-md md:max-w-screen-lg">
+                    <TRPCReactProvider>{children}</TRPCReactProvider>
+                  </div>
                 ) : (
-                  <div className="text-center">
+                  <div className="w-full max-w-screen-sm px-4 text-center">
                     <AuthRequired message="DIMENSIONAL BARRIER DETECTED - AUTHENTICATION REQUIRED IN ORDER TO PENETRATE THE EVENT HORIZON" />
                   </div>
                 )}
