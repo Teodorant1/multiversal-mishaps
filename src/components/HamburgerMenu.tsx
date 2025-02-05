@@ -14,7 +14,7 @@ export function HamburgerMenu() {
       <div className="flex items-center justify-between">
         <button
           className="text-white focus:outline-none md:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X size={32} /> : <Menu size={32} />}
         </button>
