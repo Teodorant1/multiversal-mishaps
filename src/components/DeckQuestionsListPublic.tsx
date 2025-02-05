@@ -56,7 +56,7 @@ export function DeckQuestionsListPublic({
           >
             By {deck.author}
           </Badge>
-          <CardTitle className="text-2xl font-bold text-cyan-300">
+          <CardTitle className="flex text-2xl font-bold text-cyan-300">
             <div className="mr-5">Name: {deck.name}</div>{" "}
             <div className="ml-5">id:</div>
             <div>{deck.id}</div>
