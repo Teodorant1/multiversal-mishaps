@@ -24,42 +24,42 @@ export function HamburgerMenu() {
       >
         <CosmicButton
           onClick={() => {
-            setIsOpen(!isOpen);
+            setIsOpen(false);
           }}
           href="/"
           text="Home"
         />
         <CosmicButton
           onClick={() => {
-            setIsOpen(!isOpen);
+            setIsOpen(false);
           }}
           href="/game_page"
           text="Play Game"
         />
         <CosmicButton
           onClick={() => {
-            setIsOpen(!isOpen);
+            setIsOpen(false);
           }}
           href="/decks"
           text="Manage Decks"
         />
         <CosmicButton
           onClick={() => {
-            setIsOpen(!isOpen);
+            setIsOpen(false);
           }}
           href="/deck-browser"
           text="Browse Public Decks"
         />
         <CosmicButton
           onClick={() => {
-            setIsOpen(!isOpen);
+            setIsOpen(false);
           }}
           href="/faq"
           text="About"
         />
         <CosmicButton
           onClick={() => {
-            setIsOpen(!isOpen);
+            setIsOpen(false);
           }}
           href="/about-creator"
           text="About Creator"
