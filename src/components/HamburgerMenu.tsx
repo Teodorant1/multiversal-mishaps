@@ -78,7 +78,13 @@ export function HamburgerMenu() {
         ) : (
           <div className="flex w-full flex-col md:flex-row">
             <CosmicButton href="/api/auth/signin" text="Sign In" />
-            <CosmicButton href="/signup" text="Sign Up" />
+            <CosmicButton
+              onClick={() => {
+                setIsOpen(false);
+              }}
+              href="/signup"
+              text="Sign Up"
+            />
           </div>
         )}
       </div>
