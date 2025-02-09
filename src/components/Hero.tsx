@@ -16,7 +16,7 @@ export default async function Hero() {
       </p>
 
       <div className="mt-6 flex flex-wrap justify-center gap-4">
-        <CosmicButton href="/" text="Home" />
+        <CosmicButton href="/about-creator" text="About Creator" />
 
         <CosmicButton href="/faq" text="About" />
         {session && (
