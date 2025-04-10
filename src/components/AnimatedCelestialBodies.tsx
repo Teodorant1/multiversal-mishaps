@@ -229,7 +229,7 @@ export function AnimatedCelestialBodies() {
     ));
 
   return (
-    <div className="pointer-events-none fixed inset-0 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 w-full overflow-hidden">
       {generateBodies("mysterious", 1, celestialConfig.mysterious)}
       {generateBodies("pyramid", 1, celestialConfig.pyramid)}
       {generateBodies("planet", 20, celestialConfig.planet)}
