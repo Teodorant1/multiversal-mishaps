@@ -10,7 +10,7 @@ export function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="relative z-50 flex w-full flex-col px-4 py-4 md:flex-row">
+    <nav className="relative z-30 flex w-full flex-col px-4 py-4 md:flex-row">
       <div className="flex items-center justify-between">
         <button
           className="text-white focus:outline-none md:hidden"
