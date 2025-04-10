@@ -11,7 +11,7 @@ export function HamburgerMenu() {
 
   return (
     <nav className="relative z-30 flex w-full flex-col px-4 py-4 md:flex-row">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between">
         <button
           className="text-white focus:outline-none md:hidden"
           onClick={() => setIsOpen(!isOpen)}
@@ -20,7 +20,7 @@ export function HamburgerMenu() {
         </button>
       </div>
       <div
-        className={`flex flex-col gap-4 md:flex md:flex-row ${isOpen ? "block" : "hidden"}`}
+        className={`flex w-full flex-wrap gap-4 md:flex md:flex-wrap ${isOpen ? "block" : "hidden"}`}
       >
         <CosmicButton
           onClick={() => {
@@ -64,28 +64,23 @@ export function HamburgerMenu() {
           href="/about-creator"
           text="About Creator"
         />
-      </div>
-      <div
-        className={`flex flex-col items-end justify-end md:ml-auto md:flex ${isOpen ? "block" : "hidden"}`}
-      >
-        {session ? (
-          <div className="flex w-full flex-col md:flex-row">
-            <CosmicButton
-              href="/api/auth/signout"
-              text={"Sign Out - " + session.user.username}
-            />
-          </div>
-        ) : (
-          <div className="flex w-full flex-col md:flex-row">
-            <CosmicButton href="/api/auth/signin" text="Sign In" />
-            <CosmicButton
-              onClick={() => {
-                setIsOpen(false);
-              }}
-              href="/signup"
-              text="Sign Up"
-            />
-          </div>
+
+        {session && (
+          <CosmicButton
+            href="/api/auth/signout"
+            text={"Sign Out - " + session.user.username}
+          />
+        )}
+
+        {!session && <CosmicButton href="/api/auth/signin" text="Sign In" />}
+        {!session && (
+          <CosmicButton
+            onClick={() => {
+              setIsOpen(false);
+            }}
+            href="/signup"
+            text="Sign Up"
+          />
         )}
       </div>
     </nav>
