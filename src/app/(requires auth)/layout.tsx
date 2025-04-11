@@ -26,7 +26,7 @@ export default async function RootLayout({
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
-          <div className="relative min-h-screen w-screen bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
+          <div className="relative min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-red-900">
             {session && (
               <>
                 <AnimatedCelestialBodies />
