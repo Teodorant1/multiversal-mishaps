@@ -69,6 +69,25 @@ export const question = createTable("question", {
   ),
 });
 
+export const started_match_statistic = createTable("started_match_statistic", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  username: varchar("username", { length: 255 }).unique().notNull(),
+  createdAt: timestamp("createdAt", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  players: varchar("players", { length: 3000 })
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  questions: varchar("questions", { length: 3000 })
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+});
+
 export const actual_users = createTable("actual_users", {
   id: varchar("id", { length: 255 })
     .notNull()

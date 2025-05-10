@@ -6,7 +6,7 @@ import {
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { match, player } from "~/server/db/schema";
+import { match, player, started_match_statistic } from "~/server/db/schema";
 
 export const gameRouter = createTRPCRouter({
   start_match: protectedProcedure
@@ -26,6 +26,7 @@ export const gameRouter = createTRPCRouter({
             eq(match.name, input.match_name.trim()),
             eq(match.password, input.match_password.trim()),
           ),
+          with: { players: true },
         });
         if (
           existing_match &&
@@ -37,6 +38,17 @@ export const gameRouter = createTRPCRouter({
               has_started: true,
             })
             .where(eq(match.id, existing_match.id));
+
+          const player_names: string[] = [];
+          for (const player of existing_match.players) {
+            player_names.push(player.username);
+          }
+
+          await ctx.db.insert(started_match_statistic).values({
+            username: existing_match.creator_owner,
+            players: player_names,
+            questions: existing_match.all_questions,
+          });
 
           return {
             existing_match,
