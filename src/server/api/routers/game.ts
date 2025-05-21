@@ -2,6 +2,7 @@ import { eq, and } from "drizzle-orm";
 import {
   hashPassword,
   get_question_list_ready_for_match,
+  GetAllRelevantMatches,
 } from "random-functions/backend/backend1";
 import { z } from "zod";
 import bcrypt from "bcrypt";
@@ -43,7 +44,7 @@ export const gameRouter = createTRPCRouter({
           for (const player of existing_match.players) {
             player_names.push(player.username);
           }
-
+          console.log("adding started_match_statistic");
           await ctx.db.insert(started_match_statistic).values({
             username: existing_match.creator_owner,
             players: player_names,
@@ -429,10 +430,9 @@ export const gameRouter = createTRPCRouter({
       return existing_match;
     }),
   get_available_matches: protectedProcedure.query(async ({ ctx }) => {
-    const existing_matches = await ctx.db.query.match.findMany({
-      columns: { id: true, name: true },
-      where: and(eq(match.has_started, false)),
-    });
+    const existing_matches = await GetAllRelevantMatches(
+      ctx.session.user.username,
+    );
 
     return existing_matches;
   }),

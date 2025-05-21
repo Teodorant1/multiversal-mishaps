@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
 import { and, desc, eq, or } from "drizzle-orm";
-import { deck, cronjob_Runs } from "~/server/db/schema";
+import { deck, cronjob_Runs, match, player } from "~/server/db/schema";
 
 export const situations: string[] = [
   "If a reality TV show host accidentally became the leader of the free world",
@@ -160,4 +160,34 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+export async function GetPlayerStartedMatches(username: string) {
+  const started_matches = await db.query.match.findMany({
+    where: and(eq(match.has_started, true)),
+    columns: { id: true, name: true },
+    with: {
+      players: {
+        where: eq(player.username, username),
+        columns: { username: true },
+      },
+    },
+  });
+
+  // Filter to only matches where the player is included
+  return started_matches.filter((match) => match.players.length > 0);
+}
+
+export async function GetAllRelevantMatches(username: string) {
+  // Matches not yet started
+  const existing_matches = await db.query.match.findMany({
+    columns: { id: true, name: true },
+    where: eq(match.has_started, false),
+  });
+
+  // Matches that have started and the user has joined
+  const joined_started_matches = await GetPlayerStartedMatches(username);
+
+  // Combine both
+  return [...joined_started_matches, ...existing_matches];
 }
