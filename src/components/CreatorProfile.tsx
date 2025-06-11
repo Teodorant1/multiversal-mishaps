@@ -118,6 +118,21 @@ export function CreatorProfile() {
             "Framer Motion",
           ],
         },
+        {
+          title: "secret-squirrel-society-simulator.vercel.app/",
+          description:
+            "Retrofuturistic clone of the boardgame secret hitler with customizable insignia and names",
+          technologies: [
+            "Next.js",
+            "tRPC",
+            "Drizzle",
+            "Tailwind",
+            "Typescript",
+            "React",
+            "Node",
+            "Framer Motion",
+          ],
+        },
       ],
     },
   };

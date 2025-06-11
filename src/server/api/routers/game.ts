@@ -433,7 +433,6 @@ export const gameRouter = createTRPCRouter({
     const existing_matches = await GetAllRelevantMatches(
       ctx.session.user.username,
     );
-
     return existing_matches;
   }),
 });
