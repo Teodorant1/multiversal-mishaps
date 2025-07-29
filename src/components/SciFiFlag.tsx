@@ -1,6 +1,7 @@
-"use client"
+"use client";
+export const dynamic = "force-static";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export function SciFiFlag() {
   return (
@@ -8,12 +9,16 @@ export function SciFiFlag() {
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-cyan-600 to-blue-900 p-0.5"
         animate={{
-          boxShadow: ["0 0 20px rgba(34,211,238,0.2)", "0 0 40px rgba(34,211,238,0.4)", "0 0 20px rgba(34,211,238,0.2)"]
+          boxShadow: [
+            "0 0 20px rgba(34,211,238,0.2)",
+            "0 0 40px rgba(34,211,238,0.4)",
+            "0 0 20px rgba(34,211,238,0.2)",
+          ],
         }}
         transition={{
           duration: 2,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
       >
         <div className="absolute inset-y-0 left-0 w-1 bg-cyan-400" />
@@ -31,6 +36,5 @@ export function SciFiFlag() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
-

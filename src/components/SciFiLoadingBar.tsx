@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { motion } from "framer-motion";
 
 export function SciFiLoadingBar() {

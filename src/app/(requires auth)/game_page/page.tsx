@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-static";
 import GameSetup from "~/components/GameSetup";
 
 export default function CosmicFuturisticGamePage() {

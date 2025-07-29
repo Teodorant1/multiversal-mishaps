@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { CosmicButton } from "~/components/CosmicButton";

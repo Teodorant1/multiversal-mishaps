@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";

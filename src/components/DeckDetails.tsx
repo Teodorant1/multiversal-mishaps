@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { type combined_type } from "~/server/db/schema";

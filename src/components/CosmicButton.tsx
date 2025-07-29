@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import Link from "next/link";
 import { type CosmicButtonProps } from "~/types/projecttypes";
 

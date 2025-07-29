@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import * as React from "react";
 import { Calendar } from "~/components/ui/calendar";
 import { motion } from "framer-motion";

@@ -74,7 +74,7 @@ export const started_match_statistic = createTable("started_match_statistic", {
     .notNull()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  username: varchar("username", { length: 255 }).unique().notNull(),
+  username: varchar("username", { length: 255 }).notNull(),
   createdAt: timestamp("createdAt", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

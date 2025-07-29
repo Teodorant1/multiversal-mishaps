@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";

@@ -1,0 +1,35 @@
+{
+  "name": "Multiversal Mishaps",
+  "short_name": "MMGame",
+  "description": "A cosmic adventure across dimensions",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/icons/MMG192px.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/MMG512px.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icons/narrow.png",
+      "sizes": "327x642",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/icons/wide.png",
+      "sizes": "1906x913",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}

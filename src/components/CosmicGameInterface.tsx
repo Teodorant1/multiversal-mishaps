@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
+export const dynamic = "force-static";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { ScrollArea } from "~/components/ui/scroll-area";

@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Atom, Rocket, Star } from "lucide-react";

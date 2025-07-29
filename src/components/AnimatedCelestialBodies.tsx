@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
-
+export const dynamic = "force-static";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { type RandomProps } from "~/types/projecttypes";

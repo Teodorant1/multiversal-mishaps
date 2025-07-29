@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { AnimatedCelestialBodies } from "~/components/AnimatedCelestialBodies";
 import { CosmicButton } from "~/components/CosmicButton";
 import { type ClientLayoutProps } from "~/types/projecttypes";

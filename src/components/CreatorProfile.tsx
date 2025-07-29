@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
-
+export const dynamic = "force-static";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Card, CardContent } from "~/components/ui/card";

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
-
+export const dynamic = "force-static";
 import { motion, useAnimation } from "framer-motion";
 import { CosmicButton } from "./CosmicButton";
 import { useEffect, useState } from "react";

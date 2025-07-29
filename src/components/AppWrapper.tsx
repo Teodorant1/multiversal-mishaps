@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { AnimatedCelestialBodies } from "./AnimatedCelestialBodies";
 import { CosmicButton } from "./CosmicButton";
 

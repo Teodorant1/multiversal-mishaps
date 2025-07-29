@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-static";
 import { subDays, addDays } from "date-fns";
 import { useState } from "react";
 import { type DateRange } from "react-day-picker";
