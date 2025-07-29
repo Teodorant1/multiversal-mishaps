@@ -22,6 +22,7 @@ const config = {
 export default withPWA({
   dest: "public",
   register: true,
-  skipWaiting: true,
+  skipWaiting: false,
   customWorkerDir: "src/service-worker",
+  swSrc: "public/sw.js",
 })(config);
