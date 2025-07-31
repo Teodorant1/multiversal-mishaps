@@ -18,7 +18,7 @@ declare let self: ServiceWorkerGlobalScope;
 // ✅ Cache offline fallback during install
 self.addEventListener("install", (event: ExtendableEvent) => {
   event.waitUntil(
-    caches.open("pages-cache").then((cache) => cache.add("/offline.html")),
+    caches.open("offline-fallback").then((cache) => cache.add("/offline.html")),
   );
 });
 
@@ -54,11 +54,16 @@ registerRoute(
 );
 
 // ✅ Offline fallback handler
+
 setCatchHandler(async (options) => {
   const event = options.event as FetchEvent;
+  console.log("[SW1] Offline fallback triggered for:", event.request.url);
 
   if (event.request.destination === "document") {
-    const cachedResponse = await caches.match("/offline.html");
+    console.log("[SW2] Offline fallback triggered for:", event.request.url);
+
+    const cache = await caches.open("offline-fallback");
+    const cachedResponse = await cache.match("/offline.html");
     return cachedResponse ?? Response.error();
   }
 
