@@ -23,6 +23,5 @@ export default withPWA({
   dest: "public",
   register: true,
   skipWaiting: false,
-  customWorkerDir: "src/service-worker",
-  swSrc: "public/sw.js",
+  swSrc: "src/service-worker/sw.ts", // ✅ this is what gets compiled into public/sw.js
 })(config);
