@@ -1,7 +1,15 @@
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
 import { and, desc, eq, or } from "drizzle-orm";
-import { deck, cronjob_Runs, match, player } from "~/server/db/schema";
+import {
+  deck,
+  cronjob_Runs,
+  match,
+  player,
+  actual_users,
+} from "~/server/db/schema";
+import axios from "axios";
+import { z } from "zod";
 
 export const situations: string[] = [
   "If a reality TV show host accidentally became the leader of the free world",
@@ -48,6 +56,119 @@ export const questions: string[] = [
   "who would write the ultimate self-help book about it?",
   "how could this lead to the next viral TikTok trend?",
 ];
+
+// 1-2 examples from your defaults:
+const situationExamples = [
+  "If your grandmother started a viral OnlyFans account",
+  "In a world where pineapple on pizza became mandatory by law",
+];
+const questionExamples = [
+  "what would Karen think about this?",
+  "how could this lead to the next viral TikTok trend?",
+];
+
+export async function generateAndSeedDeck(prompt: string, username: string) {
+  // 1. Fetch user
+  const user = await db.query.actual_users.findFirst({
+    where: eq(actual_users.username, username),
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // 2. Ask GPT for new cards (with examples)
+  const response = await axios.post(
+    "https://api.openai.com/v1/chat/completions",
+    {
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are generating Cards Against Humanity style content. " +
+            "Return ONLY valid JSON with two arrays: {situations: string[], questions: string[]}. " +
+            "Situations are absurd, satirical, 'what if' setups. Questions are follow-up punchlines like tabloid or commentary.",
+        },
+        {
+          role: "user",
+          content: `Generate about 10 funny situations and 10 funny questions for a deck about: ${prompt}.
+                  
+Here are a couple of examples of situations:
+- ${situationExamples[0]}
+- ${situationExamples[1]}
+
+Here are a couple of examples of questions:
+- ${questionExamples[0]}
+- ${questionExamples[1]}
+
+Match this tone and style, and make sure the output is valid JSON only.`,
+        },
+      ],
+      temperature: 0.9,
+      response_format: { type: "json_object" },
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  const gptResponseSchema = z.object({
+    situations: z.array(z.string()),
+    questions: z.array(z.string()),
+  });
+
+  const parsedRaw = gptResponseSchema.parse(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+    JSON.parse(response.data.choices[0].message.content ?? "{}"),
+  );
+
+  const parsed = gptResponseSchema.parse(parsedRaw);
+
+  const situations = parsed.situations;
+  const questionsArr = parsed.questions;
+
+  // 3. Insert deck
+  const [newDeck] = await db
+    .insert(deck)
+    .values({
+      name: `Deck about ${prompt}`,
+      description: prompt,
+      author: user.username,
+      createdById: user.id,
+      isPublic: false,
+    })
+    .returning();
+  if (!newDeck) {
+    throw new Error("Failed to create deck");
+  }
+  // 4. Insert questions
+  const toInsert = [
+    ...situations.map((s) => ({
+      text: s,
+      isSituation: true,
+      createdById: user.id,
+      deck: newDeck.id,
+    })),
+    ...questionsArr.map((q) => ({
+      text: q,
+      isSituation: false,
+      createdById: user.id,
+      deck: newDeck.id,
+    })),
+  ];
+
+  // await db.insert(questions).values(toInsert);
+
+  return {
+    deck: newDeck,
+    situations,
+    questions: questionsArr,
+  };
+}
 
 export async function shouldRunJob() {
   const latestRun = await db.query.cronjob_Runs.findFirst({
