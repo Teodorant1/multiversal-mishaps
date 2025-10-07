@@ -59,7 +59,10 @@ export const authRouter = createTRPCRouter({
         }
         return {
           error: true,
-          error_description: "Something went wrong. Please try again.",
+          error_description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
           user: null,
         };
       }

@@ -7,11 +7,12 @@ import {
   match,
   player,
   actual_users,
+  question,
 } from "~/server/db/schema";
 import axios from "axios";
 import { z } from "zod";
 
-export const situations: string[] = [
+export const default_situations: string[] = [
   "If a reality TV show host accidentally became the leader of the free world",
   "If your grandmother started a viral OnlyFans account",
   "If the national anthem was replaced with a Nickelback song",
@@ -34,7 +35,7 @@ export const situations: string[] = [
   "If every dog suddenly learned how to file taxes but refused to share how",
 ];
 
-export const questions: string[] = [
+export const default_questions: string[] = [
   "how would society react to this change?",
   "what would the tabloids write about it?",
   "who would profit the most from this situation?",
@@ -57,7 +58,6 @@ export const questions: string[] = [
   "how could this lead to the next viral TikTok trend?",
 ];
 
-// 1-2 examples from your defaults:
 const situationExamples = [
   "If your grandmother started a viral OnlyFans account",
   "In a world where pineapple on pizza became mandatory by law",
@@ -67,8 +67,11 @@ const questionExamples = [
   "how could this lead to the next viral TikTok trend?",
 ];
 
-export async function generateAndSeedDeck(prompt: string, username: string) {
-  // 1. Fetch user
+export async function generateAndSeedDeck(
+  prompt: string,
+  username: string,
+  deckname: string,
+) {
   const user = await db.query.actual_users.findFirst({
     where: eq(actual_users.username, username),
   });
@@ -77,7 +80,6 @@ export async function generateAndSeedDeck(prompt: string, username: string) {
     throw new Error("User not found");
   }
 
-  // 2. Ask GPT for new cards (with examples)
   const response = await axios.post(
     "https://api.openai.com/v1/chat/completions",
     {
@@ -131,11 +133,10 @@ Match this tone and style, and make sure the output is valid JSON only.`,
   const situations = parsed.situations;
   const questionsArr = parsed.questions;
 
-  // 3. Insert deck
   const [newDeck] = await db
     .insert(deck)
     .values({
-      name: `Deck about ${prompt}`,
+      name: deckname + " (AI Generated)",
       description: prompt,
       author: user.username,
       createdById: user.id,
@@ -145,7 +146,6 @@ Match this tone and style, and make sure the output is valid JSON only.`,
   if (!newDeck) {
     throw new Error("Failed to create deck");
   }
-  // 4. Insert questions
   const toInsert = [
     ...situations.map((s) => ({
       text: s,
@@ -161,8 +161,11 @@ Match this tone and style, and make sure the output is valid JSON only.`,
     })),
   ];
 
-  // await db.insert(questions).values(toInsert);
-
+  const result = await db.insert(question).values(toInsert);
+  if (result.length === 0) {
+    throw new Error("Failed to insert questions");
+  }
+  console.log(result);
   return {
     deck: newDeck,
     situations,
@@ -214,8 +217,8 @@ export async function get_question_list_ready_for_match(
     let questionsToUse: string[] = [];
 
     if (id === "default") {
-      situationsToUse = situations;
-      questionsToUse = questions;
+      situationsToUse = default_situations;
+      questionsToUse = default_questions;
     } else {
       const exact_deck = await db.query.deck.findFirst({
         where: or(

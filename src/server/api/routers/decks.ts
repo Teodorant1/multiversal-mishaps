@@ -6,6 +6,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { deck, question } from "~/server/db/schema";
+import { generateAndSeedDeck } from "random-functions/backend/backend1";
 
 export const deckRouter = createTRPCRouter({
   toggle_deck_visibility: protectedProcedure
@@ -51,8 +52,53 @@ export const deckRouter = createTRPCRouter({
         console.error("Error in deleting question mutation:", error);
         return {
           error: true,
-          error_description: "Something went wrong. Please try again.",
-          user: null,
+          error_description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
+          toggled_deck: null,
+        };
+      }
+    }),
+  generate_private_ai_deck: protectedProcedure
+    .input(
+      z.object({
+        prompt: z.string().max(255, "prompt must be at most  255 characters"),
+        deckname: z
+          .string()
+          .max(255, "deckname must be at most  255 characters"),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const new_deck = await generateAndSeedDeck(
+          input.prompt,
+          ctx.session.user.username,
+          input.deckname,
+        );
+        return {
+          new_deck: new_deck,
+          error: false,
+          error_description: null,
+        };
+      } catch (error) {
+        console.error("Error in deleting question mutation:", error);
+        if (error instanceof Error) {
+          console.log(error);
+
+          return {
+            new_deck: null,
+            error: true,
+            error_description: error.message,
+          };
+        }
+        return {
+          error: true,
+          error_description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
+          new_deck: null,
         };
       }
     }),
@@ -160,7 +206,10 @@ export const deckRouter = createTRPCRouter({
         console.error("Error in adding question mutation:", error);
         return {
           error: true,
-          error_description: "Something went wrong. Please try again.",
+          error_description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
           user: null,
         };
       }
@@ -187,7 +236,10 @@ export const deckRouter = createTRPCRouter({
         console.error("Error in deleting question mutation:", error);
         return {
           error: true,
-          error_description: "Something went wrong. Please try again.",
+          error_description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
           user: null,
         };
       }
@@ -226,7 +278,10 @@ export const deckRouter = createTRPCRouter({
         console.error("Error in adding deck mutation:", error);
         return {
           error: true,
-          error_description: "Something went wrong. Please try again.",
+          error_description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
           user: null,
         };
       }
@@ -253,7 +308,10 @@ export const deckRouter = createTRPCRouter({
         console.error("Error in deleting deck mutation:", error);
         return {
           error: true,
-          error_description: "Something went wrong. Please try again.",
+          error_description:
+            error instanceof Error
+              ? error.message
+              : "Something went wrong. Please try again.",
           user: null,
         };
       }

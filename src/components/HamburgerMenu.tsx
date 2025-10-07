@@ -4,10 +4,12 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { CosmicButton } from "~/components/CosmicButton";
 import { useSession } from "next-auth/react";
-
+import { useWebSocketCounter } from "~/app/hooks/useCountdown";
 export function HamburgerMenu() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const count1 = useWebSocketCounter("wss://your-railway-url.up.railway.app");
+  const count = useWebSocketCounter("ws://localhost:3500");
 
   return (
     <nav className="relative z-30 flex w-full flex-col px-4 py-4 md:flex-row">
@@ -81,6 +83,9 @@ export function HamburgerMenu() {
             href="/signup"
             text="Sign Up"
           />
+        )}
+        {count !== null && (
+          <CosmicButton text={" Count: " + count.toString()} />
         )}
       </div>
     </nav>
