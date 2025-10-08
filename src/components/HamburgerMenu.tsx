@@ -9,7 +9,9 @@ export function HamburgerMenu() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const count1 = useWebSocketCounter("wss://your-railway-url.up.railway.app");
-  const count = useWebSocketCounter("ws://localhost:3500");
+  const count = useWebSocketCounter(
+    "wss://node-websocket-production.up.railway.app/3500",
+  );
 
   return (
     <nav className="relative z-30 flex w-full flex-col px-4 py-4 md:flex-row">
