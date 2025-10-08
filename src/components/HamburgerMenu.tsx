@@ -85,7 +85,14 @@ export function HamburgerMenu() {
           />
         )}
         {count !== null && (
-          <CosmicButton text={" Count: " + count.toString()} />
+          <CosmicButton
+            text={
+              " Count: " +
+              count.count.toString() +
+              " , Cycles " +
+              count.cycleCount.toString()
+            }
+          />
         )}
       </div>
     </nav>
