@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 
 interface CounterData {
   count: number;
-  cycles: number;
+  cycleCount: number;
 }
 
 export function useWebSocketCounter(url: string) {
@@ -23,8 +23,8 @@ export function useWebSocketCounter(url: string) {
         if (typeof data.count === "number") {
           setCount(data.count);
         }
-        if (typeof data.cycles === "number") {
-          setcycleCount(data.cycles);
+        if (typeof data.cycleCount === "number") {
+          setcycleCount(data.cycleCount);
         }
       } catch (err) {
         console.error("Failed to parse WebSocket message", err);

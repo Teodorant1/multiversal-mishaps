@@ -8,7 +8,6 @@ import { useWebSocketCounter } from "~/app/hooks/useCountdown";
 export function HamburgerMenu() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const count1 = useWebSocketCounter("wss://your-railway-url.up.railway.app");
   const count = useWebSocketCounter(
     "wss://node-websocket-production.up.railway.app/3500",
   );

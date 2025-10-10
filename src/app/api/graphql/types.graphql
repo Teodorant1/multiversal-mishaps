@@ -1,0 +1,19 @@
+input UserInput {
+  name: String!
+  age: Int!
+  tags: [String!]
+  address: AddressInput!
+}
+
+input AddressInput {
+  city: String!
+  zip: String!
+}
+
+type UserResult {
+  message: String!
+}
+
+type Query {
+  processUser(user: UserInput!): UserResult!
+}
