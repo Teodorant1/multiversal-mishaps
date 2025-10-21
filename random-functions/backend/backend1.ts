@@ -102,7 +102,7 @@ export async function generateAndSeedDeck(
       },
       {
         role: "user",
-        content: `Generate about 10 funny situations and 10 funny questions for a deck about: ${prompt}.
+        content: `Generate about 20 funny situations and 20 funny questions for a deck about: ${prompt}.
                   
 Here are a couple of examples of situations:
 - ${situationExamples[0]}
