@@ -10,7 +10,7 @@ import {
 import { shouldRunJob } from "random-functions/backend/backend1";
 import { eq } from "drizzle-orm";
 
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   console.log("attempting cron job to clean the DB");
   const currentTime = new Date();
   try {

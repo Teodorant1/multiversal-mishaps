@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 export const dynamic = "force-static";
 import { useState } from "react";

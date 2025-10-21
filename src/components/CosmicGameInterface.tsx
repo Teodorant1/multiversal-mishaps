@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 export const dynamic = "force-static";
@@ -173,8 +174,7 @@ export function CosmicGameInterface({
           <ErrorPopup message={errorText} onDismiss={() => setIsError(null)} />
         </div>
       )}
-      {match.data &&
-        match.data.has_started === false &&
+      {match.data?.has_started === false &&
         match.data.creator_owner.trim() === session?.user.username.trim() && (
           <div className="m-5">
             <CosmicButton

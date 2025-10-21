@@ -7,7 +7,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { actual_users, deck } from "~/server/db/schema";
+import { actual_users } from "~/server/db/schema";
 
 export const authRouter = createTRPCRouter({
   register: publicProcedure
