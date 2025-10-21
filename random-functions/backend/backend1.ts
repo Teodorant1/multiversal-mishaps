@@ -4,6 +4,7 @@ import { and, desc, eq, or } from "drizzle-orm";
 import {
   deck,
   cronjob_Runs,
+  ai_refresh_cronjob_Runs,
   match,
   player,
   actual_users,
@@ -11,6 +12,12 @@ import {
 } from "~/server/db/schema";
 import axios from "axios";
 import { z } from "zod";
+import OpenAI from "openai";
+
+// Initialize the OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export const default_situations: string[] = [
   "If a reality TV show host accidentally became the leader of the free world",
@@ -79,22 +86,23 @@ export async function generateAndSeedDeck(
   if (!user) {
     throw new Error("User not found");
   }
+  if (!user.can_create_AI_decks) {
+    throw new Error("User is not allowed to create AI decks at this time");
+  }
 
-  const response = await axios.post(
-    "https://api.openai.com/v1/chat/completions",
-    {
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are generating Cards Against Humanity style content. " +
-            "Return ONLY valid JSON with two arrays: {situations: string[], questions: string[]}. " +
-            "Situations are absurd, satirical, 'what if' setups. Questions are follow-up punchlines like tabloid or commentary.",
-        },
-        {
-          role: "user",
-          content: `Generate about 10 funny situations and 10 funny questions for a deck about: ${prompt}.
+  const response = await openai.chat.completions.create({
+    model: "gpt-4.1-nano",
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are generating Cards Against Humanity style content. " +
+          "Return ONLY valid JSON with two arrays: {situations: string[], questions: string[]}. " +
+          "Situations are absurd, satirical, 'what if' setups. Questions are follow-up punchlines like tabloid or commentary.",
+      },
+      {
+        role: "user",
+        content: `Generate about 10 funny situations and 10 funny questions for a deck about: ${prompt}.
                   
 Here are a couple of examples of situations:
 - ${situationExamples[0]}
@@ -105,18 +113,11 @@ Here are a couple of examples of questions:
 - ${questionExamples[1]}
 
 Match this tone and style, and make sure the output is valid JSON only.`,
-        },
-      ],
-      temperature: 0.9,
-      response_format: { type: "json_object" },
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
       },
-    },
-  );
+    ],
+    response_format: { type: "json_object" },
+    temperature: 0.9,
+  });
 
   const gptResponseSchema = z.object({
     situations: z.array(z.string()),
@@ -124,8 +125,7 @@ Match this tone and style, and make sure the output is valid JSON only.`,
   });
 
   const parsedRaw = gptResponseSchema.parse(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-    JSON.parse(response.data.choices[0].message.content ?? "{}"),
+    JSON.parse(response.choices[0]?.message?.content ?? "{}"),
   );
 
   const parsed = gptResponseSchema.parse(parsedRaw);
@@ -160,12 +160,20 @@ Match this tone and style, and make sure the output is valid JSON only.`,
       deck: newDeck.id,
     })),
   ];
-
-  const result = await db.insert(question).values(toInsert);
+  const result = await db.insert(question).values(toInsert).returning();
   if (result.length === 0) {
     throw new Error("Failed to insert questions");
   }
-  console.log(result);
+
+  if (newDeck) {
+    await db
+      .update(actual_users)
+      .set({
+        can_create_AI_decks: false,
+      })
+      .where(eq(actual_users.id, user.id));
+  }
+
   return {
     deck: newDeck,
     situations,
@@ -179,21 +187,40 @@ export async function shouldRunJob() {
     orderBy: [desc(cronjob_Runs.runDate)],
   });
 
-  if (!latestRun) {
-    return true;
+  const latest_ai_refresh = await db.query.ai_refresh_cronjob_Runs.findFirst({
+    columns: { runDate: true },
+    orderBy: [desc(ai_refresh_cronjob_Runs.runDate)],
+  });
+
+  if (!latestRun || !latest_ai_refresh) {
+    return {
+      should_run_Cleaning_cron: true,
+      should_run_ai_refresh: true,
+    };
   }
 
   console.log("latestRun", latestRun);
+  console.log("latest_ai_refresh", latest_ai_refresh);
 
   const currentTime = new Date();
   console.log("currentTime", currentTime);
 
   const lastRunTime = new Date(latestRun.runDate);
+  const lastAiRefreshTime = new Date(latest_ai_refresh.runDate);
 
   const minutesDifference =
     (currentTime.getTime() - lastRunTime.getTime()) / (1000 * 60);
 
-  return minutesDifference >= 55;
+  const aiRefreshMinutesDifference =
+    (currentTime.getTime() - lastAiRefreshTime.getTime()) / (1000 * 60);
+
+  const should_run_Cleaning_cron = minutesDifference >= 55;
+  const should_run_ai_refresh = aiRefreshMinutesDifference >= 23 * 60 + 50;
+
+  return {
+    should_run_Cleaning_cron,
+    should_run_ai_refresh,
+  };
 }
 
 const shuffleArray = (array: string[]): string[] => {
@@ -298,20 +325,16 @@ export async function GetPlayerStartedMatches(username: string) {
     },
   });
 
-  // Filter to only matches where the player is included
   return started_matches.filter((match) => match.players.length > 0);
 }
 
 export async function GetAllRelevantMatches(username: string) {
-  // Matches not yet started
   const existing_matches = await db.query.match.findMany({
     columns: { id: true, name: true },
     where: eq(match.has_started, false),
   });
 
-  // Matches that have started and the user has joined
   const joined_started_matches = await GetPlayerStartedMatches(username);
 
-  // Combine both
   return [...joined_started_matches, ...existing_matches];
 }

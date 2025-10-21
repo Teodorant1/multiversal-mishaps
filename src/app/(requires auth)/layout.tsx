@@ -42,7 +42,7 @@ export default async function RootLayout({
                   </div>
                 ) : (
                   <div className="w-full max-w-screen-sm px-4 text-center">
-                    <AuthRequired message="DIMENSIONAL BARRIER DETECTED - AUTHENTICATION REQUIRED IN ORDER TO PENETRATE THE EVENT HORIZON" />
+                    <AuthRequired />
                   </div>
                 )}
               </div>

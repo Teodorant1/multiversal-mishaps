@@ -7,8 +7,10 @@ import { CosmicButton } from "./CosmicButton";
 import { api } from "~/trpc/react";
 import { DeckQuestionsList } from "./DeckQuestionsList";
 import { ErrorPopup } from "./ErrorPopup";
+import { useSession } from "next-auth/react";
 
 export default function DeckManagement() {
+  const { data: session } = useSession();
   const [isError, setIsError] = useState<boolean | null>(false);
   const [errorText, setErrorText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,10 +21,12 @@ export default function DeckManagement() {
   const [newDeckName, setNewDeckName] = useState("");
   const [newQuestion, setNewQuestion] = useState("");
   const [description, setdescription] = useState("");
+  const [ai_deck_prompt, set_ai_deck_prompt] = useState("");
   const [questionType, setQuestionType] = useState<QuestionType>("Question");
   const [current_selectedDeck_id, set_current_selectedDeck_id] =
     useState<string>("null");
 
+  const can_use_ai_decks = api.auth.get_AI_deck_ability_status.useQuery();
   const mydecks = api.deck.fetch_my_decks.useQuery();
   const selected_deck = api.deck.get_deck_by_id.useQuery({
     id: current_selectedDeck_id,
@@ -56,7 +60,41 @@ export default function DeckManagement() {
       id: id,
     });
   };
+  const ai_make_deck = api.deck.generate_private_ai_deck.useMutation({
+    onSuccess: async (data) => {
+      console.log("data", data);
+      setIsLoading(false);
 
+      if (data.error === false) {
+        set_ai_deck_prompt("");
+        await mydecks.refetch();
+      } else {
+        setIsError(true);
+        setErrorText(
+          data.error_description ?? "An unknown error has occurred.",
+        );
+      }
+    },
+  });
+  const handle_ai_make_deck = () => {
+    if (ai_deck_prompt.length < 10 || ai_deck_prompt.length > 255) {
+      setIsError(true);
+      setErrorText("AI deck prompt must be between 10 and 255 characters.");
+      return;
+    }
+
+    if (newDeckName.length < 3 || newDeckName.length > 255) {
+      setIsError(true);
+      setErrorText("Deck name must be between 3 and 255 characters.");
+      return;
+    }
+
+    setIsLoading(true);
+    ai_make_deck.mutate({
+      prompt: ai_deck_prompt,
+      deckname: newDeckName,
+    });
+  };
   const make_deck = api.deck.add_deck.useMutation({
     onSuccess: async (data) => {
       console.log("data", data);
@@ -210,7 +248,6 @@ export default function DeckManagement() {
               text={"Create Public Deck"}
             />
           </div>
-
           <input
             type="text"
             value={description}
@@ -218,6 +255,36 @@ export default function DeckManagement() {
             placeholder="Enter deck description"
             className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+
+          {can_use_ai_decks.data === true ? (
+            <div>
+              {" "}
+              <div className="my-2">
+                <CosmicButton
+                  onClick={() => {
+                    handle_ai_make_deck();
+                  }}
+                  text={" AI Deck creation (limit 1 per day)"}
+                />
+              </div>
+              <input
+                type="text"
+                value={ai_deck_prompt}
+                onChange={(e) => set_ai_deck_prompt(e.target.value)}
+                placeholder="Enter AI deck prompt (max 255 characters) e.g. 'A deck about space exploration.'"
+                className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          ) : (
+            <div className="my-2">
+              <CosmicButton
+                onClick={() => {
+                  console.log("session", session?.user);
+                }}
+                text={"Awaiting Daily AI reset"}
+              />
+            </div>
+          )}
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 20 }}

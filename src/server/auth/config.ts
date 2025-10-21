@@ -12,10 +12,12 @@ declare module "next-auth" {
       username: string;
       email: string;
       paloki?: string;
+      // can_make_AI_decks?: boolean;
     } & DefaultSession["user"];
   }
   interface User {
     paloki?: string;
+    // can_make_AI_decks?: boolean;
   }
 }
 export const authConfig = {
@@ -59,6 +61,7 @@ export const authConfig = {
             username: the_user.username.trim(),
             email: the_user.email.trim(),
             paloki: "the_user.paloki",
+            // can_make_AI_decks: the_user.can_create_AI_decks ?? false,
           };
         } catch (error) {
           console.error("Error in authorize function:", error);
@@ -80,6 +83,7 @@ export const authConfig = {
           }
           token.email = user.email;
           token.paloki = user.paloki;
+          // // token.can_make_AI_decks = user.can_make_AI_decks;
         }
         return token;
       } catch (error) {
@@ -94,6 +98,7 @@ export const authConfig = {
           session.user.username = token.username as string;
           session.user.email = token.email!;
           session.user.paloki = token.paloki as string;
+          // // session.user.can_make_AI_decks = token.can_make_AI_decks as boolean;
         }
         return session;
       } catch (error) {

@@ -63,10 +63,14 @@ export const deckRouter = createTRPCRouter({
   generate_private_ai_deck: protectedProcedure
     .input(
       z.object({
-        prompt: z.string().max(255, "prompt must be at most  255 characters"),
+        prompt: z
+          .string()
+          .max(255, "prompt must be at most  255 characters")
+          .min(10, "prompt must be at least 10 characters"),
         deckname: z
           .string()
-          .max(255, "deckname must be at most  255 characters"),
+          .max(255, "deckname must be at most  255 characters")
+          .min(3, "deckname must be at least 3 characters"),
       }),
     )
     .mutation(async ({ ctx, input }) => {

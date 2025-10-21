@@ -17,6 +17,10 @@ export const cronjob_Runs = createTable("cronjob_Runs", {
   runDate: timestamp("runDate", { withTimezone: true }).primaryKey().notNull(),
 });
 
+export const ai_refresh_cronjob_Runs = createTable("cronjob_Runs", {
+  runDate: timestamp("runDate", { withTimezone: true }).primaryKey().notNull(),
+});
+
 export const deck = createTable("deck", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -96,7 +100,7 @@ export const actual_users = createTable("actual_users", {
   username: varchar("username", { length: 255 }).unique().notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
-
+  can_create_AI_decks: boolean("can_create_AI_decks").default(false),
   image: varchar("image", { length: 255 }),
 });
 

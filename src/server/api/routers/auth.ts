@@ -2,8 +2,12 @@ import { eq } from "drizzle-orm";
 import { hashPassword, sleep } from "random-functions/backend/backend1";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { actual_users } from "~/server/db/schema";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
+import { actual_users, deck } from "~/server/db/schema";
 
 export const authRouter = createTRPCRouter({
   register: publicProcedure
@@ -67,4 +71,11 @@ export const authRouter = createTRPCRouter({
         };
       }
     }),
+  get_AI_deck_ability_status: protectedProcedure.query(async ({ ctx }) => {
+    const status = await ctx.db.query.actual_users.findFirst({
+      where: eq(actual_users.id, ctx.session.user.id),
+      columns: { can_create_AI_decks: true },
+    });
+    return status?.can_create_AI_decks ?? false;
+  }),
 });
