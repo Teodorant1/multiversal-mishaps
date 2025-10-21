@@ -65,11 +65,11 @@ export const deckRouter = createTRPCRouter({
       z.object({
         prompt: z
           .string()
-          .max(255, "prompt must be at most  255 characters")
+          .max(1000, "prompt must be at most  1000 characters")
           .min(10, "prompt must be at least 10 characters"),
         deckname: z
           .string()
-          .max(255, "deckname must be at most  255 characters")
+          .max(1000, "deckname must be at most  1000 characters")
           .min(3, "deckname must be at least 3 characters"),
       }),
     )

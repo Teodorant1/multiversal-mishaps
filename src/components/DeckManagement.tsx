@@ -77,15 +77,15 @@ export default function DeckManagement() {
     },
   });
   const handle_ai_make_deck = () => {
-    if (ai_deck_prompt.length < 10 || ai_deck_prompt.length > 255) {
+    if (ai_deck_prompt.length < 10 || ai_deck_prompt.length > 1000) {
       setIsError(true);
-      setErrorText("AI deck prompt must be between 10 and 255 characters.");
+      setErrorText("AI deck prompt must be between 10 and 1000 characters.");
       return;
     }
 
-    if (newDeckName.length < 3 || newDeckName.length > 255) {
+    if (newDeckName.length < 3 || newDeckName.length > 1000) {
       setIsError(true);
-      setErrorText("Deck name must be between 3 and 255 characters.");
+      setErrorText("Deck name must be between 3 and 1000 characters.");
       return;
     }
 
@@ -271,7 +271,7 @@ export default function DeckManagement() {
                 type="text"
                 value={ai_deck_prompt}
                 onChange={(e) => set_ai_deck_prompt(e.target.value)}
-                placeholder="Enter AI deck prompt (max 255 characters) e.g. 'A deck about space exploration.'"
+                placeholder="Enter AI deck prompt (max 1000 characters) e.g. 'A deck about space exploration.'"
                 className="my-5 mb-4 w-full rounded-md bg-gray-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
