@@ -98,21 +98,26 @@ export async function generateAndSeedDeck(
         content:
           "You are generating Cards Against Humanity style content. " +
           "Return ONLY valid JSON with two arrays: {situations: string[], questions: string[]}. " +
-          "Situations are absurd, satirical, 'what if' setups. Questions are follow-up punchlines like tabloid or commentary.",
+          "Situations MUST start with either 'If' or 'In a world where' and should be absurd, satirical setups. " +
+          "Questions should be humorous follow-up prompts that start with 'how', 'what', or 'who' in lowercase. " +
+          "Keep the tone consistently irreverent and amusing. " +
+          "Ensure situations are complete sentences and questions end with a question mark.",
       },
       {
         role: "user",
-        content: `Generate about 20 funny situations and 20 funny questions for a deck about: ${prompt}.
+        content: `Generate exactly 20 funny situations and 20 funny questions for a deck about: ${prompt}.
                   
-Here are a couple of examples of situations:
-- ${situationExamples[0]}
-- ${situationExamples[1]}
+Example situations (follow this format):
+- If your grandmother started a viral OnlyFans account
+- In a world where pineapple on pizza became mandatory by law
 
-Here are a couple of examples of questions:
-- ${questionExamples[0]}
-- ${questionExamples[1]}
+Example questions (follow this format):
+- what would Karen think about this?
+- how could this lead to the next viral TikTok trend?
 
-Match this tone and style, and make sure the output is valid JSON only.`,
+Match this exact tone and style. Each situation must start with 'If' or 'In a world where'.
+Each question must start with 'how', 'what', or 'who' and end with a question mark.
+Return only valid JSON.`,
       },
     ],
     response_format: { type: "json_object" },
