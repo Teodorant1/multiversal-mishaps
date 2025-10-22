@@ -98,8 +98,8 @@ export async function generateAndSeedDeck(
         content:
           "You are generating Cards Against Humanity style content. " +
           "Return ONLY valid JSON with two arrays: {situations: string[], questions: string[]}. " +
-          "Situations MUST start with either 'If' or 'In a world where' and should be absurd, satirical setups. " +
-          "Questions should be humorous follow-up prompts that start with 'how', 'what', or 'who' in lowercase. " +
+          "Situations MUST start mostly with either 'If' or 'In a world where' and should be absurd, satirical setups. " +
+          "Questions should be humorous follow-up prompts that mostly start with 'how', 'what','when', or 'who' in lowercase. " +
           "Keep the tone consistently irreverent and amusing. " +
           "Ensure situations are complete sentences and questions end with a question mark.",
       },
