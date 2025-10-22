@@ -17,7 +17,7 @@ export const cronjob_Runs = createTable("cronjob_Runs", {
   runDate: timestamp("runDate", { withTimezone: true }).primaryKey().notNull(),
 });
 
-export const ai_refresh_cronjob_Runs = createTable("cronjob_Runs", {
+export const ai_refresh_cronjob_Runs = createTable("ai_refresh_cronjob_Runs", {
   runDate: timestamp("runDate", { withTimezone: true }).primaryKey().notNull(),
 });
 
