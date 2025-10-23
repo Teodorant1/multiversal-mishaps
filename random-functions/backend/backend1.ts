@@ -222,6 +222,9 @@ export async function shouldRunJob() {
   const should_run_Cleaning_cron = minutesDifference >= 55;
   const should_run_ai_refresh = aiRefreshMinutesDifference >= 23 * 60 + 50;
 
+  console.log("will we run cleaning cron?", should_run_Cleaning_cron);
+  console.log("will we run ai refresh cron?", should_run_ai_refresh);
+
   return {
     should_run_Cleaning_cron,
     should_run_ai_refresh,
