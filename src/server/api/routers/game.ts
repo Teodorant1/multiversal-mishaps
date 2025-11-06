@@ -5,7 +5,7 @@ import {
   GetAllRelevantMatches,
 } from "random-functions/backend/backend1";
 import { z } from "zod";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { match, player, started_match_statistic } from "~/server/db/schema";
 

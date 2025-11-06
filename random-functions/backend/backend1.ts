@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { db } from "~/server/db";
 import { and, desc, eq, or } from "drizzle-orm";
 import {

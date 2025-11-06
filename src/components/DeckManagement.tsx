@@ -28,6 +28,7 @@ export default function DeckManagement() {
     useState<string>("null");
 
   const can_use_ai_decks = api.auth.get_AI_deck_ability_status.useQuery();
+
   const mydecks = api.deck.fetch_my_decks.useQuery();
   const selected_deck = api.deck.get_deck_by_id.useQuery({
     id: current_selectedDeck_id,
@@ -40,6 +41,12 @@ export default function DeckManagement() {
   }
 
   const toggle_deck_visibility = api.deck.toggle_deck_visibility.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -62,6 +69,12 @@ export default function DeckManagement() {
     });
   };
   const ai_make_deck = api.deck.generate_private_ai_deck.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -97,6 +110,12 @@ export default function DeckManagement() {
     });
   };
   const make_deck = api.deck.add_deck.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -125,6 +144,12 @@ export default function DeckManagement() {
     });
   };
   const delete_deck = api.deck.delete_deck.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -148,6 +173,12 @@ export default function DeckManagement() {
   };
 
   const make_question = api.deck.add_question.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -179,6 +210,12 @@ export default function DeckManagement() {
   };
 
   const delete_question = api.deck.delete_question.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);

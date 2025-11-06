@@ -30,6 +30,12 @@ export default function GameSetup() {
     game.name?.toLowerCase().includes(filterText.toLowerCase()),
   );
   const create_match = api.game.create_match.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -58,6 +64,12 @@ export default function GameSetup() {
   };
 
   const join_match = api.game.join_match.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);

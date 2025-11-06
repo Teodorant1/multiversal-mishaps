@@ -78,4 +78,33 @@ export const authRouter = createTRPCRouter({
     });
     return status?.can_create_AI_decks ?? false;
   }),
+
+  tester_func1: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(10),
+        number: z.number().min(10),
+      }),
+    )
+    .query(async ({ ctx }) => {
+      const status = await ctx.db.query.actual_users.findFirst({
+        where: eq(actual_users.id, ctx.session.user.id),
+        columns: { can_create_AI_decks: true },
+      });
+      return status?.can_create_AI_decks ?? false;
+    }),
+  tester_func2: protectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(10),
+        number: z.number().min(10),
+      }),
+    )
+    .mutation(async ({ ctx }) => {
+      const status = await ctx.db.query.actual_users.findFirst({
+        where: eq(actual_users.id, ctx.session.user.id),
+        columns: { can_create_AI_decks: true },
+      });
+      return status?.can_create_AI_decks ?? false;
+    }),
 });

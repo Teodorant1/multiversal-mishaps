@@ -24,6 +24,12 @@ export function SignupForm() {
   const [errorText, setErrorText] = useState("");
 
   const makeAccount = api.auth.register.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);

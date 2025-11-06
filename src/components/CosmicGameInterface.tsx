@@ -41,6 +41,12 @@ export function CosmicGameInterface({
   );
 
   const start_match = api.game.start_match.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -66,6 +72,12 @@ export function CosmicGameInterface({
   };
 
   const answer = api.game.answer.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
@@ -93,6 +105,12 @@ export function CosmicGameInterface({
   };
 
   const judge_vote_for = api.game.judge_vote_for.useMutation({
+    onError: (err) => {
+      console.error("Error posting comment: ", err);
+      setErrorText(err.message);
+      setIsError(true);
+      setIsLoading(false);
+    },
     onSuccess: async (data) => {
       console.log("data", data);
       setIsLoading(false);
