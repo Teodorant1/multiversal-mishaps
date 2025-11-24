@@ -80,7 +80,14 @@ export function CreatorProfile() {
         },
         {
           category: "Other Tools",
-          items: ["v0", "ShadCN", "Supabase", "Vercel"],
+          items: [
+            "v0",
+            "ShadCN",
+            "Supabase",
+            "Vercel",
+            "OpenAI API",
+            "Websockets",
+          ],
           icon: <AtSign className="h-5 w-5" />,
         },
       ],
@@ -101,6 +108,7 @@ export function CreatorProfile() {
             "React",
             "Node",
             "Framer Motion",
+            "NextAuth.js",
           ],
         },
         {
@@ -115,7 +123,7 @@ export function CreatorProfile() {
             "Typescript",
             "React",
             "Node",
-            "Framer Motion",
+            "NextAuth.js",
           ],
         },
         {
@@ -131,6 +139,7 @@ export function CreatorProfile() {
             "React",
             "Node",
             "Framer Motion",
+            "NextAuth.js",
           ],
         },
       ],
