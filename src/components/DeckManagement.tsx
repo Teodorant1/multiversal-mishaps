@@ -272,6 +272,7 @@ export default function DeckManagement() {
           />
           <div className="my-2">
             <CosmicButton
+              isLoading={isLoading}
               onClick={() => {
                 handle_make_deck(false);
               }}
@@ -280,6 +281,7 @@ export default function DeckManagement() {
           </div>
           <div className="my-2">
             <CosmicButton
+              isLoading={isLoading}
               onClick={() => {
                 handle_make_deck(true);
               }}
@@ -299,6 +301,7 @@ export default function DeckManagement() {
               {" "}
               <div className="my-2">
                 <CosmicButton
+                  isLoading={isLoading}
                   onClick={() => {
                     handle_ai_make_deck();
                   }}
@@ -316,6 +319,7 @@ export default function DeckManagement() {
           ) : (
             <div className="my-2">
               <CosmicButton
+                isLoading={isLoading}
                 onClick={() => {
                   console.log("session", session?.user);
                 }}
@@ -373,6 +377,7 @@ export default function DeckManagement() {
           />
           {selected_deck.data && (
             <CosmicButton
+              isLoading={isLoading}
               onClick={() => {
                 handle_make_question(selected_deck.data!.id);
               }}
@@ -392,6 +397,7 @@ export default function DeckManagement() {
             <h2 className="mb-4 text-2xl font-semibold">Your Decks</h2>
             <div className="mx-5">
               <CosmicButton
+                isLoading={isLoading}
                 onClick={() => {
                   Toggle_Show_decks();
                 }}
@@ -421,6 +427,7 @@ export default function DeckManagement() {
                   <div className="mt-auto">
                     <div className="my-2">
                       <CosmicButton
+                        isLoading={isLoading}
                         onClick={() => {
                           handle_toggle_deck(deck.id);
                         }}

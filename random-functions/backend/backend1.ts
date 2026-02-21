@@ -10,7 +10,6 @@ import {
   actual_users,
   question,
 } from "~/server/db/schema";
-import axios from "axios";
 import { z } from "zod";
 import OpenAI from "openai";
 

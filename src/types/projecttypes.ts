@@ -7,6 +7,7 @@ export interface CosmicButtonProps
   fullWidth?: boolean;
   text: string;
   onClick?: () => void;
+  isLoading?: boolean;
 }
 
 export type AnimatedTextProps = {

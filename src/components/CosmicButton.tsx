@@ -8,6 +8,7 @@ export function CosmicButton({
   text,
   onClick,
   fullWidth,
+  isLoading,
   ...props
 }: CosmicButtonProps) {
   const buttonClass = `mx-3 my-3 relative overflow-hidden rounded-full bg-gradient-to-r from-violet-700 to-blue-700 px-3 sm:px-4 py-1.5 sm:py-2 text-base sm:text-lg font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20 max-w-full truncate focus:outline-none focus:ring-2 focus:ring-cyan-500 active:scale-95 ${
@@ -21,14 +22,16 @@ export function CosmicButton({
     </>
   );
 
-  if (href) {
-    if (href && onClick) {
-      return (
-        <Link onClick={onClick} href={href} className={buttonClass}>
-          {innerContent}
-        </Link>
-      );
+  const handleClick = (
+    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+  ) => {
+    if (isLoading) {
+      return;
     }
+    return onClick;
+  };
+
+  if (href) {
     return (
       <Link href={href} className={buttonClass}>
         {innerContent}
@@ -37,8 +40,13 @@ export function CosmicButton({
   }
 
   return (
-    <button className={buttonClass} onClick={onClick} {...props}>
-      {innerContent}
+    <button
+      className={buttonClass}
+      onClick={handleClick}
+      disabled={isLoading}
+      {...props}
+    >
+      {isLoading ? "Loading..." : innerContent}
     </button>
   );
 }
