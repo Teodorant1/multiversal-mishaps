@@ -28,7 +28,7 @@ export function CosmicButton({
     if (isLoading) {
       return;
     }
-    return onClick;
+    return onClick ? onClick() : null;
   };
 
   if (href) {
